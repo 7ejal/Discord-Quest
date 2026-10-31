@@ -14,7 +14,9 @@
 | SubhuJaat07 | Hosted Next.js service | [SUBHUJAAT07.md](SUBHUJAAT07.md) |
 | lfathh | TypeScript + legacy script | [LFATHH.md](LFATHH.md) |
 
-## Boundaries
+### Additional project inspections
+
+Six further repositories were inspected at pinned revisions: [QuestMaster, Seramicx, xenoncolt, nvckai, markterence, and nicola02nb](SECONDARY-IMPLEMENTATIONS.md). QuestMaster's substantial regression suite is a promising follow-up but was not executed or fully audited.\n\n## Boundaries
 
 This is not an exhaustive audit of **all** public Quest code or a malware safety certification. The repositories above were prioritized for implementation differences, source accessibility and technical claims. Shorter source-discovery notes for additional projects are in [PROJECT-COMPARISON.md](../docs/PROJECT-COMPARISON.md) and [SOURCES.md](../research/SOURCES.md).
 
