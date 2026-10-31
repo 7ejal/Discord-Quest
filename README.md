@@ -20,7 +20,7 @@ This repository documents Discord Quest task types, observable progress models, 
 
 **Important:** Standalone processes can start without the Discord desktop app, but that does not prove they satisfy real-game, streaming, publisher-achievement or console Quest requirements. No live tasks were run, and inauthentic Quest completion violates Discord's policy.
 
-## Start here
+**[New: deeper method-by-method research (November 2026)](research/standalone/METHODS-DEEP-DIVE-2026-11-01.md)** compares HTTP vs Gateway, video/game/activity/stream/achievement tracking, exact source-level errors, and which *engineering method* is strongest for a standalone CLI. Includes [22 offline test fixtures](research/standalone/METHOD-VALIDATION-FIXTURES.md) and corrects an earlier overstatement of SUDIN completion verification.\n\n## Start here
 
 | Document | Purpose |
 |---|---|
