@@ -1,0 +1,129 @@
+{
+  "dataset": "discord-quest-task-research",
+  "snapshot_date": "2026-11-01",
+  "disclaimer": "Research data, not independently verified automation compatibility. Not a public Discord bot API.",
+  "official_sources": [
+    "https://support.discord.com/hc/en-us/articles/22225719947543-Discord-Quests-FAQ",
+    "https://discord.com/safety/platform-manipulation-policy-explainer",
+    "https://support.discord.com/hc/en-us/articles/35372187686295-Discord-Cloud-Play-Quests"
+  ],
+  "unofficial_reference": "https://docs.discord.food/resources/quests",
+  "tasks": [
+    {
+      "id": "WATCH_VIDEO",
+      "family": "video",
+      "current_in_unofficial_reference": true,
+      "deprecated": false,
+      "legitimate_requirement": "watch supported video",
+      "progress_authority": "client video progress",
+      "notable_limit": "Campaign and platform eligibility",
+      "automation_independently_verified": false
+    },
+    {
+      "id": "WATCH_VIDEO_ON_MOBILE",
+      "family": "video",
+      "current_in_unofficial_reference": true,
+      "deprecated": false,
+      "legitimate_requirement": "watch eligible mobile video",
+      "progress_authority": "client video progress",
+      "notable_limit": "Mobile Quest beta",
+      "automation_independently_verified": false
+    },
+    {
+      "id": "PLAY_ON_DESKTOP",
+      "family": "desktop_game",
+      "current_in_unofficial_reference": true,
+      "deprecated": false,
+      "legitimate_requirement": "run eligible game on Discord desktop",
+      "progress_authority": "desktop tracking",
+      "notable_limit": "Real game/presence validation",
+      "automation_independently_verified": false
+    },
+    {
+      "id": "PLAY_ON_DESKTOP_V2",
+      "family": "legacy_desktop",
+      "current_in_unofficial_reference": false,
+      "deprecated": true,
+      "legitimate_requirement": "historic desktop play task",
+      "progress_authority": "legacy tracking",
+      "notable_limit": "Deprecated in unofficial reference",
+      "automation_independently_verified": false
+    },
+    {
+      "id": "STREAM_ON_DESKTOP",
+      "family": "desktop_stream",
+      "current_in_unofficial_reference": true,
+      "deprecated": false,
+      "legitimate_requirement": "stream eligible game to a viewer",
+      "progress_authority": "stream state/heartbeat",
+      "notable_limit": "Real voice stream and one viewer",
+      "automation_independently_verified": false
+    },
+    {
+      "id": "PLAY_ACTIVITY",
+      "family": "embedded_activity",
+      "current_in_unofficial_reference": true,
+      "deprecated": false,
+      "legitimate_requirement": "use eligible activity",
+      "progress_authority": "activity session",
+      "notable_limit": "Session validation",
+      "automation_independently_verified": false
+    },
+    {
+      "id": "ACHIEVEMENT_IN_ACTIVITY",
+      "family": "app_achievement",
+      "current_in_unofficial_reference": true,
+      "deprecated": false,
+      "legitimate_requirement": "earn in-activity achievement",
+      "progress_authority": "application backend",
+      "notable_limit": "App-controlled evidence",
+      "automation_independently_verified": false
+    },
+    {
+      "id": "ACHIEVEMENT_IN_GAME",
+      "family": "game_achievement",
+      "current_in_unofficial_reference": true,
+      "deprecated": false,
+      "legitimate_requirement": "earn linked-game achievement",
+      "progress_authority": "game/publisher backend",
+      "notable_limit": "Publisher-controlled evidence",
+      "automation_independently_verified": false
+    },
+    {
+      "id": "PLAY_ON_XBOX",
+      "family": "console",
+      "current_in_unofficial_reference": true,
+      "deprecated": false,
+      "legitimate_requirement": "play eligible Xbox game",
+      "progress_authority": "linked console state",
+      "notable_limit": "Linked account and real game",
+      "automation_independently_verified": false
+    },
+    {
+      "id": "PLAY_ON_PLAYSTATION",
+      "family": "console",
+      "current_in_unofficial_reference": true,
+      "deprecated": false,
+      "legitimate_requirement": "play eligible PlayStation game",
+      "progress_authority": "linked console state",
+      "notable_limit": "Linked account and real game",
+      "automation_independently_verified": false
+    }
+  ],
+  "non_task_features": [
+    "CLOUD_PLAY_QUEST",
+    "QR_HANDOFF",
+    "MISSIONS",
+    "REWARD_CLAIM",
+    "QUEST_ENROLLMENT"
+  ],
+  "criteria": {
+    "C": "Claimed/implemented only",
+    "U": "Untested",
+    "K": "Conditional real activity required",
+    "N": "Unsupported",
+    "D": "Deprecated",
+    "A": "App-specific; not general",
+    "?": "Unknown"
+  }
+}
