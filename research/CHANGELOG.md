@@ -14,3 +14,4 @@
 - No real-account selfbots or live Quest progress/claim requests executed.
 
 **Revisions:** On each material update, preserve historical observations and cite the newly checked code/release.
+\n### 2026-11-01 — Static source audit expansion\n\n- Inspected actual source files in nine main implementations with pinned Git revisions, documented per-project findings and severity.\n- Added source-backed decision assessment at [RECOMMENDATION.md](RECOMMENDATION.md).\n- Added six secondary inspections covering QuestMaster and plugin/extension/desktop variants.\n- Identified error-swallowing false-success risk in xgg-2, local-completion and cookie-token risks in SubhuJaat07, missing default reward processing and unbounded retries in Go, and fixed-priority AND/OR limitations in several projects.\n- No actual Quest executions or test suite runs performed.\n
