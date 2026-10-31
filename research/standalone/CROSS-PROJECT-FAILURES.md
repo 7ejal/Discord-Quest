@@ -2,7 +2,7 @@
 
 **Source-based assessment on 2026-11-01.** This compares five core standalone programs and two additional no-desktop clients. It does **not** claim live Quest success, provide evasion instructions, certify binary safety, or replace the official Discord product requirements.
 
-## A. What “best” should mean
+## New source-verification corrections (November 1, 2026)\n\nA second line-by-line examination found [SUDIN source details](METHODS-DEEP-DIVE-2026-11-01.md): **(1)** its desktop handler treats numeric progress at target as a local `finished` status even without Quest `completed_at`; **(2)** its video handler can begin `finished=true` from cached numeric progress; **(3)** its Gateway presence is built from `matches[0]` and is not updated when later selected Quests are processed. **SUDIN remains a good compact example of bounded HTTP retries, but not a strict server-confirmation reference.**\n\nThe [offline validation fixtures](METHOD-VALIDATION-FIXTURES.md) reproduce these cases using invented data and mock transport only.\n\n## A. What “best” should mean
 
 A project with nine `case` labels is **not** automatically better than a project with three handlers. Count **server-confirmed outcomes under legitimate task conditions**, not source-code labels. The strongest implementation should detect unknown Quest schemas, treat enrollment and completion as separate states, stop on terminal errors, preserve user credentials, and report uncertainty accurately.
 
