@@ -5,7 +5,7 @@
 **No live accounts, selfbot execution, credential submission, true Quest progress tests, dependency audit or performance benchmarks.**  
 **Result:** **No project is verified to complete all modern Discord Quest types.** “Best” depends on whether the goal is learning architecture, reliable states, narrow standalone code, or the most *advertised* handlers.
 
-## Executive assessment
+## Updated methodological note (2026-11-01)\n\nA subsequent [standalone method deep dive](standalone/METHODS-DEEP-DIVE-2026-11-01.md) found important additional SUDIN issues: it can treat numeric task progress at target as a successful Quest even without top-level `completed_at`, and it keeps the first selected game's Gateway presence across later Quests. **Its selection as the clearest small HTTP error-handling example is not a recommendation of its completion truthfulness.** The Go project remains attractive for native packaging only, not verified Quest coverage.\n\n## Executive assessment
 
 | Research goal | Strongest inspected reference | Why | Disqualifying limitation |
 |---|---|---|---|
