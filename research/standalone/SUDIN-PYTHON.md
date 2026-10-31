@@ -51,13 +51,13 @@ See [main.py L17–29, L76–116, L250–315](https://github.com/SUDIN010/discor
 
 **Discovery:** The program uses a small priority list `PLAY_ON_DESKTOP`, `WATCH_VIDEO`, `WATCH_VIDEO_ON_MOBILE`. It does not have task implementations for STREAM, ACTIVITY, achievement or linked console categories. This narrower scope is more transparent than projects that advertise every task type because they recognize a string.
 
-**Gameplay handler:** Repeats a request and reads the returned `completed_at` or progress. If the response lacks expected progress, it stops with a warning. It distinguishes success from “stopped before completion.” **Residual flaw:** If the server continues reporting unchanged but valid-looking progress, the loop can run without an overall deadline. [main.py L326–359](https://github.com/SUDIN010/discord-auto-quest/blob/c14afa1dbb3c8c59d7f68c90caa305eff8e15b0e/main.py#L326-L359).
+**Gameplay handler:** Repeats a request and reads returned `completed_at` or progress. If progress data is missing, it stops with a warning. **Important correction:** Its `finished` flag becomes true when *numeric task progress reaches target* **even if Quest-level `completed_at` is missing**, so it can still overstate success. If the server keeps returning unchanged but valid-looking progress, it can also run indefinitely. [main.py L326–359](https://github.com/SUDIN010/discord-auto-quest/blob/c14afa1dbb3c8c59d7f68c90caa305eff8e15b0e/main.py#L326-L359).
 
-**Video handler:** Uses elapsed-time accounting and a requested progress value, but reports success only if a returned server response contains a completion marker. If that never arrives it prints that the task was not marked complete yet, which is more honest than an unconditional success log. This does not establish live functionality. [main.py L361–398](https://github.com/SUDIN010/discord-auto-quest/blob/c14afa1dbb3c8c59d7f68c90caa305eff8e15b0e/main.py#L361-L398).
+**Video handler:** Uses elapsed-time accounting and a requested progress value. It usually checks a returned completion marker; **however**, it initially sets `finished` from cached numeric progress at target, and that case can report success even without fresh Quest-level `completed_at`. The final attempt may warn when the server does not mark completion. Its result is thus **more conditional than Go's unconditional final log, but not strictly authoritative**. This does not establish live functionality. [main.py L361–398](https://github.com/SUDIN010/discord-auto-quest/blob/c14afa1dbb3c8c59d7f68c90caa305eff8e15b0e/main.py#L361-L398).
 
-**Task schema:** `quest_app_id` and task mapping should be compared with the current per-task application data model. No general AND/OR task satisfaction algorithm is implemented. A Quest requiring multiple actions is not guaranteed to complete even if its one selected handler finishes.
+**Task schema:** `quest_app_id` **already reads the per-task `PLAY_ON_DESKTOP.applications` ID first**, falling back to the top-level application. This is a real benefit over the inspected Go/aiko handlers. No general AND/OR task satisfaction algorithm is implemented. A Quest requiring multiple actions is not guaranteed to complete even if its one selected handler finishes.
 
-**Enrollment:** `wait_for_enrollment` can keep polling forever if the campaign never becomes enrolled. The main program has cleanup of presence on exit, but a never-ending enrollment wait delays that exit. [main.py L317–325](https://github.com/SUDIN010/discord-auto-quest/blob/c14afa1dbb3c8c59d7f68c90caa305eff8e15b0e/main.py#L317-L325).
+**Multi-Quest presence:** `run()` constructs the Gateway presence from `matches[0]` once and then processes every selected Quest. It **does not update presence when the active Quest changes**; the advertised game can therefore remain tied to the first choice. [main.py L474–505](https://github.com/SUDIN010/discord-auto-quest/blob/c14afa1dbb3c8c59d7f68c90caa305eff8e15b0e/main.py#L474-L505).\n\n**Enrollment:** `wait_for_enrollment` can keep polling forever if the campaign never becomes enrolled. The main program has cleanup of presence on exit, but a never-ending enrollment wait delays that exit. [main.py L317–325](https://github.com/SUDIN010/discord-auto-quest/blob/c14afa1dbb3c8c59d7f68c90caa305eff8e15b0e/main.py#L317-L325).
 
 ## Why this is an interesting reference
 
@@ -65,7 +65,7 @@ See [main.py L17–29, L76–116, L250–315](https://github.com/SUDIN010/discor
 - **Per-HTTP-call timeout and bounded retries**.
 - **Clear unsupported-task scope** and manual reward claiming.
 - **User-facing CLI** with readable output and selection.
-- **Separate async Gateway work** even though the Requests client is synchronous.
+- **Separate async Gateway work** even though the Requests client is synchronous (but it currently carries the first-selected-Quest presence across later Quests).
 
 ## What remains incomplete
 
@@ -77,4 +77,4 @@ See [main.py L17–29, L76–116, L250–315](https://github.com/SUDIN010/discor
 - Runtime/CPU/RAM and successful Quest completion were not tested.
 - Personal-token use and simulation still violate Discord's rules.
 
-**Verdict:** The **clearest narrow standalone Python codebase for learning control flow and HTTP reliability** among these five, not the tool with widest task coverage.
+**Verdict:** The **clearest narrow standalone Python codebase for learning control flow and HTTP retry policy** among these five. Its completion reporting **must not** be treated as fully verified: numeric progress can trigger a local success result and the displayed Gateway presence can be stale across multiple selected Quests. See [updated method audit](METHODS-DEEP-DIVE-2026-11-01.md).
