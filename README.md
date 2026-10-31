@@ -10,7 +10,17 @@ This repository documents Discord Quest task types, observable progress models, 
 
 ## Source-code audit and recommendation
 
-**[Read the source-backed recommendation and project ranking](research/RECOMMENDATION.md)**. Nine projects received detailed audits and six more received targeted code inspections at pinned Git commit revisions: see **[audit index](audits/README.md)** and **[secondary inspections](audits/SECONDARY-IMPLEMENTATIONS.md)** and individual findings for Go, TypeScript, Python, Vencord, userscripts, and the hosted Next.js implementation. These are static source reviews, not live Quest completion tests or malware certifications. Main findings: breadth claims are frequently untested; several projects incorrectly report success without final server confirmation; some custody models expose personal user tokens.\n\n## Start here
+**[Read the source-backed recommendation and project ranking](research/RECOMMENDATION.md)**. Nine projects received detailed audits and six more received targeted code inspections at pinned Git commit revisions: see **[audit index](audits/README.md)** and **[secondary inspections](audits/SECONDARY-IMPLEMENTATIONS.md)** and individual findings for Go, TypeScript, Python, Vencord, userscripts, and the hosted Next.js implementation. These are static source reviews, not live Quest completion tests or malware certifications. Main findings: breadth claims are frequently untested; several projects incorrectly report success without final server confirmation; some custody models expose personal user tokens.\n\n## Standalone .exe / CLI / .bat source research (November 2026)
+
+**[Read the full standalone code walkthrough index](research/standalone/README.md).** This detailed series covers **Go yeweroooo**, **TypeScript aiko-chan-ai**, **Python SUDIN010**, **Python unconsents**, and **TypeScript lfathh**, with supplementary [Node SDK and hosted server](research/standalone/EXTRA-NODE-AND-HOSTED.md) analysis. It explains startup, exact file responsibilities, HTTP vs Gateway connections, task selection, progress state, rewards, concurrency, dependencies, and code-level failure examples with links to pinned Git commits.
+
+- [What REST/Gateway/task heartbeats mean](research/standalone/NETWORK-AND-STATUS.md)
+- [Detailed project-by-project source guides](research/standalone/README.md)
+- [Common implementation defects and ranking](research/standalone/CROSS-PROJECT-FAILURES.md)
+
+**Important:** Standalone processes can start without the Discord desktop app, but that does not prove they satisfy real-game, streaming, publisher-achievement or console Quest requirements. No live tasks were run, and inauthentic Quest completion violates Discord's policy.
+
+## Start here
 
 | Document | Purpose |
 |---|---|
