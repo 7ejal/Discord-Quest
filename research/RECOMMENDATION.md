@@ -59,7 +59,7 @@ Orion and saintordevil offer the most useful source guidance for avoiding silent
 
 See [official FAQ](https://support.discord.com/hc/en-us/articles/22225719947543-Discord-Quests-FAQ), [unofficial reference](https://docs.discord.food/resources/quests) and [full Quest types](../docs/QUEST-TYPES.md).
 
-## Methodological qualifications
+## Additional contender: QuestMaster\n\nThe [secondary inspection](../audits/SECONDARY-IMPLEMENTATIONS.md) found that [power0matin/discord-quest-auto-completer](https://github.com/power0matin/discord-quest-auto-completer) is a substantial ~8,052-line userscript with a ~671-line mock regression test file. It is **more sophisticated than a basic console snippet** and deserves a full follow-up audit before any confident head-to-head engineering ranking against Orion. Its advertised stream handling is not independently verified; it is **not** a universal Quest completer. The Orion recommendation above is therefore the **best among the nine deeper audits**, not an absolute ranking of every public repository.\n\n## Methodological qualifications
 
 This ranking scores **architecture and source-evidenced correctness**, not the speed of illicit Quest completion. It is **qualitative**, not a fabricated benchmark. Public maintainers' live reports are noted only as reports, and no full codebase, binary, dependency-chain or malware certification has been completed. Running test suites, source static analyzers, and legitimate product acceptance experiments could change the ranking.
 
