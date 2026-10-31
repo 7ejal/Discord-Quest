@@ -10,7 +10,7 @@ This repository documents Discord Quest task types, observable progress models, 
 
 ## Source-code audit and recommendation
 
-**[Read the source-backed recommendation and project ranking](research/RECOMMENDATION.md)**. Nine projects were audited at pinned Git commit revisions: see **[audit index](audits/README.md)** and individual findings for Go, TypeScript, Python, Vencord, userscripts, and the hosted Next.js implementation. These are static source reviews, not live Quest completion tests or malware certifications. Main findings: breadth claims are frequently untested; several projects incorrectly report success without final server confirmation; some custody models expose personal user tokens.\n\n## Start here
+**[Read the source-backed recommendation and project ranking](research/RECOMMENDATION.md)**. Nine projects received detailed audits and six more received targeted code inspections at pinned Git commit revisions: see **[audit index](audits/README.md)** and **[secondary inspections](audits/SECONDARY-IMPLEMENTATIONS.md)** and individual findings for Go, TypeScript, Python, Vencord, userscripts, and the hosted Next.js implementation. These are static source reviews, not live Quest completion tests or malware certifications. Main findings: breadth claims are frequently untested; several projects incorrectly report success without final server confirmation; some custody models expose personal user tokens.\n\n## Start here
 
 | Document | Purpose |
 |---|---|
