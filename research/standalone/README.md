@@ -2,7 +2,7 @@
 
 **Reviewed:** 2026-11-01. **Goal:** Explain what the **actual source code** of Windows-compatible CLI/executable Discord Quest projects does, why it works *as software*, where it fails, and what is or isn't actually confirmed. **This is a static source-code study, not an execution manual or a guarantee of Quest success.** Discord explicitly prohibits scripts that simulate Quest engagement to obtain rewards ([official policy](https://discord.com/safety/platform-manipulation-policy-explainer)).
 
-## Projects in scope
+## New: method-level deep dive and reproducible evaluation (2026-11-01)\n\n- **[How every method works and which engineering approach is best](METHODS-DEEP-DIVE-2026-11-01.md)** — source-pinned REST/Gateway, task-specific methods, streaming/activity/achievement limitations, retries, validation and updated findings.\n- **[Offline method verification fixtures](METHOD-VALIDATION-FIXTURES.md)** — 22 synthetic scenarios for trustworthy results without Discord credentials or a real Quest.\n\n**Updated correction:** SUDIN010's game and video handlers can infer success from numeric progress even without a fresh top-level Quest completion marker; its Gateway presence also remains tied to the first selected campaign. These are analyzed with exact code links.\n\n## Projects in scope
 
 | Project | Runtime | Entry point | Actual external software dependencies | Detailed walkthrough |
 |---|---|---|---|---|
