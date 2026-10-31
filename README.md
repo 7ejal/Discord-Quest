@@ -8,11 +8,13 @@ This repository documents Discord Quest task types, observable progress models, 
 
 > **Policy notice:** [Discord explicitly prohibits scripts and spoofed applications used to simulate Quest completion](https://discord.com/safety/platform-manipulation-policy-explainer). It also prohibits selfbots and unauthorized client modification. Do not put a real Discord user token into untrusted software. The documents here do not represent approval or independent live validation of any automation method.
 
-## Start here
+## Source-code audit and recommendation
+
+**[Read the source-backed recommendation and project ranking](research/RECOMMENDATION.md)**. Nine projects were audited at pinned Git commit revisions: see **[audit index](audits/README.md)** and individual findings for Go, TypeScript, Python, Vencord, userscripts, and the hosted Next.js implementation. These are static source reviews, not live Quest completion tests or malware certifications. Main findings: breadth claims are frequently untested; several projects incorrectly report success without final server confirmation; some custody models expose personal user tokens.\n\n## Start here
 
 | Document | Purpose |
 |---|---|
-| [Quest types](docs/QUEST-TYPES.md) | All 10 documented historical/current task identifiers, including external achievements |
+| [Code audit and ranking](research/RECOMMENDATION.md) | Source-backed ranking, confirmed risks and decision criteria |\n| [Nine detailed source audits](audits/README.md) | Version-pinned source files and line references for each implementation |\n| [Quest types](docs/QUEST-TYPES.md) | All 10 documented historical/current task identifiers, including external achievements |
 | [Compatibility matrix](docs/COMPATIBILITY-MATRIX.md) | Project-by-task claims, with *untested* and *conditional* separated |
 | [Methods](docs/METHODS.md) | How the documented strategies differ, at a conceptual level |
 | [Project comparison](docs/PROJECT-COMPARISON.md) | Selfbots, frameworks, userscripts, plugins, extensions, and desktop utilities |
