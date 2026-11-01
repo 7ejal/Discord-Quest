@@ -4,8 +4,31 @@
 pub mod manager;
 pub mod model;
 
-use model::{AllQuestsResponse, Quest};
+use model::Quest;
 use serde_json::Value;
+
+/// Require an identifiable full Quest before deserializing it. The Go wire
+/// structs accept zero values, but silently treating an empty object as a real
+/// campaign would produce a misleading status report.
+fn parse_full_quest(value: Value, index: usize) -> Result<Quest, String> {
+    let obj = value.as_object()
+        .ok_or_else(|| format!("Quest at index {index} must be an object"))?;
+    let id = obj.get("id").and_then(Value::as_str).unwrap_or("");
+    if id.trim().is_empty() {
+        return Err(format!("Quest at index {index} must have a non-empty string id"));
+    }
+    if !obj.get("config").is_some_and(Value::is_object) {
+        return Err(format!("Quest at index {index} must have an object config"));
+    }
+    serde_json::from_value(value)
+        .map_err(|error| format!("Quest at index {index}: invalid field: {error}"))
+}
+
+fn parse_quest_list(values: Vec<Value>) -> Result<Vec<Quest>, String> {
+    values.into_iter().enumerate()
+        .map(|(index, value)| parse_full_quest(value, index))
+        .collect()
+}
 
 /// Parse a Go-like response with quests, an array of Quests, or one Quest.
 /// Never loads accounts or performs network requests.
@@ -13,22 +36,22 @@ pub fn parse_quests(input: &str) -> Result<(Vec<Quest>, Option<String>), String>
     let document: Value = serde_json::from_str(input)
         .map_err(|error| format!("Invalid JSON: {error}"))?;
     match document {
-        Value::Array(quests) => {
-            let quests: Vec<Quest> = serde_json::from_value(Value::Array(quests))
-                .map_err(|error| format!("Invalid Quest array: {error}"))?;
-            Ok((quests, None))
+        Value::Array(quests) => Ok((parse_quest_list(quests)?, None)),
+        Value::Object(mut fields) if fields.contains_key("quests") => {
+            // Keep wrapper metadata distinct from the Quest records; reject
+            // malformed full records rather than accepting zero-filled structs.
+            let raw_quests = fields.remove("quests").ok_or("Missing quests array")?;
+            let records = raw_quests.as_array()
+                .ok_or("quests must be an array")?.clone();
+            let blocked = fields.remove("quest_enrollment_blocked_until");
+            let blocked = match blocked {
+                None | Some(Value::Null) => None,
+                Some(Value::String(s)) => Some(s),
+                _ => return Err("quest_enrollment_blocked_until must be a string or null".to_owned()),
+            };
+            Ok((parse_quest_list(records)?, blocked))
         }
-        Value::Object(fields) if fields.contains_key("quests") => {
-            let decoded: AllQuestsResponse =
-                serde_json::from_value(Value::Object(fields))
-                    .map_err(|error| format!("Invalid Go-style Quest response: {error}"))?;
-            Ok((decoded.quests, decoded.quest_enrollment_blocked_until))
-        }
-        Value::Object(fields) => {
-            let quest: Quest = serde_json::from_value(Value::Object(fields))
-                .map_err(|error| format!("Invalid Quest object: {error}"))?;
-            Ok((vec![quest], None))
-        }
+        quest @ Value::Object(_) => Ok((vec![parse_full_quest(quest, 0)?], None)),
         _ => Err("Expected a Quest object, array of Quests, or {\"quests\":[...]}".to_owned()),
     }
 }
@@ -88,6 +111,54 @@ mod tests {
         let (quests, block) = parse_quests(&text).unwrap();
         assert_eq!(quests.len(), 2);
         assert!(block.unwrap().starts_with("2026-11-02"));
+    }
+
+    #[test]
+    fn invalid_full_quest_objects_are_rejected() {
+        for input in ["{}", r#"{"id":"  ","config":{}}"#,
+                      r#"{"id":"a"}"#, r#"{"id":"a","config":null}"#,
+                      r#"{"id":1,"config":{}}"#] {
+            assert!(parse_quests(input).is_err(), "Unexpected success: {input}");
+        }
+    }
+
+    #[test]
+    fn malformed_records_are_rejected_with_index() {
+        let value = json!({"quests":[fixture(), {}]}).to_string();
+        let err = parse_quests(&value).expect_err("must reject blank second quest");
+        assert!(err.contains("index 1"), "{err}");
+        assert!(parse_quests(r#"{"quests":{}}"#).is_err());
+        assert!(parse_quests(r#"{"quests":[12]}"#).is_err());
+    }
+
+    #[test]
+    fn timestamp_strings_must_be_valid_rfc3339() {
+        let mut q = fixture();
+        q["user_status"]["completed_at"] = json!("not-a-date");
+        q["user_status"]["claimed_at"] = json!("also-not-a-date");
+        assert!(!decode(q.clone()).is_completed());
+        assert!(!decode(q.clone()).has_claimed_rewards());
+        assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::InProgress);
+    }
+
+    #[test]
+    fn invalid_task_timestamp_is_not_confirmed() {
+        let mut q = fixture();
+        q["user_status"]["progress"]["WATCH_VIDEO"]["completed_at"] = json!("garbage");
+        q["config"]["task_config_v2"]["join_operator"] = json!("or");
+        let result = assess_quest(&decode(q), &now());
+        assert_eq!(result.verdict, Verdict::InProgress);
+        assert!(!result.tasks.iter().find(|t| t.task_type == "WATCH_VIDEO").unwrap().server_task_completed);
+        assert!(result.warnings.iter().any(|w| w.contains("invalid")));
+    }
+
+    #[test]
+    fn timestamp_offsets_are_accepted() {
+        let mut q = fixture();
+        q["user_status"]["completed_at"] = json!("2026-11-01T15:15:00+04:00");
+        assert!(decode(q.clone()).is_completed());
+        assert_eq!(assess_quest(&decode(q), &now()).verdict,
+            Verdict::QuestConfirmedUnclaimed);
     }
 
     #[test]
