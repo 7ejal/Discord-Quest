@@ -11,15 +11,15 @@ Project: [rust/go-quest-port](../) · Source: [pinned upstream Go](https://githu
 
 | Status | Count | Interpretation |
 |---|---:|---|
-| DONE | 67 | Acceptance evidence recorded; check verification commit |
+| DONE | 69 | Acceptance evidence recorded; check verification commit |
 | PARTIAL | 22 | Some implementation exists but acceptance incomplete |
-| TODO | 31 | Work not yet demonstrated |
+| TODO | 29 | Work not yet demonstrated |
 | EXCLUDED | 7 | Deliberately outside approved scope |
 | **TOTAL** | **127** | Inventory snapshot, not a completion percentage |
 
 ## Release-gating status (approved offline scope only)
 
-**103 required tasks · 44 open release gates · 59 done release gates.**
+**103 required tasks · 42 open release gates · 61 done release gates.**
 Optional and excluded tasks do not block release. See [release criteria](RELEASE-GATES.md). A green historical CI run does not verify future commits.
 
 ## Ready to start (all dependencies DONE)
@@ -30,9 +30,7 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 | `AUD-002` | P0 | Diff Go behavior and Rust behavior with a version-pinned contract table | `INV-002` |
 | `OPS-003` | P0 | Evidence must identify tested commit or immutable file and not just a claim | `OPS-002` |
 | `QA-001` | P0 | Maintain test-to-requirement traceability for all release-gating tasks | `TEST-002` |
-| `QA-005` | P0 | Negative end-to-end test ensures no Discord network, user-token, or reward submission | `SEC-001` |
 | `AUD-004` | P1 | Audit source links, file map, and documentation consistency | `DOC-002` |
-| `AUD-005` | P1 | Prevent drift between Rust task families and data/task-types.json | `MODEL-005` |
 | `AUD-008` | P1 | Document upstream code/license provenance and version baselines | `ENV-009` |
 | `QA-008` | P1 | Test tracker checker itself against malformed manifests | `OPS-002` |
 | `STATE-005` | P1 | Correctly evaluate AND/OR task groups | — |
@@ -44,6 +42,8 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 | `MODEL-002` | P2 | Port core Quest, status, task, reward data types | — |
 | `MODEL-008` | P2 | Validate timestamps, invalid values, and untrusted local input | — |
 | `PAR-002` | P2 | Add cancellation, clean shutdown and race tests | `PAR-001` |
+| `SEC-002` | P2 | Add secret-redacting diagnostics and dependency review | `ENV-009` |
+| `STATE-007` | P2 | Separate task, Quest, claim, and external redemption | — |
 
 ## Blocked release gates (prerequisites not DONE)
 
@@ -89,7 +89,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `AUD-003` | DONE | P0 | Required | Resolve duplicate Rust project ownership | Document and enforce rust/go-quest-port as the only active code path; archive or explicitly label rust/quest-audit-cli as nonshippable research to prevent agents editing it by mistake. | — | `rust/quest-audit-cli/README.md` |
 | `AUD-006` | DONE | P0 | Required | Inventory original feature claims versus actually evidenced operation | Matrix must distinguish source handler, precondition, server confirmation, and real-world verification; no handler or README claim may imply supported engagement. | `INV-003` | `migration/CAPABILITY-CONTRACT.md` |
 | `AUD-004` | PARTIAL | P1 | Required | Audit source links, file map, and documentation consistency | Automated check verifies tracked relative markdown links, source-file mapping, and no unresolved placeholder file paths presented as implemented. | `DOC-002` | `migration/check_links.py` |
-| `AUD-005` | TODO | P1 | Required | Prevent drift between Rust task families and data/task-types.json | Add a deterministic test or generator comparing recognized identifiers and deprecated tags against catalog with a pinned interpretation. | `MODEL-005` | — |
+| `AUD-005` | DONE | P1 | Required | Prevent drift between Rust task families and data/task-types.json | Add a deterministic test or generator comparing recognized identifiers and deprecated tags against catalog with a pinned interpretation. | `MODEL-005` | `tests/task_catalog.rs` |
 | `AUD-008` | PARTIAL | P1 | Required | Document upstream code/license provenance and version baselines | Record upstream Git SHA, original Go dependencies, Rust toolchain minimum, scoped license obligations, and evidence for each third-party claim. | `ENV-009` | `migration/SOURCE-BASELINE.md` |
 | `AUD-007` | DONE | P2 | Optional/excluded | Clean literal escaped newline sequences and stale links in root documentation | Root README headings, relative links and status statements render correctly on GitHub; targeted formatting check verifies no literal '\n\n' artifacts in prose. | `DOC-001` | `README.md` |
 
@@ -206,7 +206,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
-| `TEST-001` | DONE | P1 | Required | Native Rust offline CLI regression suite: 65 passing tests | 65 Rust tests passed on Linux main-server and native Windows CI at Git commit d0edd8301cc49b9aa5da5153e50e443384ceaf35; test coverage is synthetic/offline, not live Discord or complete Go selfbot parity. | — | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
+| `TEST-001` | DONE | P1 | Required | Native Rust offline CLI synthetic regression suite: 66 passing tests | All 66 Rust tests passed on isolated main-server checkout at commit 44dfcf924ec805729d1ac800c3294d344bce588e using cargo test --all-targets --locked, plus strict formatting and Clippy. | — | `src/lib.rs` |
 | `TEST-002` | DONE | P1 | Required | Separate integration tests and golden JSON snapshots | Integration and golden tests verify CLI JSON output, operator logic, timestamp problems and fixtures. | `TEST-001` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
 | `TEST-003` | PARTIAL | P1 | Required | 22 offline method validation cases | Implement 22 specified test cases as executable offline tests, mapping each case to a test name and result. | — | `research/standalone/METHOD-VALIDATION-FIXTURES.md` |
 | `TEST-004` | DONE | P1 | Optional/excluded | Cross-platform Linux/Windows build and smoke tests verified on historical commit | A recorded earlier CI run built and smoke-tested the Rust project on both Linux and Windows. Reproducible locked builds and tagged-current-commit release verification remain REL-006 and REL-002. | — | [source](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888) |
@@ -218,7 +218,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 |---|---|---|---|---|---|---|---|
 | `QA-001` | PARTIAL | P0 | Required | Maintain test-to-requirement traceability for all release-gating tasks | Every release-gate task has test file/case ID or a verified non-code acceptance artifact; CI checks missing test mapping. | `TEST-002` | `migration/TEST-MATRIX.md` |
 | `QA-003` | DONE | P0 | Required | Golden CLI snapshots with deterministic fixture time and text/JSON outputs | Committed expected outputs compare identically on Windows/Linux with normalized paths/timezones; fixture changes reviewed. | `STATUS-016`, `UX-002` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
-| `QA-005` | TODO | P0 | Required | Negative end-to-end test ensures no Discord network, user-token, or reward submission | Offline CLI works with network blocked and denies user-token operation flags; evidence proves no credential requirement. | `SEC-001` | — |
+| `QA-005` | DONE | P0 | Required | Negative end-to-end test ensures no Discord network, user-token, or reward submission | Offline CLI works with network blocked and denies user-token operation flags; evidence proves no credential requirement. | `SEC-001` | `scripts/test-linux.sh` |
 | `QA-002` | TODO | P1 | Required | Property tests and fuzz harness for schema and untrusted JSON | Fuzz/property tests demonstrate no panics and stable unknown/invalid classification with bounded synthetic inputs; CI smoke-level fuzz schedule specified. | `PARSE-005` | — |
 | `QA-004` | PARTIAL | P1 | Required | Stress test duplicate IDs, 100k mock tasks, large values and empty lists | Test resource limits, correct ordering, duplicate handling and no panic on synthetic large/empty documents. | `PARSE-005`, `PARSE-002` | `scripts/benchmark-linux.py` |
 | `QA-007` | TODO | P1 | Required | Regression corpus for source-level failures in related Go/Python/TS projects | Each known false-success, infinite retry, stale status and conditional EventEmitter case has a synthetic input and expected safe diagnostic. | `TEST-003` | — |
