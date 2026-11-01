@@ -69,6 +69,41 @@ fn malformed_argument_does_not_echo_token_like_secret() {
 }
 
 #[test]
+fn time_travel_evaluation_respects_expiration_boundary_and_timezone() {
+    let file = sample_file("Expiration example", "q-evaluate");
+    let samples = [
+        ("2029-12-31T23:59:59Z", "not_enrolled"),
+        ("2030-01-01T00:00:00Z", "expired"),
+        ("2030-01-01T04:00:00+04:00", "expired"),
+    ];
+    for (at, expected) in samples {
+        let output = run_cli(&["inspect", file.to_str().unwrap(), "--at", at, "--json"]);
+        assert!(output.status.success());
+        let data: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+        assert_eq!(data["assessments"][0]["verdict"], expected);
+        assert!(data["evaluated_at"].as_str().unwrap().ends_with("+00:00"));
+    }
+    fs::remove_file(file).unwrap();
+}
+
+#[test]
+fn invalid_timestamp_flag_fails_without_echoing_input() {
+    let output = run_cli(&["demo", "--at", "SECRET-BAD-TIMESTAMP"]);
+    assert!(!output.status.success());
+    let error = String::from_utf8(output.stderr).unwrap();
+    assert!(error.contains("Invalid --at timestamp"));
+    assert!(!error.contains("SECRET-BAD-TIMESTAMP"));
+}
+
+#[test]
+fn cli_exposes_native_package_version() {
+    let output = run_cli(&["--version"]);
+    assert!(output.status.success());
+    let text = String::from_utf8(output.stdout).unwrap();
+    assert_eq!(text.trim(), format!("go-quest-port {}", env!("CARGO_PKG_VERSION")));
+}
+
+#[test]
 fn json_report_labels_untrusted_source_and_has_version() {
     let file = sample_file("Ordinary campaign", "quest-local-1");
     let result = run_cli(&["inspect", file.to_str().unwrap(), "--json"]);
