@@ -6,6 +6,8 @@
 
 **[Pre-code review (127 source-backed tasks)](PRE-CODE-REVIEW-2026-11-01.md)** supersedes the old assumption that 114 tasks are exhaustive. The audit downgraded `STATE-005` and `QA-008` to partial and added model parity, untrusted-data provenance, terminal escaping, native runtime and differential verification tasks. Never start by assuming a Go `join_operator` field exists; the pinned Go TaskConfigV2 has no such field. If code changed after this audit, repeat the source check.
 
+**Current platform rule:** [LINUX-ONLY.md](LINUX-ONLY.md): Linux x86_64 CLI only, main-server verification exclusively, no hosted/Windows CI. This supersedes stale platform examples below.
+
 ## Mission
 
 Complete the **supported native Rust offline Quest inspection** application under `rust/go-quest-port`. Do not create another sibling crate. Do not build an operational personal-account selfbot, synthetic rewarded engagement, CAPTCHA bypass, or automatic reward claims. **No Discord installation or personal token is needed for the supported CLI.**
@@ -18,7 +20,7 @@ Open [PROGRESS.md](PROGRESS.md): **Ready to start** lists release-gating tasks w
 
 ## Required main-server test step
 
-After Rust code changes, use the user-authorized [main-server validation workflow](MAIN-SERVER-WORKFLOW.md), not GitHub Actions alone. Work in the dedicated isolated checkout, use fast-forward Git import, cap CPU use, record tested SHA, and then confirm Windows CI. Do not run untrusted PR code on production.
+After Rust code changes, use the user-authorized [main-server validation workflow](MAIN-SERVER-WORKFLOW.md), not GitHub Actions alone. Work in the dedicated isolated checkout, use fast-forward Git import, cap CPU use, record tested SHA, and then package the Linux release candidate on main-server. Do not run untrusted PR code on production.
 
 ## Every session, follow this order
 
@@ -39,7 +41,7 @@ After Rust code changes, use the user-authorized [main-server validation workflo
 
 **Phase 3 — CLI and tests:** `UX-002` output schema; `STATUS-016` deterministic clock; `TEST-002/003`, `QA-003/005`; format/Clippy and lockfile.
 
-**Phase 4 — Release:** `ENV-009` upstream MIT notice; `REL-001/002/003/006/007` tagged Windows/Linux builds, checksums, stable release, evidence.
+**Phase 4 — Release:** `ENV-009` upstream MIT notice; `REL-001/002/003/006/007` tagged Linux builds, checksums, stable release, evidence.
 
 **Parallel docs/agent safety:** `AUD-003` explicitly separate incomplete older Rust crate. Keep [CAPABILITY-CONTRACT](CAPABILITY-CONTRACT.md) accurate.
 
@@ -49,13 +51,11 @@ Do not treat this static priority list as more current than JSON. New blockers m
 
 ```sh
 python3 migration/check_progress.py --check
-cargo test --all-targets
-cargo run --release -- demo --json
-cargo run --release -- inspect examples/sample-quests.json --json
-cargo build --release
+CARGO_BUILD_JOBS=2 nice -n 10 bash scripts/test-linux.sh
+CARGO_BUILD_JOBS=2 nice -n 10 bash scripts/package-linux.sh
 ```
 
-Once `ENV-005/006` are completed, also require `--locked`, `cargo fmt --check`, and strict Clippy in CI. On Windows use `py -3` instead of `python3` if appropriate.
+Once `ENV-005/006` are completed, also require `--locked`, `cargo fmt --check`, and strict Clippy in CI. This project no longer targets Windows. Do not test or build on GitHub-hosted runners; use `scripts/test-linux.sh` and `scripts/package-linux.sh` on main-server.
 
 ## Update manifest example
 
