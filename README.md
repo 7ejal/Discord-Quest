@@ -20,7 +20,18 @@ This repository documents Discord Quest task types, observable progress models, 
 
 **Important:** Standalone processes can start without the Discord desktop app, but that does not prove they satisfy real-game, streaming, publisher-achievement or console Quest requirements. No live tasks were run, and inauthentic Quest completion violates Discord's policy.
 
-**[New: deeper method-by-method research (November 2026)](research/standalone/METHODS-DEEP-DIVE-2026-11-01.md)** compares HTTP vs Gateway, video/game/activity/stream/achievement tracking, exact source-level errors, and which *engineering method* is strongest for a standalone CLI. Includes [22 offline test fixtures](research/standalone/METHOD-VALIDATION-FIXTURES.md) and corrects an earlier overstatement of SUDIN completion verification.\n\n## Go-to-Rust port (native Windows CLI)
+**[New: deeper method-by-method research (November 2026)](research/standalone/METHODS-DEEP-DIVE-2026-11-01.md)** compares HTTP vs Gateway, video/game/activity/stream/achievement tracking, exact source-level errors, and which *engineering method* is strongest for a standalone CLI. Includes [22 offline test fixtures](research/standalone/METHOD-VALIDATION-FIXTURES.md) and corrects an earlier overstatement of SUDIN completion verification.\n\n## AI-tracked Go-to-Rust migration
+
+The Rust migration has a **[live progress checklist](rust/go-quest-port/migration/PROGRESS.md)** and **[machine-readable task tracker](rust/go-quest-port/migration/progress.json)** so coding agents can see exactly what is **done / partial / todo / intentionally excluded**. Task IDs include acceptance criteria, dependencies and evidence; these are not percentages or a claim of full operational selfbot parity.
+
+- [Complete migration specification](rust/go-quest-port/migration/SPEC.md)
+- [Go-to-Rust map for all 16 original entries and function clusters](rust/go-quest-port/migration/GO-FILE-MAP.md)
+- [AI instructions and update rules](AGENTS.md)
+- [Agent development workflow](rust/go-quest-port/migration/AI-WORKFLOW.md)
+
+GitHub CI now checks that the canonical tracker and Markdown progress table stay synchronized. The project remains an **offline native status analyzer**, not a reward-spoofing selfbot.
+
+## Go-to-Rust port (native Windows CLI)
 
 The [Rust Go-project port](rust/go-quest-port/README.md) implements local Quest JSON parsing, Go-style Quest filtering, typed data models, AND/OR task-group checks, bounded concurrent analysis and **15 passing unit tests**. **[Windows EXE download](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888/artifacts/13063362600)** — verified successful [Linux and Windows CI run](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888).
 
