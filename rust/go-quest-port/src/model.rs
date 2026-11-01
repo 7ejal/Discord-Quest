@@ -128,7 +128,7 @@ pub struct Reward {
     #[serde(default)]
     pub asset_video: Option<String>,
     #[serde(default)]
-    pub messages: RewardMessages,
+    pub messages: Option<RewardMessages>,
     /// These optional quantity keys are extensions, not fields in pinned Go QuestReward.
     #[serde(default)]
     pub orb_quantity: Option<i64>,
