@@ -1,7 +1,10 @@
 //! Regression tests for Go's portable task, reward, and heartbeat wire models.
 //! All fixtures are synthetic; no Discord account or network access.
 use chrono::{DateTime, Utc};
-use go_quest_port::{manager::{assess_quest, Verdict}, model::Quest};
+use go_quest_port::{
+    manager::{assess_quest, Verdict},
+    model::Quest,
+};
 use serde_json::{json, Value};
 
 fn time() -> DateTime<Utc> {
@@ -52,7 +55,10 @@ fn exact_go_reward_fields_remain_available() {
     let config = &quest.config.rewards_config;
     assert_eq!(config.assignment_method, Some(1));
     assert_eq!(config.platforms, vec![0, 1]);
-    assert_eq!(config.rewards_expire_at.as_deref(), Some("2027-02-01T00:00:00Z"));
+    assert_eq!(
+        config.rewards_expire_at.as_deref(),
+        Some("2027-02-01T00:00:00Z")
+    );
     let item = &config.rewards[0];
     assert_eq!(item.sku_id.as_deref(), Some("synthetic-sku"));
     assert_eq!(item.asset.as_deref(), Some("image.png"));
@@ -65,8 +71,16 @@ fn matching_task_type_and_event_remain_valid() {
     let quest = decode(record());
     let result = assess_quest(&quest, &time());
     assert_eq!(result.verdict, Verdict::InProgress);
-    assert_eq!(quest.tasks().unwrap().tasks["WATCH_VIDEO"].task_type.as_deref(), Some("WATCH_VIDEO"));
-    assert!(!result.warnings.iter().any(|w| w.contains("mismatch") || w.contains("conflicting")));
+    assert_eq!(
+        quest.tasks().unwrap().tasks["WATCH_VIDEO"]
+            .task_type
+            .as_deref(),
+        Some("WATCH_VIDEO")
+    );
+    assert!(!result
+        .warnings
+        .iter()
+        .any(|w| w.contains("mismatch") || w.contains("conflicting")));
 }
 
 #[test]
@@ -77,7 +91,10 @@ fn conflicting_task_type_never_reports_a_claimed_reward() {
     input["user_status"]["claimed_at"] = json!("2026-11-01T11:50:00Z");
     let result = assess_quest(&decode(input), &time());
     assert_eq!(result.verdict, Verdict::Inconsistent);
-    assert!(result.warnings.iter().any(|w| w.contains("conflicting type")));
+    assert!(result
+        .warnings
+        .iter()
+        .any(|w| w.contains("conflicting type")));
 }
 
 #[test]
@@ -86,7 +103,10 @@ fn unrecognized_declared_type_is_flagged() {
     input["config"]["task_config_v2"]["tasks"]["WATCH_VIDEO"]["type"] = json!("UNSEEN_TYPE");
     let result = assess_quest(&decode(input), &time());
     assert_eq!(result.verdict, Verdict::Inconsistent);
-    assert!(result.warnings.iter().any(|w| w.contains("unrecognized declared type")));
+    assert!(result
+        .warnings
+        .iter()
+        .any(|w| w.contains("unrecognized declared type")));
 }
 
 #[test]
@@ -95,7 +115,10 @@ fn conflicting_event_names_are_inconsistent() {
     input["user_status"]["progress"]["WATCH_VIDEO"]["event_name"] = json!("OTHER_EVENT");
     let result = assess_quest(&decode(input), &time());
     assert_eq!(result.verdict, Verdict::Inconsistent);
-    assert!(result.warnings.iter().any(|w| w.contains("mismatched event_name")));
+    assert!(result
+        .warnings
+        .iter()
+        .any(|w| w.contains("mismatched event_name")));
 }
 
 #[test]
@@ -104,11 +127,23 @@ fn input_heartbeat_and_freshness_are_preserved_not_fabricated() {
     let result = assess_quest(&quest, &time());
     let task = &result.tasks[0];
     assert_eq!(task.reported_event_name.as_deref(), Some("VIDEO_WATCH"));
-    assert_eq!(task.progress_updated_at.as_deref(), Some("2026-11-01T11:30:00Z"));
-    assert_eq!(task.heartbeat_last_beat_at.as_deref(), Some("2026-11-01T11:30:00Z"));
-    assert_eq!(task.heartbeat_expires_at.as_deref(), Some("2026-11-01T11:45:00Z"));
+    assert_eq!(
+        task.progress_updated_at.as_deref(),
+        Some("2026-11-01T11:30:00Z")
+    );
+    assert_eq!(
+        task.heartbeat_last_beat_at.as_deref(),
+        Some("2026-11-01T11:30:00Z")
+    );
+    assert_eq!(
+        task.heartbeat_expires_at.as_deref(),
+        Some("2026-11-01T11:45:00Z")
+    );
     assert!(!task.server_task_completed);
-    assert!(result.warnings.iter().any(|w| w.contains("expired reported heartbeat")));
+    assert!(result
+        .warnings
+        .iter()
+        .any(|w| w.contains("expired reported heartbeat")));
 }
 
 #[test]
@@ -117,6 +152,12 @@ fn invalid_progress_time_is_reported() {
     input["user_status"]["progress"]["WATCH_VIDEO"]["updated_at"] = json!("invalid");
     input["user_status"]["progress"]["WATCH_VIDEO"]["heartbeat"]["last_beat_at"] = json!("???");
     let result = assess_quest(&decode(input), &time());
-    assert!(result.warnings.iter().any(|w| w.contains("invalid updated_at")));
-    assert!(result.warnings.iter().any(|w| w.contains("invalid heartbeat.last_beat_at")));
+    assert!(result
+        .warnings
+        .iter()
+        .any(|w| w.contains("invalid updated_at")));
+    assert!(result
+        .warnings
+        .iter()
+        .any(|w| w.contains("invalid heartbeat.last_beat_at")));
 }
