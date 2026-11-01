@@ -175,13 +175,16 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
                 warnings.push(format!("Input has invalid progress for task {name}."));
             }
             let server_task_completed = progress.is_some_and(|p| has_timestamp(&p.completed_at));
+            if def.applications.iter().any(|app| app.id.trim().is_empty()) {
+                warnings.push(format!("Task {name} includes a blank application ID."));
+            }
             let application_id = def
                 .applications
                 .iter()
-                .find(|a| !a.id.is_empty())
+                .find(|a| !a.id.trim().is_empty())
                 .map(|a| a.id.clone())
                 .or_else(|| {
-                    (!quest.config.application.id.is_empty())
+                    (!quest.config.application.id.trim().is_empty())
                         .then(|| quest.config.application.id.clone())
                 });
 
