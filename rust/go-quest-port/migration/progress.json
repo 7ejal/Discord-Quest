@@ -2804,7 +2804,7 @@
       "id": "OPS-009",
       "phase": "tracking",
       "title": "Generate a dependency-aware, actually-startable next-task queue",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2816,12 +2816,16 @@
         "migration/START-HERE.md"
       ],
       "acceptance": "Dashboard distinguishes P0 tasks whose dependencies are DONE from tasks blocked by PARTIAL/TODO prerequisites, lists blocker IDs/status/priority, and tests update the ready queue automatically after manifest changes.",
-      "evidence": [],
+      "evidence": [
+        "migration/check_progress.py",
+        "migration/test_check_progress.py",
+        "migration/PROGRESS.md"
+      ],
       "depends_on": [
         "OPS-002",
         "OPS-004"
       ],
-      "notes": "At this audit, several P0 tasks depended on unfinished P1/P2 tasks; 'next high priority' was not the same as 'ready now'. Avoid choosing blocked tasks as immediate starts."
+      "notes": "Generator separates ready release tasks from blocked tasks, lists unfinished dependency statuses and priorities. Three new tracker tests passed on main-server at b4eb94c."
     }
   ],
   "migration_mode": "native offline Quest analysis; excludes user-account selfbot impersonation and engagement spoofing",
