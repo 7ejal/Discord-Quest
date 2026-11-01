@@ -25,13 +25,13 @@ fn normalize_line_endings(text: &str) -> String {
 #[test]
 fn human_readable_report_matches_committed_golden() {
     let result = run(&["demo", "--at", AT]);
-    assert_eq!(normalize_line_endings(&result), EXPECTED_TEXT);
+    assert_eq!(normalize_line_endings(&result), normalize_line_endings(EXPECTED_TEXT));
 }
 
 #[test]
 fn json_report_matches_committed_golden() {
     let result = run(&["demo", "--json", "--at", AT]);
-    assert_eq!(normalize_line_endings(&result), EXPECTED_JSON);
+    assert_eq!(normalize_line_endings(&result), normalize_line_endings(EXPECTED_JSON));
     let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
     assert_eq!(parsed["schema_version"], 1);
     assert_eq!(parsed["input_trust"], "unverified_local_json");
@@ -43,7 +43,7 @@ fn worker_parallelism_does_not_change_golden_json() {
         let result = run(&["demo", "--json", "--at", AT, "--workers", workers]);
         assert_eq!(
             normalize_line_endings(&result),
-            EXPECTED_JSON,
+            normalize_line_endings(EXPECTED_JSON),
             "Parallelism {workers} changed CLI JSON"
         );
     }
