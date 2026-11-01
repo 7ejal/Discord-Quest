@@ -3,11 +3,12 @@
 **Project:** [`7ejal/Discord-Quest/rust/go-quest-port`](../)  
 **Source:** [`yeweroooo/Discord-Quest-Auto-Completion-Selfbot` @ `352d7f457c9511bc9e7c9b940a71012bfb47572e`](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e)  
 **Specification:** November 1, 2026  
+**Current platform rule:** [Linux-only/main-server testing](LINUX-ONLY.md) (supersedes historical cross-platform requirements)  
 **Machine progress:** [`progress.json`](progress.json) · [Readable checklist](PROGRESS.md) · [Original Go file/function map](GO-FILE-MAP.md)
 
 ## 0. Objective and precise scope
 
-Produce a **maintainable, native Rust application** that preserves the useful, legitimate behavior of the Go implementation: portable Quest data structures, local configuration, task taxonomy, campaign filtering, data inspection, progress-status interpretation, concurrent analysis, error handling, documentation, and Windows/Linux packaging.
+Produce a **maintainable, native Rust application** that preserves the useful, legitimate behavior of the Go implementation: portable Quest data structures, local configuration, task taxonomy, campaign filtering, data inspection, progress-status interpretation, concurrent analysis, error handling, documentation, and Linux x86_64 packaging.
 
 **A “native, buildable application” is achievable and already partially present. A “literal 1:1 operational selfbot” is not the same deliverable.** The source's personal-account client impersonation, synthetic rewarded engagement, external challenge-solving, OAuth reward simulation, and automated claims are **intentionally excluded**. This is not an invitation to reimplement those behaviors later; scope changes require separate approval and policy review.
 
@@ -40,11 +41,11 @@ For every original file, class, method, and unported action, use [GO-FILE-MAP.md
 
 ## 2. Platform and distribution
 
-- Target **Windows x86_64** native `.exe` and **Linux x86_64** native executable. No Go/Node/Python/Discord installation to launch.
+- Target a **Linux x86_64** native CLI executable only. No Go/Node/Python/Discord installation to launch.
 - Use stable Rust 2021 edition, Cargo, and a locked dependency graph. The current project already compiles using `serde`, `serde_json`, and `chrono`; additional crates should be introduced only for actual features.
 - Keep application startup simple: `demo` with bundled synthetic data; `inspect <local-path>` with a local JSON document; optional `--json`, `--workers`, `--verbose`, `--version`, help.
 - Build release artifacts and record provenance and checksums.
-- Keep Windows and Linux GitHub Actions tests separate; do not report a new commit as passing from an earlier run.
+- Run all validation exclusively on connected **main-server** using [LINUX-ONLY.md](LINUX-ONLY.md); hosted CI and Windows are no longer supported.
 
 ### Recommended crates **only when justified**
 
@@ -234,7 +235,7 @@ Before claiming the extended application is finished:
 - Identity-preserving concurrency and deterministic ordering.
 - Mock 429, 5xx, malformed JSON, timeout, stalled response and cancellation.
 - CLI integration/golden-output tests.
-- `cargo fmt --check`, strict Clippy, `cargo test --all-targets`, `cargo build --release --locked` on Linux and Windows.
+- `cargo fmt --check`, strict Clippy, `cargo test --all-targets`, `cargo build --release --locked` on Linux x86_64 main-server only.
 - CI archives binaries with file hashes, provenance and limitations.
 - Optional reproducible CPU/RAM benchmark with machine/inputs disclosed.
 
@@ -246,7 +247,7 @@ This **supported migration** is complete only when:
 
 1. All supported `progress.json` task IDs have status `done`, or are clearly labeled optional/deferred with justification.
 2. `partial`/ `todo` are never hidden; every excluded source path is explicitly documented.
-3. Compilation and tests pass for the **current commit** on Windows and Linux.
+3. Compilation and tests pass for the **current commit** on Linux x86_64 main-server only.
 4. Actual artifacts are present and verified, not inferred from a filename.
 5. README, [PROGRESS.md](PROGRESS.md), and [progress.json](progress.json) match actual behavior and current tests.
 6. The program reports truthful statuses and does not offer user-account spoofing or reward claiming.
@@ -267,7 +268,7 @@ Do not state **“1:1 original selfbot parity”** because the deliberately excl
 ## 14. Expected deliverables
 
 - Clean Rust source and documented modules.
-- Native Windows executable and Linux binary.
+- Native Linux x86_64 executable and checksum-verified archive.
 - `Cargo.lock`, license/attribution, deterministic CI and releases.
 - Expanded unit/integration test suite.
 - Genuine file/function mapping and feature-parity/exclusion statement.
