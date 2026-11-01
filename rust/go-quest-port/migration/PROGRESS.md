@@ -11,39 +11,62 @@ Project: [rust/go-quest-port](../) · Source: [pinned upstream Go](https://githu
 
 | Status | Count | Interpretation |
 |---|---:|---|
-| DONE | 46 | Acceptance evidence recorded; check verification commit |
+| DONE | 47 | Acceptance evidence recorded; check verification commit |
 | PARTIAL | 22 | Some implementation exists but acceptance incomplete |
-| TODO | 55 | Work not yet demonstrated |
+| TODO | 54 | Work not yet demonstrated |
 | EXCLUDED | 4 | Deliberately outside approved scope |
 | **TOTAL** | **127** | Inventory snapshot, not a completion percentage |
 
 ## Release-gating status (approved offline scope only)
 
-**108 required tasks · 64 open release gates · 44 done release gates.**
+**108 required tasks · 63 open release gates · 45 done release gates.**
 Optional and excluded tasks do not block release. See [release criteria](RELEASE-GATES.md). A green historical CI run does not verify future commits.
 
-## Next uncompleted high-priority release gates
+## Ready to start (all dependencies DONE)
 
-| ID | Priority | Blocker | Dependencies |
+| ID | Priority | Work | Dependencies |
 |---|---|---|---|
 | `AUD-001` | P0 | Verify real task-group schema variants against sanitized fixtures | `MODEL-004` |
 | `AUD-002` | P0 | Diff Go behavior and Rust behavior with a version-pinned contract table | `INV-002` |
-| `DOC-005` | P0 | Document provenance limits and safe local JSON input workflows | `STATUS-013` |
-| `MODEL-010` | P0 | Check TaskEntry.type against task-map key and supported task family | `PARSE-010` |
 | `OPS-003` | P0 | Evidence must identify tested commit or immutable file and not just a claim | `OPS-002` |
-| `OPS-009` | P0 | Generate a dependency-aware, actually-startable next-task queue | `OPS-002`, `OPS-004` |
-| `PARSE-005` | P0 | Bound input file bytes, nesting depth, quest count, and output size | `CLI-003` |
-| `PARSE-006` | P0 | Validate target/progress numeric domain and overflow cases | `MODEL-008` |
-| `QA-001` | P0 | Maintain test-to-requirement traceability for all release-gating tasks | `TEST-002` |
-| `QA-003` | P0 | Golden CLI snapshots with deterministic fixture time and text/JSON outputs | `STATUS-016`, `UX-002` |
 | `QA-005` | P0 | Negative end-to-end test ensures no Discord network, user-token, or reward submission | `SEC-001` |
-| `REL-002` | P0 | Build and smoke test Linux and Windows artifacts for tagged commit | `ENV-007` |
 | `REL-007` | P0 | Document artifact retention and last-verified commit instead of stale EXE links | `ENV-004` |
-| `STATUS-013` | P0 | Label provenance and trust for each reported milestone | `STATE-007` |
-| `STATUS-015` | P0 | Verify AND/OR groups with mixed progress, missing task statuses, and other operators | `STATE-005`, `AUD-001` |
 | `UX-002` | P0 | Version JSON output schema and keep stdout machine-readable | `CLI-001` |
-| `UX-006` | P0 | Keep debug logs sanitized and do not echo raw input or secrets | `SEC-002` |
 | `AUD-004` | P1 | Audit source links, file map, and documentation consistency | `DOC-002` |
+| `AUD-005` | P1 | Prevent drift between Rust task families and data/task-types.json | `MODEL-005` |
+| `QA-008` | P1 | Test tracker checker itself against malformed manifests | `OPS-002` |
+| `REL-001` | P1 | Pin rust-toolchain, MSRV and target architecture policy | `ENV-005` |
+| `STATE-005` | P1 | Correctly evaluate AND/OR task groups | — |
+| `STATUS-014` | P1 | Keep unsupported/unknown tasks distinguishable even on completed Quest records | `MODEL-005` |
+| `TEST-002` | P1 | Separate integration tests and golden JSON snapshots | `TEST-001` |
+| `TEST-003` | P1 | 22 offline method validation cases | — |
+| `CLI-002` | P2 | Add --version and --verbose and structured errors | `CLI-001` |
+| `CLI-003` | P2 | Robust CLI UX for invalid inputs and safe help output | — |
+| `ENV-006` | P2 | Add fmt, clippy and dependency audit checks | `ENV-003` |
+| `ENV-007` | P2 | Publish Linux executable artifact | `ENV-003` |
+
+## Blocked release gates (prerequisites not DONE)
+
+| ID | Priority | Work | Unfinished dependencies (status/priority) |
+|---|---|---|---|
+| `DOC-005` | P0 | Document provenance limits and safe local JSON input workflows | `STATUS-013` PARTIAL/P0 |
+| `MODEL-010` | P0 | Check TaskEntry.type against task-map key and supported task family | `PARSE-010` TODO/P1 |
+| `PARSE-005` | P0 | Bound input file bytes, nesting depth, quest count, and output size | `CLI-003` PARTIAL/P2 |
+| `PARSE-006` | P0 | Validate target/progress numeric domain and overflow cases | `MODEL-008` PARTIAL/P2 |
+| `QA-001` | P0 | Maintain test-to-requirement traceability for all release-gating tasks | `TEST-002` PARTIAL/P1 |
+| `QA-003` | P0 | Golden CLI snapshots with deterministic fixture time and text/JSON outputs | `STATUS-016` TODO/P1, `UX-002` PARTIAL/P0 |
+| `REL-002` | P0 | Build and smoke test Linux and Windows artifacts for tagged commit | `ENV-007` TODO/P2 |
+| `STATUS-013` | P0 | Label provenance and trust for each reported milestone | `STATE-007` PARTIAL/P2 |
+| `STATUS-015` | P0 | Verify AND/OR groups with mixed progress, missing task statuses, and other operators | `STATE-005` PARTIAL/P1, `AUD-001` TODO/P0 |
+| `UX-006` | P0 | Keep debug logs sanitized and do not echo raw input or secrets | `SEC-002` TODO/P2 |
+| `AUD-008` | P1 | Document upstream code/license provenance and version baselines | `ENV-009` TODO/P2 |
+| `MODEL-011` | P1 | Correct reward wire models without inventing source fields | `MODEL-009` PARTIAL/P2, `PARSE-010` TODO/P1 |
+| `PARSE-003` | P1 | Retain excluded_quests and preview/traffic metadata in reports | `MODEL-002` PARTIAL/P2 |
+| `PARSE-007` | P1 | Differentiate null, missing, wrong type, and invalid nested status | `MODEL-008` PARTIAL/P2 |
+| `PARSE-008` | P1 | Handle UTF-8, BOM, Windows paths, and malformed JSON safely | `CLI-003` PARTIAL/P2 |
+| `PARSE-009` | P1 | Document strict versus tolerant parsing for historical configuration | `AUD-001` TODO/P0 |
+| `PARSE-010` | P1 | Measure field coverage against original types.go not just top-level names | `MODEL-002` PARTIAL/P2 |
+| `QA-002` | P1 | Property tests and fuzz harness for schema and untrusted JSON | `PARSE-005` PARTIAL/P0 |
 
 ## Detailed task inventory
 
@@ -236,7 +259,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `OPS-003` | TODO | P0 | Required | Evidence must identify tested commit or immutable file and not just a claim | Tracker records verification date, commit/run/source and CI status; checker warns on unverified or outdated 'done' reports. | `OPS-002` | — |
 | `OPS-004` | DONE | P0 | Required | Summarize release-gating versus optional tasks separately | Dashboard computes open release blockers from task metadata; excluded and optional tasks do not distort readiness percentage. | `OPS-002` | `migration/check_progress.py` |
 | `OPS-006` | DONE | P0 | Required | Provide one copy-paste next-session AI handoff with task order | Session entry names files, branch, actual status, top five dependencies, exact verification commands, and completion reporting format. | `DOC-003` | `migration/START-HERE.md` |
-| `OPS-009` | TODO | P0 | Required | Generate a dependency-aware, actually-startable next-task queue | Dashboard distinguishes P0 tasks whose dependencies are DONE from tasks blocked by PARTIAL/TODO prerequisites, lists blocker IDs/status/priority, and tests update the ready queue automatically after manifest changes. | `OPS-002`, `OPS-004` | — |
+| `OPS-009` | DONE | P0 | Required | Generate a dependency-aware, actually-startable next-task queue | Dashboard distinguishes P0 tasks whose dependencies are DONE from tasks blocked by PARTIAL/TODO prerequisites, lists blocker IDs/status/priority, and tests update the ready queue automatically after manifest changes. | `OPS-002`, `OPS-004` | `migration/check_progress.py` |
 | `OPS-005` | DONE | P1 | Required | Maintain architecture decision log and unresolved assumptions | ADR file records exact decision/rationale/evidence for source compatibility, offline-only scope, crate choices and stage changes. | `AUD-002` | `migration/DECISIONS.md` |
 | `OPS-007` | DONE | P1 | Required | Check markdown links and declared implemented paths in CI | CI catches broken repo-relative links and evidence paths marked as implemented; designed to avoid false failures for proposed paths. | `AUD-004` | `migration/check_links.py` |
 | `OPS-008` | DONE | P2 | Optional/excluded | PR/issue template requires task ID, tests, tracker update and residual risk | GitHub templates prompt authors for task IDs, evidence on current commit, docs status, policy scope and pending blockers. | `DOC-003` | `.github/pull_request_template.md` |
