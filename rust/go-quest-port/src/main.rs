@@ -1,8 +1,16 @@
 //! Standalone offline CLI for the safe, portable parts of the Go project.
 use chrono::{DateTime, Utc};
-use go_quest_port::{manager::QuestManager, output::escape_terminal, parse_quests};
+use go_quest_port::{manager::QuestManager, output::escape_terminal, parse_document};
 use serde::Serialize;
 use std::{env, error::Error, fs, io::Read, process};
+
+#[derive(Serialize)]
+struct ExcludedQuestSummary {
+    id: String,
+    preview: bool,
+    has_config: bool,
+    has_status: bool,
+}
 
 #[derive(Serialize)]
 struct Report {
@@ -13,6 +21,8 @@ struct Report {
     go_filter_valid: usize,
     go_filter_redeemable: usize,
     enrollment_blocked_until: Option<String>,
+    excluded_count: usize,
+    excluded_quests: Vec<ExcludedQuestSummary>,
     assessments: Vec<go_quest_port::manager::QuestAssessment>,
 }
 
@@ -81,8 +91,18 @@ fn run() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    let (quests, enrollment_blocked_until) = parse_quests(&input)?;
-    let manager = QuestManager::new(quests, enrollment_blocked_until.clone());
+    let parsed = parse_document(&input)?;
+    let excluded: Vec<_> = parsed
+        .excluded_quests
+        .into_iter()
+        .map(|partial| ExcludedQuestSummary {
+            id: partial.id,
+            preview: partial.preview,
+            has_config: partial.config.is_some(),
+            has_status: partial.user_status.is_some(),
+        })
+        .collect();
+    let manager = QuestManager::new(parsed.quests, parsed.enrollment_blocked_until.clone());
     let now = evaluated_at.unwrap_or_else(Utc::now);
     let report = Report {
         schema_version: 1,
@@ -91,7 +111,9 @@ fn run() -> Result<(), Box<dyn Error>> {
         analyzed: manager.quests().len(),
         go_filter_valid: manager.filter_valid(now).len(),
         go_filter_redeemable: manager.filter_redeemable().len(),
-        enrollment_blocked_until,
+        enrollment_blocked_until: parsed.enrollment_blocked_until,
+        excluded_count: excluded.len(),
+        excluded_quests: excluded,
         assessments: manager.assess_all(now, workers),
     };
     if output_json {
@@ -110,6 +132,20 @@ fn run() -> Result<(), Box<dyn Error>> {
             "Enrollment blocked until (source data): {}",
             escape_terminal(&blocked)
         );
+    }
+    if report.excluded_count > 0 {
+        println!(
+            "Excluded partial Quest records (not evaluated): {}",
+            report.excluded_count
+        );
+        for partial in &report.excluded_quests {
+            println!(
+                "  excluded: {} (preview={}, config_present={})",
+                escape_terminal(&partial.id),
+                partial.preview,
+                partial.has_config
+            );
+        }
     }
     for quest in report.assessments {
         println!(
