@@ -1,6 +1,6 @@
 # Go Discord Quest project → Rust port (offline, read-only)
 
-**Status:** **Built and tested successfully in GitHub Actions on November 1, 2026.** The Linux job passed **35 Rust tests (32 unit + 3 native CLI integration)**, strict formatting and Clippy checks, plus a CLI smoke test. The Windows job compiled `go-quest-port.exe`, passed a Windows CLI smoke test, and uploaded its executable artifact. [Successful CI run](https://github.com/7ejal/Discord-Quest/actions/runs/41271698563).
+**Status:** **Built and tested successfully in GitHub Actions on November 1, 2026.** The Linux job passed **38 Rust tests (32 unit + 6 native CLI integration)**, strict formatting and Clippy checks, plus a CLI smoke test. The Windows job compiled `go-quest-port.exe`, passed a Windows CLI smoke test, and uploaded its executable artifact. [Successful CI run](https://github.com/7ejal/Discord-Quest/actions/runs/41271698563).
 
 **Upstream:** [yeweroooo/Discord-Quest-Auto-Completion-Selfbot](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot), commit [352d7f457c9511bc9e7c9b940a71012bfb47572e](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e).
 
@@ -55,14 +55,16 @@ On Linux/macOS: `cargo run --release --locked -- demo`.
 ## CLI options
 
 ```text
-go-quest-port demo [--json] [--workers N]
-go-quest-port inspect <local-quests.json> [--json] [--workers N]
+go-quest-port demo [--json] [--workers N] [--at RFC3339]
+go-quest-port inspect <local-quests.json> [--json] [--workers N] [--at RFC3339]
 ```
 
 - `demo`: uses bundled **fictional synthetic** Quests. No outside access.
 - `inspect`: reads an existing local JSON file (maximum **8 MiB** and **10,000 Quest objects**). It does **not** fetch or authenticate live account data.
-- `--json`: machine-readable report with `schema_version: 1` and `input_trust: "unverified_local_json"`.
+- `--json`: machine-readable report with `schema_version: 1`, `input_trust: "unverified_local_json"` and an `evaluated_at` UTC timestamp.
 - `--workers N`: between 1 and 32 analysis threads (default 4).
+- `--at YYYY-MM-DDTHH:MM:SSZ`: evaluate campaign eligibility at a supplied RFC3339 instant, including timezone offsets. Otherwise the current clock is used.
+- `--version` (or `-V`): display the native executable version.
 
 ## Original Go → Rust mapping
 
@@ -109,13 +111,13 @@ rust/go-quest-port/
 ## Testing/verification status
 
 - Source file presence verified in the GitHub repository.
-- **35 tests passed** (32 unit and 3 CLI integration) on Linux, with only synthetic local JSON.
+- **38 tests passed** (32 unit and 6 CLI integration) on Linux, with only synthetic local JSON.
 - **Linux CLI smoke test passed.**
 - **Windows EXE release build and CLI smoke test passed**, with [artifact uploaded](https://github.com/7ejal/Discord-Quest/actions/runs/41271698563/artifacts/13069786429).
 - [Full successful workflow](https://github.com/7ejal/Discord-Quest/actions/runs/41271698563).
 - No Rust CPU/RAM performance measurements have been taken.
 - No Discord Quest has been executed, and no universal Quest completion claim is made.
 
-**Main-server validation:** [source-pinned second hardening batch](migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md), including `cargo fmt --check`, `cargo clippy --locked -D warnings`, 35 Rust tests and JSON verification. These checks do not validate operational selfbot behavior.
+**Main-server validation:** [deterministic timestamp CLI / 38-test validation](migration/MAIN-SERVER-CI-2026-11-01-BATCH3.md), including `cargo fmt --check`, `cargo clippy --locked -D warnings`, 38 Rust tests and JSON verification. These checks do not validate operational selfbot behavior.
 
 For research and evidence: [detailed Go audit](../../audits/GO-YEWEROOOO.md) and [method comparison](../../research/standalone/METHODS-DEEP-DIVE-2026-11-01.md).
