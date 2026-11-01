@@ -11,6 +11,10 @@
 5. [migration/AI-WORKFLOW.md](migration/AI-WORKFLOW.md) for the update/validation protocol.
 6. [README.md](README.md) for current CLI commands, limitations and historical CI run.
 
+## Main-server CI is required after code changes
+
+Follow [migration/MAIN-SERVER-WORKFLOW.md](migration/MAIN-SERVER-WORKFLOW.md): **commit on GitHub → Gateway fast-forward pull into isolated checkout on main-server → run Cargo format, strict Clippy, locked tests and release JSON smoke → verify Windows GitHub Actions on the same code revision**. Never test arbitrary PR branches on production or overwrite other directories. Report unavailable server testing honestly.
+
 ## Mandatory practices
 
 - **Choose named IDs** from progress.json; do not start “port everything” without a scoped change.
