@@ -97,6 +97,14 @@ task/event labels and freshness fields remain visible inspection data. Do not
 put secrets in those fields. Terminal controls are escaped in human output;
 JSON preserves report strings for machine processing.
 
+## Synthetic network fixtures and Gateway research (library only)
+
+The Rust library now provides a [credential-free HTTP fixture driver and
+bounded offline Gateway NDJSON trace summarizer](migration/OFFLINE-NETWORK-FIXTURES.md).
+They are exercised in `tests/offline_network_fixtures.rs` and make **no**
+network requests. The binary still exposes only `demo` and `inspect`;
+there is no live account/token/Quest API operation.
+
 ## Requested live HTTP / Go parity work (not implemented)
 
 The user requested Go-style raw `Authorization` header account access and live Quest inspection. This is tracked under [GO-LIVE-HTTP-REQUEST.md](migration/GO-LIVE-HTTP-REQUEST.md) and separate tracked `AUD-009`, `SEC-005`, `NET-005`–`NET-009`, `QA-011`, `AUD-010` tasks. Static authorization/security/parity audits are documented in [GO-HTTP-AUTH-AUDIT-2026-11-01.md](migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md) and [GO-LIVE-PARITY-DECISION-2026-11-01.md](migration/GO-LIVE-PARITY-DECISION-2026-11-01.md); they are **not** a working live client. **The current executable still has no HTTP or account login command.** Current offline test results do not verify real Discord account or Quest functionality. Supported authorization and service rules must be checked before any live integration; do not send, commit or print personal tokens.

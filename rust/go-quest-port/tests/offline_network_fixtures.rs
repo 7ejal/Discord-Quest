@@ -14,10 +14,8 @@ fn response(status: u16, body: &str, latency_ms: u64) -> MockResponse {
 #[test]
 fn synthetic_http_fixture_drives_real_offline_parser_without_network() {
     let fixture = include_str!("../examples/sample-quests.json");
-    let mut mock = MockHttpClient::new(
-        vec![response(200, fixture, 1)],
-        MockPolicy::default(),
-    ).unwrap();
+    let mut mock =
+        MockHttpClient::new(vec![response(200, fixture, 1)], MockPolicy::default()).unwrap();
     let parsed = mock.fetch_quest_document().unwrap();
     assert!(!parsed.quests.is_empty());
     assert_eq!(mock.attempts(), 1);
@@ -34,9 +32,14 @@ fn status_errors_fail_closed_without_reading_server_body() {
         (503, MockError::HttpStatus(503)),
     ] {
         let mut mock = MockHttpClient::new(
-            vec![response(status, "TOKEN_LIKE_SECRET_SHOULD_NOT_BE_REPORTED", 1)],
+            vec![response(
+                status,
+                "TOKEN_LIKE_SECRET_SHOULD_NOT_BE_REPORTED",
+                1,
+            )],
             MockPolicy::default(),
-        ).unwrap();
+        )
+        .unwrap();
         assert_eq!(mock.fetch_quest_document().unwrap_err(), expected);
         assert_eq!(mock.attempts(), 1);
     }
@@ -49,30 +52,50 @@ fn bounded_retries_and_virtual_timeout_are_deterministic() {
         deadline_ms: 100,
         ..MockPolicy::default()
     };
-    let mut mock = MockHttpClient::new(vec![
-        response(429, "{}", 10),
-        response(503, "{}", 20),
-        response(200, include_str!("../examples/sample-quests.json"), 30),
-    ], policy).unwrap();
+    let mut mock = MockHttpClient::new(
+        vec![
+            response(429, "{}", 10),
+            response(503, "{}", 20),
+            response(200, include_str!("../examples/sample-quests.json"), 30),
+        ],
+        policy,
+    )
+    .unwrap();
     assert!(!mock.fetch_quest_document().unwrap().quests.is_empty());
     assert_eq!(mock.attempts(), 3);
 
     let mut timeout = MockHttpClient::new(
         vec![response(429, "{}", 50), response(200, "{}", 60)],
         policy,
-    ).unwrap();
-    assert_eq!(timeout.fetch_quest_document().unwrap_err(), MockError::TimedOut);
+    )
+    .unwrap();
+    assert_eq!(
+        timeout.fetch_quest_document().unwrap_err(),
+        MockError::TimedOut
+    );
     assert_eq!(timeout.attempts(), 2);
 }
 
 #[test]
 fn exhausted_and_invalid_mock_policies_do_not_spin() {
-    let policy = MockPolicy { max_attempts: 4, ..MockPolicy::default() };
+    let policy = MockPolicy {
+        max_attempts: 4,
+        ..MockPolicy::default()
+    };
     let mut exhausted = MockHttpClient::new(vec![response(503, "{}", 0)], policy).unwrap();
-    assert_eq!(exhausted.fetch_quest_document().unwrap_err(), MockError::NoResponse);
+    assert_eq!(
+        exhausted.fetch_quest_document().unwrap_err(),
+        MockError::NoResponse
+    );
     assert_eq!(exhausted.attempts(), 1);
     assert!(matches!(
-        MockHttpClient::new(vec![], MockPolicy { max_attempts: usize::MAX, ..policy }),
+        MockHttpClient::new(
+            vec![],
+            MockPolicy {
+                max_attempts: usize::MAX,
+                ..policy
+            }
+        ),
         Err(MockError::InvalidPolicy)
     ));
     assert!(matches!(
@@ -83,17 +106,31 @@ fn exhausted_and_invalid_mock_policies_do_not_spin() {
 
 #[test]
 fn invalid_utf8_and_oversized_body_are_not_exposed() {
-    let mut bad = MockHttpClient::new(vec![MockResponse {
-        status: 200,
-        body: vec![0xff, 0xfe],
-        latency_ms: 0,
-    }], MockPolicy::default()).unwrap();
-    assert_eq!(bad.fetch_quest_document().unwrap_err(), MockError::InvalidDocument);
+    let mut bad = MockHttpClient::new(
+        vec![MockResponse {
+            status: 200,
+            body: vec![0xff, 0xfe],
+            latency_ms: 0,
+        }],
+        MockPolicy::default(),
+    )
+    .unwrap();
+    assert_eq!(
+        bad.fetch_quest_document().unwrap_err(),
+        MockError::InvalidDocument
+    );
     let mut large = MockHttpClient::new(
         vec![response(200, "abcdef", 0)],
-        MockPolicy { max_body_bytes: 3, ..MockPolicy::default() },
-    ).unwrap();
-    assert_eq!(large.fetch_quest_document().unwrap_err(), MockError::ResponseTooLarge);
+        MockPolicy {
+            max_body_bytes: 3,
+            ..MockPolicy::default()
+        },
+    )
+    .unwrap();
+    assert_eq!(
+        large.fetch_quest_document().unwrap_err(),
+        MockError::ResponseTooLarge
+    );
 }
 
 #[test]

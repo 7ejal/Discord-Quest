@@ -905,20 +905,25 @@
       "id": "NET-001",
       "phase": "network",
       "title": "Provide credential-free HTTP fixture/mock adapter",
-      "status": "todo",
+      "status": "done",
       "go_source": [
         "client.go:Request",
         "client.go:FetchQuests"
       ],
       "rust_paths": [
-        "src/client/http.rs"
+        "src/client/http.rs",
+        "src/mock_http.rs",
+        "tests/offline_network_fixtures.rs",
+        "migration/OFFLINE-NETWORK-FIXTURES.md"
       ],
       "acceptance": "Fake in-memory responses drive analysis under tests, with no live Discord requests.",
-      "evidence": [],
-      "depends_on": [
-        "STATE-005"
+      "evidence": [
+        "src/mock_http.rs",
+        "tests/offline_network_fixtures.rs",
+        "migration/OFFLINE-NETWORK-FIXTURES.md"
       ],
-      "notes": "Optional future network architecture deferred. The current offline CLI needs no live/synthetic transport or session layer.",
+      "depends_on": [],
+      "notes": "Real in-memory fake HTTP responses pass into production parse_document; success/error/size tests passed on Linux. Modern authenticated task-group evidence is not needed for synthetic fixture transport; removed obsolete STATE-005 dependency.",
       "priority": "P2",
       "required_for_release": false
     },
@@ -926,20 +931,27 @@
       "id": "NET-002",
       "phase": "network",
       "title": "Bounded retries, timeouts, rate-limit and cancellation under mocks",
-      "status": "todo",
+      "status": "done",
       "go_source": [
         "client.go:Request"
       ],
       "rust_paths": [
         "src/client/http.rs",
-        "tests/errors.rs"
+        "tests/errors.rs",
+        "src/mock_http.rs",
+        "tests/offline_network_fixtures.rs",
+        "migration/OFFLINE-NETWORK-FIXTURES.md"
       ],
       "acceptance": "Synthetic transport tests prove finite retries, deadlines, controlled 429/5xx and explicit error propagation.",
-      "evidence": [],
+      "evidence": [
+        "src/mock_http.rs",
+        "tests/offline_network_fixtures.rs",
+        "migration/OFFLINE-NETWORK-FIXTURES.md"
+      ],
       "depends_on": [
         "NET-001"
       ],
-      "notes": "Optional future network architecture deferred. The current offline CLI needs no live/synthetic transport or session layer.",
+      "notes": "Deterministic virtual-time mock enforces bounded attempts/deadlines/body size, denies redirects, classifies 401/403 and bounded 429/5xx retries without network calls. Real HTTP lifecycle remains under NET-009.",
       "priority": "P2",
       "required_for_release": false
     },
@@ -947,21 +959,28 @@
       "id": "NET-003",
       "phase": "network",
       "title": "Document real Gateway protocol and local trace parser",
-      "status": "todo",
+      "status": "done",
       "go_source": [
         "client.go:readLoop",
         "types.go:GatewayPayload"
       ],
       "rust_paths": [
         "src/models/gateway.rs",
-        "src/client/gateway.rs"
+        "src/client/gateway.rs",
+        "src/gateway_trace.rs",
+        "tests/offline_network_fixtures.rs",
+        "migration/OFFLINE-NETWORK-FIXTURES.md"
       ],
       "acceptance": "Offline parsing of saved/synthetic Gateway frames and heartbeat lifecycle; no user-token Identify.",
-      "evidence": [],
+      "evidence": [
+        "src/gateway_trace.rs",
+        "tests/offline_network_fixtures.rs",
+        "migration/OFFLINE-NETWORK-FIXTURES.md"
+      ],
       "depends_on": [
         "MODEL-002"
       ],
-      "notes": "Optional future network architecture deferred. The current offline CLI needs no live/synthetic transport or session layer.",
+      "notes": "Read-only bounded NDJSON Gateway event/heartbeat trace parser with official opcode references, sequence checks, privacy tests and no socket/Identify. Library API only; no CLI subcommand.",
       "priority": "P2",
       "required_for_release": false
     },
@@ -969,20 +988,25 @@
       "id": "NET-004",
       "phase": "network",
       "title": "Officially authorized application integrations only",
-      "status": "todo",
+      "status": "done",
       "go_source": [
         "client.go",
         "constants.go"
       ],
       "rust_paths": [
-        "src/client/"
+        "src/client/",
+        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md",
+        "migration/DECISIONS.md"
       ],
       "acceptance": "If any live service integration is proposed, document supported authorization scopes and review against platform terms before building.",
-      "evidence": [],
+      "evidence": [
+        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md",
+        "migration/DECISIONS.md"
+      ],
       "depends_on": [
         "NET-001"
       ],
-      "notes": "Optional future network architecture deferred. The current offline CLI needs no live/synthetic transport or session layer.",
+      "notes": "Documented official OAuth2 identify identity access and lack of approved Quest-read OAuth scope; original selfbot disallowed, no live app integration proposed/implemented. Scope/permission review gate satisfied.",
       "priority": "P2",
       "required_for_release": false
     },
@@ -3244,11 +3268,15 @@
       ]
     },
     {
-      "status": "todo",
-      "evidence": [],
+      "status": "partial",
+      "evidence": [
+        "src/mock_http.rs",
+        "tests/offline_network_fixtures.rs",
+        "migration/OFFLINE-NETWORK-FIXTURES.md"
+      ],
       "priority": "P1",
       "required_for_release": false,
-      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "notes": "Virtual bounded mock transport exercises statuses/retry/deadline/no response text. Real authorized HTTP transport, true cancellation, rate-limit headers and resource verification await NET-006 approval.",
       "id": "NET-009",
       "phase": "network",
       "title": "Add bounded live HTTP transport lifecycle, timeout and rate-limit tests",
@@ -3258,7 +3286,10 @@
       "rust_paths": [
         "src/account.rs",
         "tests/account_http.rs",
-        "scripts/test-linux.sh"
+        "scripts/test-linux.sh",
+        "src/mock_http.rs",
+        "tests/offline_network_fixtures.rs",
+        "migration/OFFLINE-NETWORK-FIXTURES.md"
       ],
       "acceptance": "Mocked transport tests show one-shot request behavior, timeout and cancel handling, 429 fail-closed/no uncontrolled retries, suppressed server bodies/errors and no token leakage, plus Linux CPU/RAM verification. No production network calls during CI.",
       "depends_on": [

@@ -63,12 +63,17 @@ pub fn summarize_gateway_ndjson(input: &[u8]) -> Result<GatewayTraceSummary, Str
         match op {
             0 => {
                 summary.dispatch_frames += 1;
-                let sequence = object
-                    .get("s")
-                    .and_then(Value::as_u64)
-                    .ok_or_else(|| format!("Missing dispatch sequence at frame {}", summary.frames))?;
-                if summary.last_sequence.is_some_and(|previous| sequence <= previous) {
-                    return Err(format!("Non-increasing Gateway sequence at frame {}", summary.frames));
+                let sequence = object.get("s").and_then(Value::as_u64).ok_or_else(|| {
+                    format!("Missing dispatch sequence at frame {}", summary.frames)
+                })?;
+                if summary
+                    .last_sequence
+                    .is_some_and(|previous| sequence <= previous)
+                {
+                    return Err(format!(
+                        "Non-increasing Gateway sequence at frame {}",
+                        summary.frames
+                    ));
                 }
                 summary.last_sequence = Some(sequence);
                 let event = object

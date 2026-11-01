@@ -96,8 +96,8 @@ impl MockHttpClient {
             }
             match response.status {
                 200 => {
-                    let text =
-                        std::str::from_utf8(&response.body).map_err(|_| MockError::InvalidDocument)?;
+                    let text = std::str::from_utf8(&response.body)
+                        .map_err(|_| MockError::InvalidDocument)?;
                     return parse_document(text).map_err(|_| MockError::InvalidDocument);
                 }
                 401 => return Err(MockError::Unauthorized),

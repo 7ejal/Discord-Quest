@@ -11,9 +11,9 @@ Project: [rust/go-quest-port](../) · Source: [pinned upstream Go](https://githu
 
 | Status | Count | Interpretation |
 |---|---:|---|
-| DONE | 115 | Acceptance evidence recorded; check verification commit |
-| PARTIAL | 3 | Some implementation exists but acceptance incomplete |
-| TODO | 11 | Work not yet demonstrated |
+| DONE | 119 | Acceptance evidence recorded; check verification commit |
+| PARTIAL | 4 | Some implementation exists but acceptance incomplete |
+| TODO | 6 | Work not yet demonstrated |
 | EXCLUDED | 7 | Deliberately outside approved scope |
 | **TOTAL** | **136** | Inventory snapshot, not a completion percentage |
 
@@ -170,11 +170,11 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `NET-007` | PARTIAL | P0 | Optional/excluded | Verify legitimately accessible live Quest read endpoints and schema | Identify endpoints and granted access used to read Quest records; obtain only authorized, sanitized and provenance-labeled examples. If unsupported, record explicit blocker rather than relying on guessed Discord private APIs or fabricated task group operators. | `AUD-009`, `AUD-001` | `migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md` |
 | `NET-006` | TODO | P1 | Optional/excluded | Implement isolated opt-in read-only account connectivity check, only if service authorization permits | A dedicated Linux-only CLI check performs exactly one fixed HTTPS users/@me GET with user-requested header semantics, if approved in NET-005; rejects malformed credentials, disables token forwarding on redirects, limits body/timeout, never prints user identifiers or credentials, and returns minimal results. Local mock tests cover 200, 401, 403, 429, redirect and error cases. | `NET-005`, `SEC-005`, `NET-001` | — |
 | `NET-008` | TODO | P1 | Optional/excluded | Import authorized read-only HTTP Quest data into the existing bounded offline analyzer | After NET-007 verifies legitimate access, a separate opt-in command fetches bounded Quest JSON and feeds the existing parser; validates API status and schemas, labels authenticated provenance accurately, does not enroll, heartbeat, simulate activity, claim or redeem rewards; strictly limits memory and output. | `NET-006`, `NET-007` | — |
-| `NET-009` | TODO | P1 | Optional/excluded | Add bounded live HTTP transport lifecycle, timeout and rate-limit tests | Mocked transport tests show one-shot request behavior, timeout and cancel handling, 429 fail-closed/no uncontrolled retries, suppressed server bodies/errors and no token leakage, plus Linux CPU/RAM verification. No production network calls during CI. | `NET-006`, `NET-002` | — |
-| `NET-001` | TODO | P2 | Optional/excluded | Provide credential-free HTTP fixture/mock adapter | Fake in-memory responses drive analysis under tests, with no live Discord requests. | `STATE-005` | — |
-| `NET-002` | TODO | P2 | Optional/excluded | Bounded retries, timeouts, rate-limit and cancellation under mocks | Synthetic transport tests prove finite retries, deadlines, controlled 429/5xx and explicit error propagation. | `NET-001` | — |
-| `NET-003` | TODO | P2 | Optional/excluded | Document real Gateway protocol and local trace parser | Offline parsing of saved/synthetic Gateway frames and heartbeat lifecycle; no user-token Identify. | `MODEL-002` | — |
-| `NET-004` | TODO | P2 | Optional/excluded | Officially authorized application integrations only | If any live service integration is proposed, document supported authorization scopes and review against platform terms before building. | `NET-001` | — |
+| `NET-009` | PARTIAL | P1 | Optional/excluded | Add bounded live HTTP transport lifecycle, timeout and rate-limit tests | Mocked transport tests show one-shot request behavior, timeout and cancel handling, 429 fail-closed/no uncontrolled retries, suppressed server bodies/errors and no token leakage, plus Linux CPU/RAM verification. No production network calls during CI. | `NET-006`, `NET-002` | `src/mock_http.rs` |
+| `NET-001` | DONE | P2 | Optional/excluded | Provide credential-free HTTP fixture/mock adapter | Fake in-memory responses drive analysis under tests, with no live Discord requests. | — | `src/mock_http.rs` |
+| `NET-002` | DONE | P2 | Optional/excluded | Bounded retries, timeouts, rate-limit and cancellation under mocks | Synthetic transport tests prove finite retries, deadlines, controlled 429/5xx and explicit error propagation. | `NET-001` | `src/mock_http.rs` |
+| `NET-003` | DONE | P2 | Optional/excluded | Document real Gateway protocol and local trace parser | Offline parsing of saved/synthetic Gateway frames and heartbeat lifecycle; no user-token Identify. | `MODEL-002` | `src/gateway_trace.rs` |
+| `NET-004` | DONE | P2 | Optional/excluded | Officially authorized application integrations only | If any live service integration is proposed, document supported authorization scopes and review against platform terms before building. | `NET-001` | `migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md` |
 
 ### Tests
 
