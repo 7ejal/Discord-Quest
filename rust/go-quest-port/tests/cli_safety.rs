@@ -75,6 +75,8 @@ fn time_travel_evaluation_respects_expiration_boundary_and_timezone() {
         ("2029-12-31T23:59:59Z", "not_enrolled"),
         ("2030-01-01T00:00:00Z", "expired"),
         ("2030-01-01T04:00:00+04:00", "expired"),
+        ("2030-01-01T01:00:00+01:00", "expired"),
+        ("2030-01-01T02:00:00+02:00", "expired"),
     ];
     for (at, expected) in samples {
         let output = run_cli(&["inspect", file.to_str().unwrap(), "--at", at, "--json"]);
