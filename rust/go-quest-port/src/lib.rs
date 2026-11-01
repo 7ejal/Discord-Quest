@@ -11,11 +11,14 @@ use serde_json::Value;
 /// structs accept zero values, but silently treating an empty object as a real
 /// campaign would produce a misleading status report.
 fn parse_full_quest(value: Value, index: usize) -> Result<Quest, String> {
-    let obj = value.as_object()
+    let obj = value
+        .as_object()
         .ok_or_else(|| format!("Quest at index {index} must be an object"))?;
     let id = obj.get("id").and_then(Value::as_str).unwrap_or("");
     if id.trim().is_empty() {
-        return Err(format!("Quest at index {index} must have a non-empty string id"));
+        return Err(format!(
+            "Quest at index {index} must have a non-empty string id"
+        ));
     }
     if !obj.get("config").is_some_and(Value::is_object) {
         return Err(format!("Quest at index {index} must have an object config"));
@@ -25,7 +28,9 @@ fn parse_full_quest(value: Value, index: usize) -> Result<Quest, String> {
 }
 
 fn parse_quest_list(values: Vec<Value>) -> Result<Vec<Quest>, String> {
-    values.into_iter().enumerate()
+    values
+        .into_iter()
+        .enumerate()
         .map(|(index, value)| parse_full_quest(value, index))
         .collect()
 }
@@ -33,21 +38,25 @@ fn parse_quest_list(values: Vec<Value>) -> Result<Vec<Quest>, String> {
 /// Parse a Go-like response with quests, an array of Quests, or one Quest.
 /// Never loads accounts or performs network requests.
 pub fn parse_quests(input: &str) -> Result<(Vec<Quest>, Option<String>), String> {
-    let document: Value = serde_json::from_str(input)
-        .map_err(|error| format!("Invalid JSON: {error}"))?;
+    let document: Value =
+        serde_json::from_str(input).map_err(|error| format!("Invalid JSON: {error}"))?;
     match document {
         Value::Array(quests) => Ok((parse_quest_list(quests)?, None)),
         Value::Object(mut fields) if fields.contains_key("quests") => {
             // Keep wrapper metadata distinct from the Quest records; reject
             // malformed full records rather than accepting zero-filled structs.
             let raw_quests = fields.remove("quests").ok_or("Missing quests array")?;
-            let records = raw_quests.as_array()
-                .ok_or("quests must be an array")?.clone();
+            let records = raw_quests
+                .as_array()
+                .ok_or("quests must be an array")?
+                .clone();
             let blocked = fields.remove("quest_enrollment_blocked_until");
             let blocked = match blocked {
                 None | Some(Value::Null) => None,
                 Some(Value::String(s)) => Some(s),
-                _ => return Err("quest_enrollment_blocked_until must be a string or null".to_owned()),
+                _ => {
+                    return Err("quest_enrollment_blocked_until must be a string or null".to_owned())
+                }
             };
             Ok((parse_quest_list(records)?, blocked))
         }
@@ -58,7 +67,7 @@ pub fn parse_quests(input: &str) -> Result<(Vec<Quest>, Option<String>), String>
 
 #[cfg(test)]
 mod tests {
-    use super::manager::{assess_quest, analyze_parallel, QuestManager, Verdict};
+    use super::manager::{analyze_parallel, assess_quest, QuestManager, Verdict};
     use super::model::Quest;
     use super::parse_quests;
     use chrono::{DateTime, Utc};
@@ -107,7 +116,8 @@ mod tests {
         let text = json!({
             "quests":[fixture(),fixture()],
             "quest_enrollment_blocked_until":"2026-11-02T00:00:00Z"
-        }).to_string();
+        })
+        .to_string();
         let (quests, block) = parse_quests(&text).unwrap();
         assert_eq!(quests.len(), 2);
         assert!(block.unwrap().starts_with("2026-11-02"));
@@ -115,9 +125,13 @@ mod tests {
 
     #[test]
     fn invalid_full_quest_objects_are_rejected() {
-        for input in ["{}", r#"{"id":"  ","config":{}}"#,
-                      r#"{"id":"a"}"#, r#"{"id":"a","config":null}"#,
-                      r#"{"id":1,"config":{}}"#] {
+        for input in [
+            "{}",
+            r#"{"id":"  ","config":{}}"#,
+            r#"{"id":"a"}"#,
+            r#"{"id":"a","config":null}"#,
+            r#"{"id":1,"config":{}}"#,
+        ] {
             assert!(parse_quests(input).is_err(), "Unexpected success: {input}");
         }
     }
@@ -138,7 +152,10 @@ mod tests {
         q["user_status"]["claimed_at"] = json!("also-not-a-date");
         assert!(!decode(q.clone()).is_completed());
         assert!(!decode(q.clone()).has_claimed_rewards());
-        assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::InProgress);
+        assert_eq!(
+            assess_quest(&decode(q), &now()).verdict,
+            Verdict::InProgress
+        );
     }
 
     #[test]
@@ -148,7 +165,14 @@ mod tests {
         q["config"]["task_config_v2"]["join_operator"] = json!("or");
         let result = assess_quest(&decode(q), &now());
         assert_eq!(result.verdict, Verdict::InProgress);
-        assert!(!result.tasks.iter().find(|t| t.task_type == "WATCH_VIDEO").unwrap().server_task_completed);
+        assert!(
+            !result
+                .tasks
+                .iter()
+                .find(|t| t.task_type == "WATCH_VIDEO")
+                .unwrap()
+                .server_task_completed
+        );
         assert!(result.warnings.iter().any(|w| w.contains("invalid")));
     }
 
@@ -157,13 +181,18 @@ mod tests {
         let mut q = fixture();
         q["user_status"]["completed_at"] = json!("2026-11-01T15:15:00+04:00");
         assert!(decode(q.clone()).is_completed());
-        assert_eq!(assess_quest(&decode(q), &now()).verdict,
-            Verdict::QuestConfirmedUnclaimed);
+        assert_eq!(
+            assess_quest(&decode(q), &now()).verdict,
+            Verdict::QuestConfirmedUnclaimed
+        );
     }
 
     #[test]
     fn and_requires_both_tasks() {
-        assert_eq!(assess_quest(&decode(fixture()), &now()).verdict, Verdict::InProgress);
+        assert_eq!(
+            assess_quest(&decode(fixture()), &now()).verdict,
+            Verdict::InProgress
+        );
     }
 
     #[test]
@@ -191,39 +220,55 @@ mod tests {
     fn number_at_target_is_not_server_confirmed() {
         let mut q = fixture();
         q["user_status"]["progress"]["PLAY_ACTIVITY"]["value"] = json!(120);
-        assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::InProgress);
+        assert_eq!(
+            assess_quest(&decode(q), &now()).verdict,
+            Verdict::InProgress
+        );
     }
 
     #[test]
     fn verified_quest_and_claim_are_separate() {
         let mut q = fixture();
         q["user_status"]["completed_at"] = json!("2026-11-01T11:15:00Z");
-        assert_eq!(assess_quest(&decode(q.clone()), &now()).verdict,
-            Verdict::QuestConfirmedUnclaimed);
+        assert_eq!(
+            assess_quest(&decode(q.clone()), &now()).verdict,
+            Verdict::QuestConfirmedUnclaimed
+        );
         q["user_status"]["claimed_at"] = json!("2026-11-01T11:20:00Z");
-        assert_eq!(assess_quest(&decode(q), &now()).verdict,
-            Verdict::RewardClaimed);
+        assert_eq!(
+            assess_quest(&decode(q), &now()).verdict,
+            Verdict::RewardClaimed
+        );
     }
 
     #[test]
     fn unknown_compound_operator_is_unsupported() {
         let mut q = fixture();
         q["config"]["task_config_v2"]["join_operator"] = json!("xor");
-        assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::Unsupported);
+        assert_eq!(
+            assess_quest(&decode(q), &now()).verdict,
+            Verdict::Unsupported
+        );
     }
 
     #[test]
     fn missing_enrollment_remains_not_enrolled() {
         let mut q = fixture();
         q["user_status"]["enrolled_at"] = Value::Null;
-        assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::NotEnrolled);
+        assert_eq!(
+            assess_quest(&decode(q), &now()).verdict,
+            Verdict::NotEnrolled
+        );
     }
 
     #[test]
     fn claimed_without_completed_is_inconsistent() {
         let mut q = fixture();
         q["user_status"]["claimed_at"] = json!("2026-11-01T11:20:00Z");
-        assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::Inconsistent);
+        assert_eq!(
+            assess_quest(&decode(q), &now()).verdict,
+            Verdict::Inconsistent
+        );
     }
 
     #[test]
@@ -236,7 +281,11 @@ mod tests {
     #[test]
     fn per_task_application_takes_precedence_over_global() {
         let result = assess_quest(&decode(fixture()), &now());
-        let video = result.tasks.iter().find(|task| task.task_type == "WATCH_VIDEO").unwrap();
+        let video = result
+            .tasks
+            .iter()
+            .find(|task| task.task_type == "WATCH_VIDEO")
+            .unwrap();
         assert_eq!(video.application_id.as_deref(), Some("app-v"));
     }
 
@@ -244,7 +293,7 @@ mod tests {
     fn filters_match_go_intent() {
         let mut q = fixture();
         q["user_status"]["completed_at"] = json!("2026-11-01T11:10:00Z");
-        let manager = QuestManager::new(vec![decode(fixture()),decode(q)], None);
+        let manager = QuestManager::new(vec![decode(fixture()), decode(q)], None);
         assert_eq!(manager.filter_valid(now()).len(), 1);
         assert_eq!(manager.filter_redeemable().len(), 1);
     }
@@ -255,7 +304,7 @@ mod tests {
         let mut q2 = fixture();
         q1["id"] = json!("first");
         q2["id"] = json!("second");
-        let quests = vec![decode(q1),decode(q2)];
+        let quests = vec![decode(q1), decode(q2)];
         let results = analyze_parallel(&quests, now(), 2);
         assert_eq!(results.len(), 2);
         assert_eq!(results[0].quest_id, "first");
@@ -267,7 +316,10 @@ mod tests {
         let mut q = fixture();
         q["config"]["task_config"] = q["config"]["task_config_v2"].clone();
         q["config"]["task_config_v2"] = Value::Null;
-        assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::InProgress);
+        assert_eq!(
+            assess_quest(&decode(q), &now()).verdict,
+            Verdict::InProgress
+        );
     }
 
     #[test]
