@@ -27,10 +27,14 @@ jobs:
         run: python3 migration/test_check_progress.py
       - name: Check local Markdown links
         run: python3 migration/check_links.py
+      - name: Check Rust formatting
+        run: cargo fmt --all -- --check
+      - name: Clippy (warnings are errors)
+        run: cargo clippy --all-targets --locked -- -D warnings
       - name: Test library and CLI
-        run: cargo test --all-targets
+        run: cargo test --all-targets --locked
       - name: Smoke test the CLI
-        run: cargo run --release -- demo --json
+        run: cargo run --release --locked -- demo --json
 
   windows:
     runs-on: windows-latest
@@ -42,7 +46,7 @@ jobs:
       - name: Install stable Rust
         uses: dtolnay/rust-toolchain@stable
       - name: Build Windows executable
-        run: cargo build --release
+        run: cargo build --release --locked
       - name: Smoke test Windows executable
         shell: pwsh
         run: .\target\release\go-quest-port.exe demo --json
