@@ -106,7 +106,6 @@ pub struct Reward {
 
 #[derive(Debug, Clone, Default, Deserialize)]
 pub struct QuestUserStatus {
-    #[serde(default)]
     /// Optional Quest ID on source status; must agree with the parent Quest.
     #[serde(default)]
     pub quest_id: Option<String>,
