@@ -8,15 +8,17 @@
     "commit": "352d7f457c9511bc9e7c9b940a71012bfb47572e"
   },
   "verification": {
-    "kind": "source_scoped_ci",
-    "run_id": 41276966591,
+    "kind": "linux_main_server_only",
     "result": "success",
-    "head_sha": "d0edd8301cc49b9aa5da5153e50e443384ceaf35",
+    "head_sha": "dcc748abe0ccd43b107c2de4350403005f181a88",
     "linux_test_count": 65,
-    "windows_test_count": 65,
-    "windows_binary_artifact_id": 13071611929,
-    "main_server_test_record": "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
-    "note": "GitHub Actions validated code commit. Later tracker/docs commits require their own CI. No operational selfbot completion tested."
+    "python_tracker_test_count": 17,
+    "archive_path": "/root/quest-rust-ci-20261101/rust/go-quest-port/dist/linux-x86_64/go-quest-port-0.1.0-linux-x86_64-dcc748abe0cc.tar.gz",
+    "archive_sha256": "e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13",
+    "main_server_test_record": "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md",
+    "hosted_actions": false,
+    "windows_supported": false,
+    "notes": "Verified source commit. Later documentation/tracker commits must run local checks; no public release claimed."
   },
   "status_meanings": {
     "done": "Implemented or documented, with listed evidence. Historical build evidence may not cover later changes.",
@@ -223,7 +225,7 @@
       "id": "ENV-007",
       "phase": "build",
       "title": "Produce verified Linux x86_64 release candidate on main-server",
-      "status": "partial",
+      "status": "done",
       "go_source": [
         ".github/workflows/*"
       ],
@@ -232,13 +234,14 @@
       ],
       "acceptance": "scripts/package-linux.sh builds, tests and archives native Linux executable, includes README/NOTICE/LICENSE/build-info and checksums; server artifact path, SHA256 and executable dependencies verified.",
       "evidence": [
+        "scripts/package-linux.sh",
         "scripts/test-linux.sh",
-        "scripts/package-linux.sh"
+        "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md"
       ],
       "depends_on": [
         "ENV-003"
       ],
-      "notes": "Scripts written. Release candidate must still pass on main-server. GitHub publication is not implied.",
+      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release.",
       "priority": "P2",
       "required_for_release": true
     },
@@ -2087,7 +2090,7 @@
       "id": "QA-004",
       "phase": "quality",
       "title": "Stress test duplicate IDs, 100k mock tasks, large values and empty lists",
-      "status": "todo",
+      "status": "partial",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2098,12 +2101,15 @@
         "tests/stress.rs"
       ],
       "acceptance": "Test resource limits, correct ordering, duplicate handling and no panic on synthetic large/empty documents.",
-      "evidence": [],
+      "evidence": [
+        "scripts/benchmark-linux.py",
+        "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md"
+      ],
       "depends_on": [
         "PARSE-005",
         "PARSE-002"
       ],
-      "notes": ""
+      "notes": "Synthetic 100/10000 accepted and 100001 Quest records safely rejected under 512 MiB child cap; additional duplicate/conflicting IDs and 100k task-map stress acceptance remains."
     },
     {
       "id": "QA-005",
@@ -2130,7 +2136,7 @@
       "id": "QA-006",
       "phase": "quality",
       "title": "Reproducible CPU/RAM performance and binary-size measurements",
-      "status": "todo",
+      "status": "done",
       "priority": "P2",
       "required_for_release": false,
       "go_source": [
@@ -2140,11 +2146,14 @@
         "benches/"
       ],
       "acceptance": "Benchmark setup, platform/hardware, time/memory and reproducible input sets published; no speculative improvement claims.",
-      "evidence": [],
+      "evidence": [
+        "scripts/benchmark-linux.py",
+        "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md"
+      ],
       "depends_on": [
         "TEST-005"
       ],
-      "notes": ""
+      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release."
     },
     {
       "id": "QA-007",
@@ -2196,7 +2205,7 @@
       "id": "REL-001",
       "phase": "release",
       "title": "Pin Linux x86_64 Rust toolchain and document supported target",
-      "status": "partial",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2208,18 +2217,19 @@
       "acceptance": "rust-toolchain.toml pins compiler 1.98.1, server test script refuses silent toolchain installations and checks x86_64 Linux; verify running correctly on main-server.",
       "evidence": [
         "rust-toolchain.toml",
-        "scripts/test-linux.sh"
+        "scripts/test-linux.sh",
+        "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md"
       ],
       "depends_on": [
         "ENV-005"
       ],
-      "notes": "Pinned toolchain/script created; main-server build is pending."
+      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release."
     },
     {
       "id": "REL-002",
       "phase": "release",
       "title": "Build, test and package native Linux release candidate on main-server",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2231,11 +2241,15 @@
         "dist/linux-x86_64/"
       ],
       "acceptance": "Linux x86_64 archive passes main-server's full test-linux.sh checks, executes extracted binary, records exact Git SHA, compiler and SHA256; no Windows or hosted CI.",
-      "evidence": [],
+      "evidence": [
+        "scripts/package-linux.sh",
+        "scripts/test-linux.sh",
+        "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md"
+      ],
       "depends_on": [
         "ENV-007"
       ],
-      "notes": "No Windows build needed. Publication and release tag handled separately by REL-003."
+      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release."
     },
     {
       "id": "REL-003",
@@ -2262,7 +2276,7 @@
       "id": "REL-004",
       "phase": "release",
       "title": "Harden main-server-only test execution and dependency review",
-      "status": "todo",
+      "status": "partial",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2274,17 +2288,22 @@
         "migration/LINUX-ONLY.md"
       ],
       "acceptance": "No GitHub-hosted or Windows runners. Main-server-only scripts are bounded, do not collect secrets, install packages, alter network services or run untrusted pull requests; dependencies/updates reviewed.",
-      "evidence": [],
+      "evidence": [
+        "scripts/test-linux.sh",
+        "scripts/package-linux.sh",
+        "migration/LINUX-ONLY.md",
+        "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md"
+      ],
       "depends_on": [
         "ENV-006"
       ],
-      "notes": "Hosted Actions removed. Validate resource limits and dependency audit on main-server; do not install persistent runner."
+      "notes": "Hosted CI disabled, resource-bounded main-server scripts tested. Dependency review and further script hardening remain."
     },
     {
       "id": "REL-005",
       "phase": "release",
       "title": "Generate SBOM or dependency/license inventory for release",
-      "status": "todo",
+      "status": "partial",
       "priority": "P2",
       "required_for_release": false,
       "go_source": [
@@ -2296,18 +2315,21 @@
         "NOTICE"
       ],
       "acceptance": "Catalog all transitive crates and licenses, verify upstream notice obligations, attach inventory to release.",
-      "evidence": [],
+      "evidence": [
+        "scripts/package-linux.sh",
+        "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md"
+      ],
       "depends_on": [
         "ENV-009",
         "ENV-005"
       ],
-      "notes": ""
+      "notes": "Archive has locked crate name/version inventory. Full per-crate license and SBOM audit not complete."
     },
     {
       "id": "REL-006",
       "phase": "release",
       "title": "Verify locked Linux source build, build-info and artifact hashes",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2319,18 +2341,22 @@
         "scripts/package-linux.sh"
       ],
       "acceptance": "Exact Rust version/source SHA/Cargo.lock recorded; main-server --locked build succeeds; archive and embedded file SHA256SUMS verified after extraction.",
-      "evidence": [],
+      "evidence": [
+        "scripts/package-linux.sh",
+        "scripts/test-linux.sh",
+        "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md"
+      ],
       "depends_on": [
         "ENV-005",
         "REL-001"
       ],
-      "notes": ""
+      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release."
     },
     {
       "id": "REL-007",
       "phase": "release",
       "title": "Document Linux artifact provenance and retention",
-      "status": "partial",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2344,12 +2370,12 @@
       "evidence": [
         "README.md",
         "migration/LINUX-ONLY.md",
-        "scripts/package-linux.sh"
+        "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md"
       ],
       "depends_on": [
         "ENV-004"
       ],
-      "notes": "Linux-only README updated. Still need successfully built server archive and checksum."
+      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release."
     },
     {
       "id": "REL-008",
@@ -2840,7 +2866,7 @@
       "id": "DOC-006",
       "phase": "docs",
       "title": "Document Linux CLI installation, usage and troubleshooting",
-      "status": "partial",
+      "status": "done",
       "priority": "P2",
       "required_for_release": false,
       "go_source": [
@@ -2852,13 +2878,14 @@
       "acceptance": "Linux x86_64 instructions cover build/run/inspect/stdin/JSON, runtime shared libraries, invalid inputs, source trust and safe Linux artifact verification.",
       "evidence": [
         "README.md",
-        "migration/LINUX-ONLY.md"
+        "docs/TROUBLESHOOTING.md",
+        "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md"
       ],
       "depends_on": [
         "REL-007",
         "UX-004"
       ],
-      "notes": "Linux instructions present; troubleshooting and verified artifact dependencies pending."
+      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release."
     },
     {
       "id": "OPS-009",
