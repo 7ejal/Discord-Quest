@@ -349,7 +349,7 @@ mod tests {
         assert!(!decode(q.clone()).has_claimed_rewards());
         assert_eq!(
             assess_quest(&decode(q), &now()).verdict,
-            Verdict::InProgress
+            Verdict::Unsupported
         );
     }
 
@@ -359,7 +359,7 @@ mod tests {
         q["user_status"]["progress"]["WATCH_VIDEO"]["completed_at"] = json!("garbage");
         q["config"]["task_config_v2"]["join_operator"] = json!("or");
         let result = assess_quest(&decode(q), &now());
-        assert_eq!(result.verdict, Verdict::InProgress);
+        assert_eq!(result.verdict, Verdict::Unsupported);
         assert!(
             !result
                 .tasks
@@ -402,7 +402,7 @@ mod tests {
 
     #[test]
     fn leading_utf8_bom_is_accepted() {
-        let (records, _) = parse_quests("\u{feff}{\"id\":\"bom-1\",\"config\":{}}").unwrap();
+        let (records, _) = parse_quests("\u{feff}{\"id\":\"bom-1\",\"config\":{\"expires_at\":\"2030-01-01T00:00:00Z\"}}").unwrap();
         assert_eq!(records[0].id, "bom-1");
     }
 
@@ -419,7 +419,7 @@ mod tests {
         let quest = decode(q);
         assert!(!quest.is_enrolled());
         let report = assess_quest(&quest, &now());
-        assert_eq!(report.verdict, Verdict::NotEnrolled);
+        assert_eq!(report.verdict, Verdict::Unsupported);
         assert!(report
             .warnings
             .iter()

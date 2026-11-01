@@ -18,6 +18,24 @@ FILES += list((PROJECT / "migration").glob("*.md"))
 LINK = re.compile(r"\]\(([^)\s]+)(?:\s+['\"][^)]*['\"])?\)")
 
 
+def evidence_errors(tracker: dict, project: Path, root: Path) -> list[str]:
+    failures = []
+    for task in tracker.get("tasks", []):
+        if task.get("status") != "done":
+            continue
+        for reference in task.get("evidence", []):
+            if "://" in reference or reference.startswith("#"):
+                continue
+            if not any((base / reference).exists() for base in (project, root)):
+                failures.append(f"{task['id']}: evidence path missing: {reference}")
+        if tracker.get("traceability_required") and task.get("required_for_release"):
+            validation = task.get("validation", "")
+            path = project / validation
+            if not path.is_file() or task["id"] not in path.read_text(encoding="utf-8"):
+                failures.append(f"{task['id']}: missing executable/non-code acceptance mapping")
+    return failures
+
+
 def broken_links() -> list[str]:
     failures: list[str] = []
     for path in sorted(set(FILES)):
@@ -45,15 +63,7 @@ def broken_links() -> list[str]:
     # remain references, not current-commit validation.
     import json
     tracker = json.loads((PROJECT / "migration" / "progress.json").read_text(encoding="utf-8"))
-    for task in tracker.get("tasks", []):
-        if task.get("status") != "done":
-            continue
-        for reference in task.get("evidence", []):
-            if "://" in reference or reference.startswith("#"):
-                continue
-            candidate_paths = (PROJECT / reference, ROOT / reference)
-            if not any(p.exists() for p in candidate_paths):
-                failures.append(f"{task['id']}: evidence path missing: {reference}")
+    failures.extend(evidence_errors(tracker, PROJECT, ROOT))
     return failures
 
 

@@ -4,8 +4,12 @@ from __future__ import annotations
 
 import copy
 import unittest
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
+from check_links import evidence_errors
 
-from check_progress import dependency_queues, render, validate_tracker
+from check_progress import dependency_queues, render, validate_tracker, verification_warnings
 
 
 def task(task_id: str, *, status: str = "todo", deps: list[str] | None = None) -> dict:
@@ -112,6 +116,37 @@ class TrackerTests(unittest.TestCase):
 
     def test_render_is_deterministic(self) -> None:
         self.assertEqual(render(copy.deepcopy(self.data)), render(self.data))
+
+
+    def test_invalid_status_rejected(self) -> None:
+        self.data["tasks"][0]["status"] = "complete"
+        self.assertTrue(any("invalid status" in e for e in validate_tracker(self.data)))
+
+    def test_stale_markdown_is_detectably_different(self) -> None:
+        old = render(self.data)
+        self.data["tasks"][1]["status"] = "partial"
+        self.data["tasks"][1]["evidence"] = ["src/model.rs"]
+        self.assertNotEqual(old, render(self.data))
+
+    def test_nonexistent_evidence_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            self.assertTrue(any("evidence path missing" in e for e in evidence_errors(self.data, root, root)))
+
+    def test_done_gate_requires_traceability(self) -> None:
+        self.data["traceability_required"] = True
+        self.assertTrue(any("validation mapping" in e for e in validate_tracker(self.data)))
+
+    def test_unverified_source_warns(self) -> None:
+        self.assertTrue(verification_warnings(self.data))
+
+    def test_changed_source_warns(self) -> None:
+        self.data["verification"] = {"result": "success", "head_sha": "a" * 40}
+        with patch("check_progress.subprocess.run") as run:
+            run.return_value.returncode = 1
+            self.assertTrue(any("outdated" in e for e in verification_warnings(self.data)))
+            run.return_value.returncode = 0
+            self.assertEqual(verification_warnings(self.data), [])
 
 
 if __name__ == "__main__":

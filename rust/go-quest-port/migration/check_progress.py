@@ -14,6 +14,7 @@ import difflib
 import json
 import re
 import sys
+import subprocess
 from collections import Counter
 from pathlib import Path
 
@@ -72,6 +73,8 @@ def validate_tracker(data: object) -> list[str]:
             value = task.get(field)
             if not isinstance(value, list) or any(not isinstance(x, str) for x in value):
                 errors.append(f"{task_id}: {field} must be a string array")
+        if data.get("traceability_required") and task.get("required_for_release") and task.get("status") == "done" and not task.get("validation"):
+            errors.append(f"{task_id}: done release gate requires validation mapping")
         if task.get("status") in ("done", "partial") and not task.get("evidence"):
             errors.append(f"{task_id}: status requires at least one evidence item")
 
@@ -105,6 +108,23 @@ def validate_tracker(data: object) -> list[str]:
         if colors.get(task_id, 0) == 0:
             visit(task_id, ())
     return errors
+
+
+def verification_warnings(data: dict) -> list[str]:
+    verification = data.get("verification", {})
+    sha = verification.get("head_sha", "")
+    if verification.get("result") != "success" or not re.fullmatch(r"[0-9a-f]{40}", sha):
+        return ["Current source has no successful immutable main-server verification"]
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--quiet", sha, "HEAD", "--", "src", "tests", "scripts",
+             "Cargo.toml", "Cargo.lock", "rust-toolchain.toml", "../../tools",
+             "migration/check_progress.py", "migration/check_links.py", "migration/test_check_progress.py"],
+            cwd=HERE.parent, check=False, capture_output=True,
+        )
+    except OSError:
+        return ["Cannot compare verification commit to current source"]
+    return ["Verification source is outdated or unavailable; rerun main-server checks"] if result.returncode else []
 
 
 def safe_cell(value: object) -> str:
@@ -274,6 +294,8 @@ def main() -> int:
         for error in errors:
             print("ERROR:", error, file=sys.stderr)
         return 1
+    for warning in verification_warnings(data):
+        print("WARNING:", warning, file=sys.stderr)
     expected = render(data)
     if args.write:
         DASHBOARD.write_text(expected, encoding="utf-8")
