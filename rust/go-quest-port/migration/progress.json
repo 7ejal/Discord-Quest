@@ -10,15 +10,15 @@
   "verification": {
     "kind": "linux_main_server_only",
     "result": "success",
-    "head_sha": "dcc748abe0ccd43b107c2de4350403005f181a88",
-    "linux_test_count": 65,
+    "head_sha": "44dfcf924ec805729d1ac800c3294d344bce588e",
+    "linux_test_count": 66,
     "python_tracker_test_count": 17,
-    "archive_path": "/root/quest-rust-ci-20261101/rust/go-quest-port/dist/linux-x86_64/go-quest-port-0.1.0-linux-x86_64-dcc748abe0cc.tar.gz",
-    "archive_sha256": "e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13",
-    "main_server_test_record": "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md",
+    "archive_path": "/root/quest-rust-finish-audit-20261101/rust/go-quest-port/dist/linux-x86_64/go-quest-port-0.1.0-linux-x86_64-44dfcf924ec8.tar.gz",
+    "archive_sha256": "21e53ea165b11f7c70e27f5bcb13020ee617506c134c1a358883d1b1d173d85e",
+    "main_server_test_record": "migration/MAIN-SERVER-NETWORK-ISOLATION-2026-11-01.md",
     "hosted_actions": false,
     "windows_supported": false,
-    "notes": "Verified source commit. Later documentation/tracker commits must run local checks; no public release claimed."
+    "notes": "Verified specific source commit on user-authorized main-server using Linux-only CLI tests and no-network namespace. Future tracker/doc commits require their own consistency verification. No public release claimed."
   },
   "status_meanings": {
     "done": "Implemented or documented, with listed evidence. Historical build evidence may not cover later changes.",
@@ -941,7 +941,7 @@
     {
       "id": "TEST-001",
       "phase": "tests",
-      "title": "Native Rust offline CLI regression suite: 65 passing tests",
+      "title": "Native Rust offline CLI synthetic regression suite: 66 passing tests",
       "status": "done",
       "go_source": [
         "all"
@@ -949,13 +949,14 @@
       "rust_paths": [
         "src/lib.rs"
       ],
-      "acceptance": "65 Rust tests passed on Linux main-server and native Windows CI at Git commit d0edd8301cc49b9aa5da5153e50e443384ceaf35; test coverage is synthetic/offline, not live Discord or complete Go selfbot parity.",
+      "acceptance": "All 66 Rust tests passed on isolated main-server checkout at commit 44dfcf924ec805729d1ac800c3294d344bce588e using cargo test --all-targets --locked, plus strict formatting and Clippy.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
+        "src/lib.rs",
+        "tests/task_catalog.rs",
+        "migration/MAIN-SERVER-NETWORK-ISOLATION-2026-11-01.md"
       ],
       "depends_on": [],
-      "notes": "36 library + 3 golden + 8 CLI safety + 4 stdin + 4 excluded + 10 model parity, current commit scoped.",
+      "notes": "66 total: 36 library, 3 golden, 8 CLI safety, 4 stdin, 4 excluded, 10 model parity, 1 catalog; no live Quest data or API tested.",
       "priority": "P1",
       "required_for_release": true
     },
@@ -1353,7 +1354,7 @@
       "id": "AUD-005",
       "phase": "audit",
       "title": "Prevent drift between Rust task families and data/task-types.json",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1364,11 +1365,15 @@
         "data/task-types.json"
       ],
       "acceptance": "Add a deterministic test or generator comparing recognized identifiers and deprecated tags against catalog with a pinned interpretation.",
-      "evidence": [],
+      "evidence": [
+        "tests/task_catalog.rs",
+        "data/task-types.json",
+        "migration/MAIN-SERVER-NETWORK-ISOLATION-2026-11-01.md"
+      ],
       "depends_on": [
         "MODEL-005"
       ],
-      "notes": ""
+      "notes": "On Linux main-server commit 44dfcf924ec805729d1ac800c3294d344bce588e, the integration test compared all 10 catalog IDs, Rust task families, deprecated flags, and unknown fallback; cargo test passed."
     },
     {
       "id": "AUD-006",
@@ -2115,7 +2120,7 @@
       "id": "QA-005",
       "phase": "quality",
       "title": "Negative end-to-end test ensures no Discord network, user-token, or reward submission",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2126,11 +2131,14 @@
         "tests/no_network.rs"
       ],
       "acceptance": "Offline CLI works with network blocked and denies user-token operation flags; evidence proves no credential requirement.",
-      "evidence": [],
+      "evidence": [
+        "scripts/test-linux.sh",
+        "migration/MAIN-SERVER-NETWORK-ISOLATION-2026-11-01.md"
+      ],
       "depends_on": [
         "SEC-001"
       ],
-      "notes": "Check Linux CLI without network access where a safe process-local network isolation test is available. Do not change server firewall, Docker or system-wide network."
+      "notes": "Linux main-server commit 44dfcf924ec805729d1ac800c3294d344bce588e ran release CLI in an unshare --net isolated namespace without networking, with synthetic TOKEN/YesCaptcha canaries, golden output and targeting-data non-disclosure checks. Future regressions remain possible."
     },
     {
       "id": "QA-006",
