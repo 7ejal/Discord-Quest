@@ -100,7 +100,10 @@ fn cli_exposes_native_package_version() {
     let output = run_cli(&["--version"]);
     assert!(output.status.success());
     let text = String::from_utf8(output.stdout).unwrap();
-    assert_eq!(text.trim(), format!("go-quest-port {}", env!("CARGO_PKG_VERSION")));
+    assert_eq!(
+        text.trim(),
+        format!("go-quest-port {}", env!("CARGO_PKG_VERSION"))
+    );
 }
 
 #[test]
