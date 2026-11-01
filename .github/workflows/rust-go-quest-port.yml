@@ -1,0 +1,48 @@
+name: Rust Go Quest Port
+
+on:
+  push:
+    paths:
+      - 'rust/go-quest-port/**'
+      - '.github/workflows/rust-go-quest-port.yml'
+  pull_request:
+    paths:
+      - 'rust/go-quest-port/**'
+      - '.github/workflows/rust-go-quest-port.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rust/go-quest-port
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Test library and CLI
+        run: cargo test --all-targets
+      - name: Smoke test the CLI
+        run: cargo run --release -- demo --json
+
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: rust/go-quest-port
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Build Windows executable
+        run: cargo build --release
+      - name: Smoke test Windows executable
+        shell: pwsh
+        run: .\target\release\go-quest-port.exe demo --json
+      - name: Upload Windows EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: go-quest-port-windows
+          path: rust/go-quest-port/target/release/go-quest-port.exe
+          if-no-files-found: error
