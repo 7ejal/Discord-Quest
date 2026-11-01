@@ -45,6 +45,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install stable Rust
         uses: dtolnay/rust-toolchain@stable
+      - name: Run Windows integration and golden output tests
+        run: cargo test --all-targets --locked
       - name: Build Windows executable
         run: cargo build --release --locked
       - name: Smoke test Windows executable
