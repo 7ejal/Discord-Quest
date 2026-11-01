@@ -1,0 +1,127 @@
+{
+  "quests": [
+    {
+      "id": "synthetic-1",
+      "config": {
+        "config_version": 2,
+        "messages": {
+          "quest_name": "Example AND Campaign",
+          "game_title": "Imaginary Adventure"
+        },
+        "application": {
+          "id": "fictional-app-1",
+          "name": "Imaginary Adventure"
+        },
+        "starts_at": "2026-01-01T00:00:00Z",
+        "expires_at": "2028-01-01T00:00:00Z",
+        "task_config_v2": {
+          "join_operator": "and",
+          "tasks": {
+            "WATCH_VIDEO": {
+              "target": 60
+            },
+            "PLAY_ON_DESKTOP": {
+              "target": 300,
+              "applications": [
+                {
+                  "id": "fictional-game-1"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "user_status": {
+        "enrolled_at": "2026-10-30T00:00:00Z",
+        "completed_at": null,
+        "claimed_at": null,
+        "progress": {
+          "WATCH_VIDEO": {
+            "value": 60,
+            "completed_at": "2026-10-30T00:01:00Z"
+          },
+          "PLAY_ON_DESKTOP": {
+            "value": 0,
+            "completed_at": null
+          }
+        }
+      }
+    },
+    {
+      "id": "synthetic-2",
+      "config": {
+        "config_version": 2,
+        "messages": {
+          "quest_name": "Example OR Campaign"
+        },
+        "application": {
+          "id": "fictional-app-2",
+          "name": "Fictional"
+        },
+        "starts_at": "2026-01-01T00:00:00Z",
+        "expires_at": "2028-01-01T00:00:00Z",
+        "task_config_v2": {
+          "join_operator": "or",
+          "tasks": {
+            "WATCH_VIDEO": {
+              "target": 90
+            },
+            "WATCH_VIDEO_ON_MOBILE": {
+              "target": 90
+            }
+          }
+        }
+      },
+      "user_status": {
+        "enrolled_at": "2026-10-30T00:00:00Z",
+        "completed_at": "2026-10-30T00:05:00Z",
+        "claimed_at": null,
+        "progress": {
+          "WATCH_VIDEO": {
+            "value": 90,
+            "completed_at": "2026-10-30T00:05:00Z"
+          },
+          "WATCH_VIDEO_ON_MOBILE": {
+            "value": 0,
+            "completed_at": null
+          }
+        }
+      }
+    },
+    {
+      "id": "synthetic-3",
+      "config": {
+        "config_version": 2,
+        "messages": {
+          "quest_name": "Example Claimed Reward"
+        },
+        "application": {
+          "id": "fictional-app-3",
+          "name": "Fictional"
+        },
+        "starts_at": "2026-01-01T00:00:00Z",
+        "expires_at": "2028-01-01T00:00:00Z",
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ACTIVITY": {
+              "target": 120
+            }
+          }
+        }
+      },
+      "user_status": {
+        "enrolled_at": "2026-10-30T00:00:00Z",
+        "completed_at": "2026-10-30T00:15:00Z",
+        "claimed_at": "2026-10-30T00:16:00Z",
+        "progress": {
+          "PLAY_ACTIVITY": {
+            "value": 120,
+            "completed_at": "2026-10-30T00:15:00Z"
+          }
+        }
+      }
+    }
+  ],
+  "excluded_quests": [],
+  "quest_enrollment_blocked_until": null
+}
