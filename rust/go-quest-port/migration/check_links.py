@@ -35,6 +35,20 @@ def broken_links() -> list[str]:
             target = (path.parent / rel).resolve()
             if not target.is_relative_to(ROOT.resolve()) or not target.exists():
                 failures.append(f"{path.relative_to(ROOT)}: broken relative link {uri}")
+    # Every local evidence reference for a DONE task must correspond to a real
+    # file/directory in the active project or repository root. Historical URLs
+    # remain references, not current-commit validation.
+    import json
+    tracker = json.loads((PROJECT / "migration" / "progress.json").read_text(encoding="utf-8"))
+    for task in tracker.get("tasks", []):
+        if task.get("status") != "done":
+            continue
+        for reference in task.get("evidence", []):
+            if "://" in reference or reference.startswith("#"):
+                continue
+            candidate_paths = (PROJECT / reference, ROOT / reference)
+            if not any(p.exists() for p in candidate_paths):
+                failures.append(f"{task['id']}: evidence path missing: {reference}")
     return failures
 
 
