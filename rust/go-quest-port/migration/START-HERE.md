@@ -2,6 +2,10 @@
 
 **Read this page first.** This file is meant for an AI agent without previous conversation context.
 
+## Mandatory final audit gate
+
+**[Pre-code review (126 source-backed tasks)](PRE-CODE-REVIEW-2026-11-01.md)** supersedes the old assumption that 114 tasks are exhaustive. The audit downgraded `STATE-005` and `QA-008` to partial and added model parity, untrusted-data provenance, terminal escaping, native runtime and differential verification tasks. Never start by assuming a Go `join_operator` field exists; the pinned Go TaskConfigV2 has no such field. If code changed after this audit, repeat the source check.
+
 ## Mission
 
 Complete the **supported native Rust offline Quest inspection** application under `rust/go-quest-port`. Do not create another sibling crate. Do not build an operational personal-account selfbot, synthetic rewarded engagement, CAPTCHA bypass, or automatic reward claims. **No Discord installation or personal token is needed for the supported CLI.**
