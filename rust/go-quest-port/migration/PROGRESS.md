@@ -11,30 +11,24 @@ Project: [rust/go-quest-port](../) · Source: [pinned upstream Go](https://githu
 
 | Status | Count | Interpretation |
 |---|---:|---|
-| DONE | 28 | Acceptance evidence recorded; check verification commit |
-| PARTIAL | 7 | Some implementation exists but acceptance incomplete |
-| TODO | 75 | Work not yet demonstrated |
+| DONE | 40 | Acceptance evidence recorded; check verification commit |
+| PARTIAL | 11 | Some implementation exists but acceptance incomplete |
+| TODO | 59 | Work not yet demonstrated |
 | EXCLUDED | 4 | Deliberately outside approved scope |
 | **TOTAL** | **114** | Inventory snapshot, not a completion percentage |
 
 ## Release-gating status (approved offline scope only)
 
-**96 required tasks · 68 open release gates · 28 done release gates.**
+**96 required tasks · 58 open release gates · 38 done release gates.**
 Optional and excluded tasks do not block release. See [release criteria](RELEASE-GATES.md). A green historical CI run does not verify future commits.
 
 ## Next uncompleted high-priority release gates
 
 | ID | Priority | Blocker | Dependencies |
-|---|---|---|---|
+|---|---|---|
 | `AUD-001` | P0 | Verify real task-group schema variants against sanitized fixtures | `MODEL-004` |
 | `AUD-002` | P0 | Diff Go behavior and Rust behavior with a version-pinned contract table | `INV-002` |
-| `AUD-003` | P0 | Resolve duplicate Rust project ownership | — |
-| `AUD-006` | P0 | Inventory original feature claims versus actually evidenced operation | `INV-003` |
-| `OPS-001` | P0 | Regenerate Markdown task rows automatically from canonical JSON | `DOC-004` |
-| `OPS-002` | P0 | Validate expanded tracker schema, dependencies, cycles, and priorities | `DOC-004` |
 | `OPS-003` | P0 | Evidence must identify tested commit or immutable file and not just a claim | `OPS-002` |
-| `OPS-004` | P0 | Summarize release-gating versus optional tasks separately | `OPS-002` |
-| `OPS-006` | P0 | Provide one copy-paste next-session AI handoff with task order | `DOC-003` |
 | `PARSE-001` | P0 | Reject empty or invalid Quest objects instead of silently accepting {} | `MODEL-001` |
 | `PARSE-002` | P0 | Define duplicate quest IDs and reproduce intentional Go map-dedup semantics | `AUD-002` |
 | `PARSE-005` | P0 | Bound input file bytes, nesting depth, quest count, and output size | `CLI-003` |
@@ -44,6 +38,12 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 | `QA-005` | P0 | Negative end-to-end test ensures no Discord network, user-token, or reward submission | `SEC-001` |
 | `REL-002` | P0 | Build and smoke test Linux and Windows artifacts for tagged commit | `ENV-007` |
 | `REL-007` | P0 | Document artifact retention and last-verified commit instead of stale EXE links | `ENV-004` |
+| `STATUS-010` | P0 | Validate completion/enrollment/claim timestamps instead of nonempty-string truthiness | `STATE-001` |
+| `STATUS-011` | P0 | Detect impossible ordering and contradictory status timestamps | `STATUS-010` |
+| `STATUS-012` | P0 | Avoid silent unexpired treatment of malformed/missing expiration dates | `STATE-008` |
+| `STATUS-013` | P0 | Label provenance and trust for each reported milestone | `STATE-007` |
+| `STATUS-015` | P0 | Verify AND/OR groups with mixed progress, missing task statuses, and other operators | `STATE-005`, `AUD-001` |
+| `UX-002` | P0 | Version JSON output schema and keep stdout machine-readable | `CLI-001` |
 
 ## Detailed task inventory
 
@@ -62,13 +62,13 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
 | `AUD-001` | TODO | P0 | Required | Verify real task-group schema variants against sanitized fixtures | Interpret join_operator/string/numeric and config v1/v2 using vetted sanitized fixtures; unsupported representations remain explicitly unknown. | `MODEL-004` | — |
-| `AUD-002` | TODO | P0 | Required | Diff Go behavior and Rust behavior with a version-pinned contract table | For every Go state/filter/dispatcher method, identify exact Rust behavior, intentional differences, and expected offline fixture outputs. | `INV-002` | — |
-| `AUD-003` | TODO | P0 | Required | Resolve duplicate Rust project ownership | Document and enforce rust/go-quest-port as the only active code path; archive or explicitly label rust/quest-audit-cli as nonshippable research to prevent agents editing it by mistake. | — | — |
-| `AUD-006` | TODO | P0 | Required | Inventory original feature claims versus actually evidenced operation | Matrix must distinguish source handler, precondition, server confirmation, and real-world verification; no handler or README claim may imply supported engagement. | `INV-003` | — |
-| `AUD-004` | TODO | P1 | Required | Audit source links, file map, and documentation consistency | Automated check verifies tracked relative markdown links, source-file mapping, and no unresolved placeholder file paths presented as implemented. | `DOC-002` | — |
+| `AUD-002` | PARTIAL | P0 | Required | Diff Go behavior and Rust behavior with a version-pinned contract table | For every Go state/filter/dispatcher method, identify exact Rust behavior, intentional differences, and expected offline fixture outputs. | `INV-002` | `migration/GAP-AUDIT.md` |
+| `AUD-003` | DONE | P0 | Required | Resolve duplicate Rust project ownership | Document and enforce rust/go-quest-port as the only active code path; archive or explicitly label rust/quest-audit-cli as nonshippable research to prevent agents editing it by mistake. | — | `rust/quest-audit-cli/README.md` |
+| `AUD-006` | DONE | P0 | Required | Inventory original feature claims versus actually evidenced operation | Matrix must distinguish source handler, precondition, server confirmation, and real-world verification; no handler or README claim may imply supported engagement. | `INV-003` | `migration/CAPABILITY-CONTRACT.md` |
+| `AUD-004` | PARTIAL | P1 | Required | Audit source links, file map, and documentation consistency | Automated check verifies tracked relative markdown links, source-file mapping, and no unresolved placeholder file paths presented as implemented. | `DOC-002` | `migration/check_links.py` |
 | `AUD-005` | TODO | P1 | Required | Prevent drift between Rust task families and data/task-types.json | Add a deterministic test or generator comparing recognized identifiers and deprecated tags against catalog with a pinned interpretation. | `MODEL-005` | — |
-| `AUD-008` | TODO | P1 | Required | Document upstream code/license provenance and version baselines | Record upstream Git SHA, original Go dependencies, Rust toolchain minimum, scoped license obligations, and evidence for each third-party claim. | `ENV-009` | — |
-| `AUD-007` | TODO | P2 | Optional/excluded | Clean literal escaped newline sequences and stale links in root documentation | Root README headings, relative links and status statements render correctly on GitHub; targeted formatting check verifies no literal '\n\n' artifacts in prose. | `DOC-001` | — |
+| `AUD-008` | PARTIAL | P1 | Required | Document upstream code/license provenance and version baselines | Record upstream Git SHA, original Go dependencies, Rust toolchain minimum, scoped license obligations, and evidence for each third-party claim. | `ENV-009` | `migration/SOURCE-BASELINE.md` |
+| `AUD-007` | DONE | P2 | Optional/excluded | Clean literal escaped newline sequences and stale links in root documentation | Root README headings, relative links and status statements render correctly on GitHub; targeted formatting check verifies no literal '\n\n' artifacts in prose. | `DOC-001` | `README.md` |
 
 ### Build
 
@@ -188,13 +188,13 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
-| `QA-001` | TODO | P0 | Required | Maintain test-to-requirement traceability for all release-gating tasks | Every release-gate task has test file/case ID or a verified non-code acceptance artifact; CI checks missing test mapping. | `TEST-002` | — |
+| `QA-001` | PARTIAL | P0 | Required | Maintain test-to-requirement traceability for all release-gating tasks | Every release-gate task has test file/case ID or a verified non-code acceptance artifact; CI checks missing test mapping. | `TEST-002` | `migration/TEST-MATRIX.md` |
 | `QA-003` | TODO | P0 | Required | Golden CLI snapshots with deterministic fixture time and text/JSON outputs | Committed expected outputs compare identically on Windows/Linux with normalized paths/timezones; fixture changes reviewed. | `STATUS-016`, `UX-002` | — |
 | `QA-005` | TODO | P0 | Required | Negative end-to-end test ensures no Discord network, user-token, or reward submission | Offline CLI works with network blocked and denies user-token operation flags; evidence proves no credential requirement. | `SEC-001` | — |
 | `QA-002` | TODO | P1 | Required | Property tests and fuzz harness for schema and untrusted JSON | Fuzz/property tests demonstrate no panics and stable unknown/invalid classification with bounded synthetic inputs; CI smoke-level fuzz schedule specified. | `PARSE-005` | — |
 | `QA-004` | TODO | P1 | Required | Stress test duplicate IDs, 100k mock tasks, large values and empty lists | Test resource limits, correct ordering, duplicate handling and no panic on synthetic large/empty documents. | `PARSE-005`, `PARSE-002` | — |
 | `QA-007` | TODO | P1 | Required | Regression corpus for source-level failures in related Go/Python/TS projects | Each known false-success, infinite retry, stale status and conditional EventEmitter case has a synthetic input and expected safe diagnostic. | `TEST-003` | — |
-| `QA-008` | TODO | P1 | Required | Test tracker checker itself against malformed manifests | Unit tests confirm checker rejects duplicate IDs, broken deps/cycles, stale Markdown, invalid statuses and nonexistent path evidence appropriately. | `OPS-002` | — |
+| `QA-008` | DONE | P1 | Required | Test tracker checker itself against malformed manifests | Unit tests confirm checker rejects duplicate IDs, broken deps/cycles, stale Markdown, invalid statuses and nonexistent path evidence appropriately. | `OPS-002` | `migration/test_check_progress.py` |
 | `QA-006` | TODO | P2 | Optional/excluded | Reproducible CPU/RAM performance and binary-size measurements | Benchmark setup, platform/hardware, time/memory and reproducible input sets published; no speculative improvement claims. | `TEST-005` | — |
 
 ### Security
@@ -210,7 +210,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 |---|---|---|---|---|---|---|---|
 | `REL-002` | TODO | P0 | Required | Build and smoke test Linux and Windows artifacts for tagged commit | Both platform binaries built on tag, rerun smoke tests against artifacts, record target and checksums. | `ENV-007` | — |
 | `REL-007` | TODO | P0 | Required | Document artifact retention and last-verified commit instead of stale EXE links | README and tracker state which Git commit each binary represents, link stable release or note expiry; no latest-success ambiguity. | `ENV-004` | — |
-| `REL-008` | TODO | P0 | Required | Create final release readiness checklist with stop conditions | Must-pass checklist covers tests, release source, schema conformance, policy scope, licenses, docs, reproducibility and rollback. | `ENV-008` | — |
+| `REL-008` | DONE | P0 | Required | Create final release readiness checklist with stop conditions | Must-pass checklist covers tests, release source, schema conformance, policy scope, licenses, docs, reproducibility and rollback. | `ENV-008` | `migration/RELEASE-GATES.md` |
 | `REL-001` | TODO | P1 | Required | Pin rust-toolchain, MSRV and target architecture policy | rust-toolchain.toml or documented MSRV consistent with CI; linux/windows target triples and version bump policy explicit. | `ENV-005` | — |
 | `REL-003` | TODO | P1 | Required | Publish versioned release notes, SHA256 and release assets | A durable GitHub release (not expiring Actions artifacts only) with checksum manifest, notes, limitations and reproducible tag. | `ENV-008` | — |
 | `REL-004` | TODO | P1 | Required | Harden CI permissions, action pinning and dependency updates | Set least-privilege permissions, avoid broad tokens, pin actions or document version policy, scope PR workflows and dependabot policy. | `ENV-006` | — |
@@ -221,14 +221,14 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
-| `OPS-001` | TODO | P0 | Required | Regenerate Markdown task rows automatically from canonical JSON | Adding/removing a task ID through JSON and --write updates whole table, phase headings, counts without manual copying, preserving existing curated prose. | `DOC-004` | — |
-| `OPS-002` | TODO | P0 | Required | Validate expanded tracker schema, dependencies, cycles, and priorities | Checker enforces required fields, unique IDs, permitted statuses/P0-P3, release_gate flags, DAG dependencies and consistent summaries. | `DOC-004` | — |
+| `OPS-001` | DONE | P0 | Required | Regenerate Markdown task rows automatically from canonical JSON | Adding/removing a task ID through JSON and --write updates whole table, phase headings, counts without manual copying, preserving existing curated prose. | `DOC-004` | `migration/check_progress.py` |
+| `OPS-002` | DONE | P0 | Required | Validate expanded tracker schema, dependencies, cycles, and priorities | Checker enforces required fields, unique IDs, permitted statuses/P0-P3, release_gate flags, DAG dependencies and consistent summaries. | `DOC-004` | `migration/check_progress.py` |
 | `OPS-003` | TODO | P0 | Required | Evidence must identify tested commit or immutable file and not just a claim | Tracker records verification date, commit/run/source and CI status; checker warns on unverified or outdated 'done' reports. | `OPS-002` | — |
-| `OPS-004` | TODO | P0 | Required | Summarize release-gating versus optional tasks separately | Dashboard computes open release blockers from task metadata; excluded and optional tasks do not distort readiness percentage. | `OPS-002` | — |
-| `OPS-006` | TODO | P0 | Required | Provide one copy-paste next-session AI handoff with task order | Session entry names files, branch, actual status, top five dependencies, exact verification commands, and completion reporting format. | `DOC-003` | — |
-| `OPS-005` | TODO | P1 | Required | Maintain architecture decision log and unresolved assumptions | ADR file records exact decision/rationale/evidence for source compatibility, offline-only scope, crate choices and stage changes. | `AUD-002` | — |
-| `OPS-007` | TODO | P1 | Required | Check markdown links and declared implemented paths in CI | CI catches broken repo-relative links and evidence paths marked as implemented; designed to avoid false failures for proposed paths. | `AUD-004` | — |
-| `OPS-008` | TODO | P2 | Optional/excluded | PR/issue template requires task ID, tests, tracker update and residual risk | GitHub templates prompt authors for task IDs, evidence on current commit, docs status, policy scope and pending blockers. | `DOC-003` | — |
+| `OPS-004` | DONE | P0 | Required | Summarize release-gating versus optional tasks separately | Dashboard computes open release blockers from task metadata; excluded and optional tasks do not distort readiness percentage. | `OPS-002` | `migration/check_progress.py` |
+| `OPS-006` | DONE | P0 | Required | Provide one copy-paste next-session AI handoff with task order | Session entry names files, branch, actual status, top five dependencies, exact verification commands, and completion reporting format. | `DOC-003` | `migration/START-HERE.md` |
+| `OPS-005` | DONE | P1 | Required | Maintain architecture decision log and unresolved assumptions | ADR file records exact decision/rationale/evidence for source compatibility, offline-only scope, crate choices and stage changes. | `AUD-002` | `migration/DECISIONS.md` |
+| `OPS-007` | DONE | P1 | Required | Check markdown links and declared implemented paths in CI | CI catches broken repo-relative links and evidence paths marked as implemented; designed to avoid false failures for proposed paths. | `AUD-004` | `migration/check_links.py` |
+| `OPS-008` | DONE | P2 | Optional/excluded | PR/issue template requires task ID, tests, tracker update and residual risk | GitHub templates prompt authors for task IDs, evidence on current commit, docs status, policy scope and pending blockers. | `DOC-003` | `.github/pull_request_template.md` |
 
 ### Docs
 
