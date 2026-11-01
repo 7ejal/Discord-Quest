@@ -148,14 +148,14 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": "",
+      "notes": "Previously passed Linux GitHub Actions; archived historical evidence. Active tests run only on main-server.",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": false
     },
     {
       "id": "ENV-004",
       "phase": "build",
-      "title": "Windows EXE build, smoke test and artifact passed",
+      "title": "Historical Windows EXE CI verification (retired platform)",
       "status": "done",
       "go_source": [
         ".github/workflows/*"
@@ -169,9 +169,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888/artifacts/13063362600"
       ],
       "depends_on": [],
-      "notes": "",
+      "notes": "Done is historical only; Windows is intentionally unsupported after Linux-only decision. This record is not a Linux release gate.",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": false
     },
     {
       "id": "ENV-005",
@@ -222,27 +222,30 @@
     {
       "id": "ENV-007",
       "phase": "build",
-      "title": "Publish Linux executable artifact",
-      "status": "todo",
+      "title": "Produce verified Linux x86_64 release candidate on main-server",
+      "status": "partial",
       "go_source": [
         ".github/workflows/*"
       ],
       "rust_paths": [
         ".github/workflows/rust-go-quest-port.yml"
       ],
-      "acceptance": "Linux release output uploaded and verified by CI.",
-      "evidence": [],
+      "acceptance": "scripts/package-linux.sh builds, tests and archives native Linux executable, includes README/NOTICE/LICENSE/build-info and checksums; server artifact path, SHA256 and executable dependencies verified.",
+      "evidence": [
+        "scripts/test-linux.sh",
+        "scripts/package-linux.sh"
+      ],
       "depends_on": [
         "ENV-003"
       ],
-      "notes": "",
+      "notes": "Scripts written. Release candidate must still pass on main-server. GitHub publication is not implied.",
       "priority": "P2",
       "required_for_release": true
     },
     {
       "id": "ENV-008",
       "phase": "build",
-      "title": "Automated tagged releases and checksums",
+      "title": "Optional tagged Linux release publication and checksums",
       "status": "todo",
       "go_source": [
         ".github/workflows/*"
@@ -250,21 +253,21 @@
       "rust_paths": [
         ".github/workflows/"
       ],
-      "acceptance": "Tagged release uploads signed or checksum-verified Windows/Linux artifacts with release notes.",
+      "acceptance": "If explicitly publishing, attach the main-server-tested Linux archive and matching SHA256 to a versioned public GitHub release. Do not invent asset URLs or claim a local file is public.",
       "evidence": [],
       "depends_on": [
         "ENV-004",
         "ENV-007"
       ],
-      "notes": "",
+      "notes": "Distribution is separate from building on main-server. No GitHub-hosted CI.",
       "priority": "P2",
       "required_for_release": false
     },
     {
       "id": "ENV-009",
       "phase": "build",
-      "title": "Confirm upstream license compatibility and attribution",
-      "status": "todo",
+      "title": "Preserve original MIT licensing and attribution",
+      "status": "done",
       "go_source": [
         "LICENSE",
         "README.md"
@@ -274,12 +277,16 @@
         "NOTICE",
         "README.md"
       ],
-      "acceptance": "Verify actual Go upstream license terms, preserve notices and document any copied code; no ungrounded relicensing.",
-      "evidence": [],
+      "acceptance": "Retain MIT license with original yeweroooo copyright in Linux archives; NOTICE identifies pinned original Go source and redistribution limitations.",
+      "evidence": [
+        "LICENSE",
+        "NOTICE",
+        "migration/SOURCE-BASELINE.md"
+      ],
       "depends_on": [
         "INV-001"
       ],
-      "notes": "",
+      "notes": "Original upstream MIT license text included verbatim; NOTICE identifies pinned Go revision.",
       "priority": "P2",
       "required_for_release": true
     },
@@ -287,7 +294,7 @@
       "id": "ENV-010",
       "phase": "build",
       "title": "Create optional Windows .bat launcher",
-      "status": "todo",
+      "status": "excluded",
       "go_source": [
         "README.md"
       ],
@@ -299,7 +306,7 @@
       "depends_on": [
         "ENV-004"
       ],
-      "notes": "",
+      "notes": "Windows-only task intentionally retired by user request; Linux x86_64 CLI and main-server-only tests are the current platform scope.",
       "priority": "P2",
       "required_for_release": false
     },
@@ -1010,9 +1017,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": "The previously used word 'reproducible' referred to successful CI runs, NOT to lockfile-pinned bit-for-bit reproducibility. Cargo.lock absent at audit.",
+      "notes": "Historical cross-platform CI evidence only; active validation exclusively uses Linux main-server.",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": false
     },
     {
       "id": "TEST-005",
@@ -1162,13 +1169,13 @@
       "acceptance": "A local checker or generator validates IDs/statuses/dependencies and summary counts; CI runs it.",
       "evidence": [
         "migration/check_progress.py",
-        ".github/workflows/rust-go-quest-port.yml",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41258881189"
+        "migration/PROGRESS.md",
+        "scripts/test-linux.sh"
       ],
       "depends_on": [
         "DOC-002"
       ],
-      "notes": "Python stdlib script validates IDs, statuses, evidence, dependencies, task rows and summary counts. --write updates current IDs/counts; CI check step passed in Linux test job for run 41258881189.",
+      "notes": "Tracker generated from JSON and checked by scripts/test-linux.sh on main-server. Hosted Actions no longer active.",
       "priority": "P1",
       "required_for_release": true
     },
@@ -1968,9 +1975,9 @@
       "id": "UX-005",
       "phase": "ux",
       "title": "Test Windows path quoting, Unicode and terminal encoding behavior",
-      "status": "todo",
+      "status": "excluded",
       "priority": "P1",
-      "required_for_release": true,
+      "required_for_release": false,
       "go_source": [
         "main.go"
       ],
@@ -1983,7 +1990,7 @@
       "depends_on": [
         "PARSE-008"
       ],
-      "notes": ""
+      "notes": "Windows-only task intentionally retired by user request; Linux x86_64 CLI and main-server-only tests are the current platform scope."
     },
     {
       "id": "UX-006",
@@ -2117,7 +2124,7 @@
       "depends_on": [
         "SEC-001"
       ],
-      "notes": ""
+      "notes": "Check Linux CLI without network access where a safe process-local network isolation test is available. Do not change server firewall, Docker or system-wide network."
     },
     {
       "id": "QA-006",
@@ -2188,8 +2195,8 @@
     {
       "id": "REL-001",
       "phase": "release",
-      "title": "Pin rust-toolchain, MSRV and target architecture policy",
-      "status": "todo",
+      "title": "Pin Linux x86_64 Rust toolchain and document supported target",
+      "status": "partial",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2198,17 +2205,20 @@
       "rust_paths": [
         "rust-toolchain.toml"
       ],
-      "acceptance": "rust-toolchain.toml or documented MSRV consistent with CI; linux/windows target triples and version bump policy explicit.",
-      "evidence": [],
+      "acceptance": "rust-toolchain.toml pins compiler 1.98.1, server test script refuses silent toolchain installations and checks x86_64 Linux; verify running correctly on main-server.",
+      "evidence": [
+        "rust-toolchain.toml",
+        "scripts/test-linux.sh"
+      ],
       "depends_on": [
         "ENV-005"
       ],
-      "notes": ""
+      "notes": "Pinned toolchain/script created; main-server build is pending."
     },
     {
       "id": "REL-002",
       "phase": "release",
-      "title": "Build and smoke test Linux and Windows artifacts for tagged commit",
+      "title": "Build, test and package native Linux release candidate on main-server",
       "status": "todo",
       "priority": "P0",
       "required_for_release": true,
@@ -2216,19 +2226,21 @@
         ".github/workflows/*"
       ],
       "rust_paths": [
-        ".github/workflows/release.yml"
+        "scripts/test-linux.sh",
+        "scripts/package-linux.sh",
+        "dist/linux-x86_64/"
       ],
-      "acceptance": "Both platform binaries built on tag, rerun smoke tests against artifacts, record target and checksums.",
+      "acceptance": "Linux x86_64 archive passes main-server's full test-linux.sh checks, executes extracted binary, records exact Git SHA, compiler and SHA256; no Windows or hosted CI.",
       "evidence": [],
       "depends_on": [
         "ENV-007"
       ],
-      "notes": ""
+      "notes": "No Windows build needed. Publication and release tag handled separately by REL-003."
     },
     {
       "id": "REL-003",
       "phase": "release",
-      "title": "Publish versioned release notes, SHA256 and release assets",
+      "title": "Publish versioned Linux x86_64 release with checksum",
       "status": "todo",
       "priority": "P1",
       "required_for_release": true,
@@ -2236,19 +2248,20 @@
         "README.md"
       ],
       "rust_paths": [
-        ".github/workflows/release.yml"
+        "scripts/package-linux.sh",
+        "README.md"
       ],
-      "acceptance": "A durable GitHub release (not expiring Actions artifacts only) with checksum manifest, notes, limitations and reproducible tag.",
+      "acceptance": "An actual downloadable Linux archive and checksum are available at a verified public release URL, source SHA matches verified main-server test, provenance and limitations documented.",
       "evidence": [],
       "depends_on": [
         "ENV-008"
       ],
-      "notes": ""
+      "notes": "An archive produced on main-server is not a public GitHub release. This task stays open unless a real publication is confirmed."
     },
     {
       "id": "REL-004",
       "phase": "release",
-      "title": "Harden CI permissions, action pinning and dependency updates",
+      "title": "Harden main-server-only test execution and dependency review",
       "status": "todo",
       "priority": "P1",
       "required_for_release": true,
@@ -2256,14 +2269,16 @@
         ".github/workflows/*"
       ],
       "rust_paths": [
-        ".github/workflows/rust-go-quest-port.yml"
+        "scripts/test-linux.sh",
+        "scripts/package-linux.sh",
+        "migration/LINUX-ONLY.md"
       ],
-      "acceptance": "Set least-privilege permissions, avoid broad tokens, pin actions or document version policy, scope PR workflows and dependabot policy.",
+      "acceptance": "No GitHub-hosted or Windows runners. Main-server-only scripts are bounded, do not collect secrets, install packages, alter network services or run untrusted pull requests; dependencies/updates reviewed.",
       "evidence": [],
       "depends_on": [
         "ENV-006"
       ],
-      "notes": ""
+      "notes": "Hosted Actions removed. Validate resource limits and dependency audit on main-server; do not install persistent runner."
     },
     {
       "id": "REL-005",
@@ -2291,7 +2306,7 @@
     {
       "id": "REL-006",
       "phase": "release",
-      "title": "Check reproducible locked builds and supply-chain provenance",
+      "title": "Verify locked Linux source build, build-info and artifact hashes",
       "status": "todo",
       "priority": "P1",
       "required_for_release": true,
@@ -2300,9 +2315,10 @@
       ],
       "rust_paths": [
         "Cargo.lock",
-        ".github/workflows/"
+        "rust-toolchain.toml",
+        "scripts/package-linux.sh"
       ],
-      "acceptance": "Build with --locked from clean checkout, checksum input lockfile, document signing/provenance limitation.",
+      "acceptance": "Exact Rust version/source SHA/Cargo.lock recorded; main-server --locked build succeeds; archive and embedded file SHA256SUMS verified after extraction.",
       "evidence": [],
       "depends_on": [
         "ENV-005",
@@ -2313,7 +2329,7 @@
     {
       "id": "REL-007",
       "phase": "release",
-      "title": "Document artifact retention and last-verified commit instead of stale EXE links",
+      "title": "Document Linux artifact provenance and retention",
       "status": "partial",
       "priority": "P0",
       "required_for_release": true,
@@ -2324,15 +2340,16 @@
         "README.md",
         "migration/progress.json"
       ],
-      "acceptance": "README and tracker state which Git commit each binary represents, link stable release or note expiry; no latest-success ambiguity.",
+      "acceptance": "README and build manifest show tested commit, Linux architecture, local archive/checksum path and public-vs-private availability; no stale Windows EXE link marketed as current download.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01.md",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+        "README.md",
+        "migration/LINUX-ONLY.md",
+        "scripts/package-linux.sh"
       ],
       "depends_on": [
         "ENV-004"
       ],
-      "notes": "Partial improvements verified; remaining acceptance criteria must be tested separately."
+      "notes": "Linux-only README updated. Still need successfully built server archive and checksum."
     },
     {
       "id": "REL-008",
@@ -2777,9 +2794,9 @@
       "id": "REL-009",
       "phase": "release",
       "title": "Verify native Windows EXE dependencies on a clean target machine",
-      "status": "todo",
+      "status": "excluded",
       "priority": "P1",
-      "required_for_release": true,
+      "required_for_release": false,
       "go_source": [
         "README.md",
         "go.mod"
@@ -2793,7 +2810,7 @@
       "depends_on": [
         "REL-002"
       ],
-      "notes": ""
+      "notes": "Windows-only task intentionally retired by user request; Linux x86_64 CLI and main-server-only tests are the current platform scope."
     },
     {
       "id": "DOC-005",
@@ -2822,8 +2839,8 @@
     {
       "id": "DOC-006",
       "phase": "docs",
-      "title": "Document installation, common CLI errors and Windows troubleshooting",
-      "status": "todo",
+      "title": "Document Linux CLI installation, usage and troubleshooting",
+      "status": "partial",
       "priority": "P2",
       "required_for_release": false,
       "go_source": [
@@ -2832,13 +2849,16 @@
       "rust_paths": [
         "docs/TROUBLESHOOTING.md"
       ],
-      "acceptance": "Published guide covers native EXE/OS architectures, trusted release verification, missing file, malformed input, invalid flags, Unicode paths and artifact expiry without promising live Discord functionality.",
-      "evidence": [],
+      "acceptance": "Linux x86_64 instructions cover build/run/inspect/stdin/JSON, runtime shared libraries, invalid inputs, source trust and safe Linux artifact verification.",
+      "evidence": [
+        "README.md",
+        "migration/LINUX-ONLY.md"
+      ],
       "depends_on": [
         "REL-007",
         "UX-004"
       ],
-      "notes": ""
+      "notes": "Linux instructions present; troubleshooting and verified artifact dependencies pending."
     },
     {
       "id": "OPS-009",
@@ -2869,5 +2889,15 @@
     }
   ],
   "migration_mode": "native offline Quest analysis; excludes user-account selfbot impersonation and engagement spoofing",
-  "release_semantics": "done/partial/todo denote engineering evidence. Required_for_release gates apply only to approved offline scope; excluded tasks are not release blockers. A historical green CI run does not validate later commits."
+  "release_semantics": "Linux x86_64 offline inspector only. Main-server scripts are sole active tests/build process; historical Windows/GitHub Actions evidence does not establish current release readiness. Excluded items are not release blockers.",
+  "platform_policy": {
+    "operating_system": "Linux",
+    "architecture": "x86_64",
+    "interface": "CLI only",
+    "testing": "main-server only",
+    "hosted_ci_enabled": false,
+    "windows_supported": false,
+    "authoritative_document": "migration/LINUX-ONLY.md",
+    "decision_date": "2026-11-01"
+  }
 }
