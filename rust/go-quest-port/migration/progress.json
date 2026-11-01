@@ -8,12 +8,14 @@
     "commit": "352d7f457c9511bc9e7c9b940a71012bfb47572e"
   },
   "verification": {
-    "kind": "historical_ci",
-    "run_id": 41256646888,
+    "kind": "source_scoped_ci",
+    "run_id": 41270140534,
     "result": "success",
-    "linux_test_count": 15,
-    "windows_binary_artifact_id": 13063362600,
-    "note": "Verified on an earlier code commit; later documentation commits are not automatically covered."
+    "head_sha": "36e386b7f0d4ddef6f3743f997ec3bc5830e525c",
+    "linux_test_count": 23,
+    "windows_binary_artifact_id": 13068464279,
+    "main_server_test_record": "migration/MAIN-SERVER-CI-2026-11-01.md",
+    "note": "Subsequent documentation changes require their own CI."
   },
   "status_meanings": {
     "done": "Implemented or documented, with listed evidence. Historical build evidence may not cover later changes.",
@@ -197,7 +199,7 @@
       "id": "ENV-006",
       "phase": "build",
       "title": "Add fmt, clippy and dependency audit checks",
-      "status": "todo",
+      "status": "partial",
       "go_source": [
         ".github"
       ],
@@ -205,11 +207,14 @@
         ".github/workflows/rust-go-quest-port.yml"
       ],
       "acceptance": "CI fails on cargo fmt --check and clippy -D warnings; audit policy documented.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+      ],
       "depends_on": [
         "ENV-003"
       ],
-      "notes": "",
+      "notes": "Partial improvements verified; remaining acceptance criteria must be tested separately.",
       "priority": "P2",
       "required_for_release": true
     },
@@ -920,7 +925,7 @@
     {
       "id": "TEST-001",
       "phase": "tests",
-      "title": "Fifteen synthetic Rust unit tests passing",
+      "title": "Rust synthetic regression suite passing (23 tests)",
       "status": "done",
       "go_source": [
         "all"
@@ -928,9 +933,11 @@
       "rust_paths": [
         "src/lib.rs"
       ],
-      "acceptance": "15 unit tests passed in GitHub Actions run 41256646888.",
+      "acceptance": "23 Rust library tests passed on commit 36e386b7f0d4ddef6f3743f997ec3bc5830e525c.",
       "evidence": [
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+        "src/lib.rs",
+        "migration/MAIN-SERVER-CI-2026-11-01.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
       ],
       "depends_on": [],
       "notes": "",
@@ -1509,7 +1516,7 @@
       "id": "PARSE-005",
       "phase": "parser",
       "title": "Bound input file bytes, nesting depth, quest count, and output size",
-      "status": "todo",
+      "status": "partial",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1521,11 +1528,14 @@
         "src/lib.rs"
       ],
       "acceptance": "Oversized/deep/wide synthetic documents fail cleanly with typed errors and no unbounded allocations; limits are configurable/documented.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+      ],
       "depends_on": [
         "CLI-003"
       ],
-      "notes": ""
+      "notes": "Partial improvements verified; remaining acceptance criteria must be tested separately."
     },
     {
       "id": "PARSE-006",
@@ -1703,7 +1713,7 @@
       "id": "STATUS-013",
       "phase": "state",
       "title": "Label provenance and trust for each reported milestone",
-      "status": "todo",
+      "status": "partial",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1714,11 +1724,14 @@
         "src/main.rs"
       ],
       "acceptance": "Clearly separate locally supplied, untrusted JSON fields from authenticated server observations. Never call a completed_at field 'server-verified' unless its provenance is authenticated; report source and trust level on each verdict.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+      ],
       "depends_on": [
         "STATE-007"
       ],
-      "notes": "The current CLI only reads local files and cannot authenticate that JSON originated with Discord. Current comments and verdict names overstate source authority."
+      "notes": "Partial improvements verified; remaining acceptance criteria must be tested separately."
     },
     {
       "id": "STATUS-014",
@@ -1850,7 +1863,7 @@
       "id": "UX-002",
       "phase": "ux",
       "title": "Version JSON output schema and keep stdout machine-readable",
-      "status": "todo",
+      "status": "partial",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1861,11 +1874,14 @@
         "tests/cli_golden.rs"
       ],
       "acceptance": "--json emits exactly one documented valid JSON result on stdout with schema_version, errors on stderr and deterministic field naming; golden tests pass.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+      ],
       "depends_on": [
         "CLI-001"
       ],
-      "notes": ""
+      "notes": "Partial improvements verified; remaining acceptance criteria must be tested separately."
     },
     {
       "id": "UX-003",
@@ -2251,7 +2267,7 @@
       "id": "REL-007",
       "phase": "release",
       "title": "Document artifact retention and last-verified commit instead of stale EXE links",
-      "status": "todo",
+      "status": "partial",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2262,11 +2278,14 @@
         "migration/progress.json"
       ],
       "acceptance": "README and tracker state which Git commit each binary represents, link stable release or note expiry; no latest-success ambiguity.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+      ],
       "depends_on": [
         "ENV-004"
       ],
-      "notes": ""
+      "notes": "Partial improvements verified; remaining acceptance criteria must be tested separately."
     },
     {
       "id": "REL-008",
@@ -2705,7 +2724,7 @@
       "id": "DOC-005",
       "phase": "docs",
       "title": "Document provenance limits and safe local JSON input workflows",
-      "status": "todo",
+      "status": "partial",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2716,11 +2735,14 @@
         "migration/SPEC.md"
       ],
       "acceptance": "README explains supported offline input forms and how to create/test sanitized synthetic fixtures without scraping or exposing personal user tokens; distinguishes reported data from independently verified server status.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+      ],
       "depends_on": [
         "STATUS-013"
       ],
-      "notes": ""
+      "notes": "Partial improvements verified; remaining acceptance criteria must be tested separately."
     },
     {
       "id": "DOC-006",
