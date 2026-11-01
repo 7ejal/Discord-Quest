@@ -238,7 +238,9 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
                         warnings.push(format!("Task {name} has an expired reported heartbeat."));
                     }
                     if parse_time(&heartbeat.last_beat_at).is_some_and(|beat| beat > expiry) {
-                        warnings.push(format!("Task {name} reports heartbeat expiry before its last beat."));
+                        warnings.push(format!(
+                            "Task {name} reports heartbeat expiry before its last beat."
+                        ));
                     }
                 }
             }
