@@ -92,10 +92,17 @@ fn run() -> Result<(), Box<dyn Error>> {
         report.analyzed, report.go_filter_valid, report.go_filter_redeemable
     );
     if let Some(blocked) = report.enrollment_blocked_until {
-        println!("Enrollment blocked until (source data): {}", escape_terminal(&blocked));
+        println!(
+            "Enrollment blocked until (source data): {}",
+            escape_terminal(&blocked)
+        );
     }
     for quest in report.assessments {
-        println!("\n{} ({})", escape_terminal(&quest.name), escape_terminal(&quest.quest_id));
+        println!(
+            "\n{} ({})",
+            escape_terminal(&quest.name),
+            escape_terminal(&quest.quest_id)
+        );
         println!(
             "  status: {:?}; operator: {}",
             quest.verdict, quest.join_operator
@@ -107,7 +114,11 @@ fn run() -> Result<(), Box<dyn Error>> {
             let goal = task.goal.map_or_else(|| "?".to_owned(), |v| v.to_string());
             println!(
                 "  {:26} {:>6}/{:<6} confirmed={} family={}",
-                escape_terminal(&task.task_type), value, goal, task.server_task_completed, task.family
+                escape_terminal(&task.task_type),
+                value,
+                goal,
+                task.server_task_completed,
+                task.family
             );
         }
         for warning in quest.warnings {
