@@ -1,6 +1,7 @@
 //! Linux-only offline Quest analysis. No account access or network operations.
 use chrono::{DateTime, Utc};
 use go_quest_port::{
+    live::{self, LiveError},
     manager::{try_analyze_parallel, QuestManager},
     output::{escape_terminal, LimitedWriter, MAX_OUTPUT_BYTES},
     parse_document,
@@ -19,6 +20,7 @@ enum CliError {
     Input(String),
     Io(io::Error),
     Analysis,
+    Live(LiveError),
 }
 
 impl fmt::Display for CliError {
@@ -28,6 +30,7 @@ impl fmt::Display for CliError {
             Self::Input(message) => f.write_str(message),
             Self::Io(error) => write!(f, "I/O failure ({:?})", error.kind()),
             Self::Analysis => f.write_str("Analysis failed; no partial report emitted"),
+            Self::Live(error) => write!(f, "{error}"),
         }
     }
 }
@@ -75,7 +78,8 @@ fn usage() {
          --max-input-bytes N   Lower the default 8388608-byte input cap\n\
          --max-output-bytes N  Lower the default 16777216-byte report cap\n\
          --version | --help\n\
-         No account token, network connection, game spoofing, or reward claims."
+         Live commands are explicit and read-only: public config or OAuth2 identity.\\n\\
+         No personal-session token, Quest spoofing, or reward claims."
     );
 }
 
@@ -90,6 +94,50 @@ fn run() -> Result<(), CliError> {
             usage();
         } else {
             println!("go-quest-port {}", env!("CARGO_PKG_VERSION"));
+        }
+        return Ok(());
+    }
+    if command == "quest-config" {
+        let quest_id = args
+            .next()
+            .ok_or(CliError::Usage("Missing public Quest ID"))?;
+        let quest_id = quest_id
+            .to_str()
+            .ok_or(CliError::Usage("Quest ID must be ASCII digits"))?;
+        let json = match args.next() {
+            None => false,
+            Some(flag) if flag == "--json" && args.next().is_none() => true,
+            _ => return Err(CliError::Usage("quest-config expects <ID> [--json]")),
+        };
+        let config = live::fetch_public_quest_config(quest_id).map_err(CliError::Live)?;
+        if json {
+            let serialized = serde_json::to_string_pretty(&config)
+                .map_err(|_| CliError::Live(LiveError::InvalidResponse))?;
+            println!("{serialized}");
+        } else {
+            println!("Public Quest config (not account progress): {}", config.quest_id);
+            println!("Title: {}", config.title.as_deref().unwrap_or("not supplied"));
+            println!("Expires: {}", config.expires_at.as_deref().unwrap_or("not supplied"));
+            println!("Task types: {}", config.task_types.join(", "));
+        }
+        return Ok(());
+    }
+    if command == "oauth-check" {
+        let json = match args.next() {
+            Some(flag) if flag == "--oauth-token-stdin" => match args.next() {
+                None => false,
+                Some(flag) if flag == "--json" && args.next().is_none() => true,
+                _ => return Err(CliError::Usage("oauth-check expects --oauth-token-stdin [--json]")),
+            },
+            _ => return Err(CliError::Usage("oauth-check requires --oauth-token-stdin")),
+        };
+        let check = live::check_oauth_identity_from_stdin().map_err(CliError::Live)?;
+        if json {
+            let serialized = serde_json::to_string_pretty(&check)
+                .map_err(|_| CliError::Live(LiveError::InvalidResponse))?;
+            println!("{serialized}");
+        } else {
+            println!("OAuth2 identity verified. This does not grant Quest access.");
         }
         return Ok(());
     }
@@ -301,6 +349,7 @@ fn main() {
             CliError::Input(_) => 65,
             CliError::Io(_) => 74,
             CliError::Analysis => 70,
+            CliError::Live(_) => 69,
         });
     }
 }
