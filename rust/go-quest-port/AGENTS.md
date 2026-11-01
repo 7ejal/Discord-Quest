@@ -1,5 +1,7 @@
 # Instructions for AI agents working in rust/go-quest-port
 
+**Start with [migration/START-HERE.md](migration/START-HERE.md).** The code-aware [GAP-AUDIT.md](migration/GAP-AUDIT.md), [TEST-MATRIX.md](migration/TEST-MATRIX.md), [DECISIONS.md](migration/DECISIONS.md), and [RELEASE-GATES.md](migration/RELEASE-GATES.md) are mandatory. This is the **only active Rust CLI**, not the sibling `rust/quest-audit-cli`.
+
 **Before editing code or claiming completion, read in this order:**
 
 1. [migration/PROGRESS.md](migration/PROGRESS.md) for human-readable current status.
