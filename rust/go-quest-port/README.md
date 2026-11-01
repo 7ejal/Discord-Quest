@@ -99,7 +99,7 @@ JSON preserves report strings for machine processing.
 
 ## Requested live HTTP / Go parity work (not implemented)
 
-The user requested Go-style raw `Authorization` header account access and live Quest inspection. This is tracked under [GO-LIVE-HTTP-REQUEST.md](migration/GO-LIVE-HTTP-REQUEST.md) and separate pending `AUD-009`, `SEC-005`, `NET-005`–`NET-009`, `QA-011`, `AUD-010` tasks. **The current executable still has no HTTP or account login command.** Current offline test results do not verify real Discord account or Quest functionality. Supported authorization and service rules must be checked before any live integration; do not send, commit or print personal tokens.
+The user requested Go-style raw `Authorization` header account access and live Quest inspection. This is tracked under [GO-LIVE-HTTP-REQUEST.md](migration/GO-LIVE-HTTP-REQUEST.md) and separate tracked `AUD-009`, `SEC-005`, `NET-005`–`NET-009`, `QA-011`, `AUD-010` tasks. Static authorization/security/parity audits are documented in [GO-HTTP-AUTH-AUDIT-2026-11-01.md](migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md) and [GO-LIVE-PARITY-DECISION-2026-11-01.md](migration/GO-LIVE-PARITY-DECISION-2026-11-01.md); they are **not** a working live client. **The current executable still has no HTTP or account login command.** Current offline test results do not verify real Discord account or Quest functionality. Supported authorization and service rules must be checked before any live integration; do not send, commit or print personal tokens.
 
 ## Verification and remaining gates
 

@@ -3091,11 +3091,13 @@
       "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
-      "status": "todo",
-      "evidence": [],
+      "status": "done",
+      "evidence": [
+        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md"
+      ],
       "priority": "P0",
       "required_for_release": false,
-      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "notes": "Pinned Go source and official developer/Discord policy audit completed 2026-11-01. This proves source observations and lack of a supported personal-token integration, not live API access.",
       "id": "AUD-009",
       "phase": "audit",
       "title": "Audit the original Go HTTP Authorization and Quest REST calls against current platform permissions",
@@ -3106,7 +3108,8 @@
       ],
       "rust_paths": [
         "migration/GO-LIVE-HTTP-REQUEST.md",
-        "migration/GO-FILE-MAP.md"
+        "migration/GO-FILE-MAP.md",
+        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md"
       ],
       "acceptance": "Produce an exact endpoint/header/request/response/provenance matrix from a pinned Go commit; verify present-day API authorization support and account/terms risk before enabling any live HTTP integration. Never assume that a private user-token API is officially supported.",
       "depends_on": [
@@ -3114,11 +3117,13 @@
       ]
     },
     {
-      "status": "todo",
-      "evidence": [],
+      "status": "done",
+      "evidence": [
+        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md"
+      ],
       "priority": "P0",
       "required_for_release": false,
-      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "notes": "Documented opt-in scoped-OAuth credential threat model, redaction/redirect/proxy/timeout boundaries and synthetic-only test plan. This is a design task, NOT implemented credential support.",
       "id": "SEC-005",
       "phase": "security",
       "title": "Design safe local credential handling for the requested Go-style account check",
@@ -3129,7 +3134,8 @@
       "rust_paths": [
         "src/main.rs",
         "src/account.rs",
-        "tests/account_security.rs"
+        "tests/account_security.rs",
+        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md"
       ],
       "acceptance": "Define opt-in credential handling and threat model; no token passed as CLI argument, printed, stored in repo, written into logs, leaked via error details, propagated across redirects or retained longer than necessary. Only synthetic tokens in tests.",
       "depends_on": [
@@ -3137,11 +3143,13 @@
       ]
     },
     {
-      "status": "todo",
-      "evidence": [],
+      "status": "done",
+      "evidence": [
+        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md"
+      ],
       "priority": "P0",
       "required_for_release": false,
-      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "notes": "Reviewed bare personal-token Go header against current official OAuth2/user docs and Discord selfbot/Quest policy. Raw personal session token not approved; OAuth2 identify is a distinct option for identity only. 200/401/403/429 cases specified but not tested live.",
       "id": "NET-005",
       "phase": "network",
       "title": "Validate proposed raw Authorization header behavior and service permission constraints",
@@ -3151,7 +3159,8 @@
       ],
       "rust_paths": [
         "migration/GO-LIVE-HTTP-REQUEST.md",
-        "migration/DECISIONS.md"
+        "migration/DECISIONS.md",
+        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md"
       ],
       "acceptance": "Record whether raw personal-account Authorization is supportable and permissible for a read-only CLI, including exact authentication semantics and denial/rate-limit responses; document risk and a supported alternative if approval is not possible. Do not claim login success without a tested implementation.",
       "depends_on": [
@@ -3183,11 +3192,13 @@
       ]
     },
     {
-      "status": "todo",
-      "evidence": [],
+      "status": "partial",
+      "evidence": [
+        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md"
+      ],
       "priority": "P0",
       "required_for_release": false,
-      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "notes": "Source-level GET /quests/@me exists, but no approved OAuth2 Quest-read scope or current authorized sanitized task-group payload was established. Endpoint/schema verification and release authorization blocked; no live request performed.",
       "id": "NET-007",
       "phase": "network",
       "title": "Verify legitimately accessible live Quest read endpoints and schema",
@@ -3199,7 +3210,8 @@
       "rust_paths": [
         "migration/GO-LIVE-HTTP-REQUEST.md",
         "migration/MODEL-COVERAGE.md",
-        "tests/fixtures/"
+        "tests/fixtures/",
+        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md"
       ],
       "acceptance": "Identify endpoints and granted access used to read Quest records; obtain only authorized, sanitized and provenance-labeled examples. If unsupported, record explicit blocker rather than relying on guessed Discord private APIs or fabricated task group operators.",
       "depends_on": [
@@ -3279,11 +3291,14 @@
       ]
     },
     {
-      "status": "todo",
-      "evidence": [],
+      "status": "done",
+      "evidence": [
+        "migration/GO-LIVE-PARITY-DECISION-2026-11-01.md",
+        "migration/GO-FILE-MAP.md"
+      ],
       "priority": "P1",
       "required_for_release": false,
-      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "notes": "Feature-by-feature Go-to-Rust disposition matrix completed from pinned source: approved offline capabilities, conditional OAuth identity, unsupported Quest ingestion and excluded spoofing/claim. Full operational Go parity is NOT complete.",
       "id": "AUD-010",
       "phase": "audit",
       "title": "Reconcile user-requested full Go parity against the supported Rust CLI capability contract",
@@ -3297,7 +3312,8 @@
       "rust_paths": [
         "migration/GO-FILE-MAP.md",
         "migration/CAPABILITY-CONTRACT.md",
-        "migration/GO-LIVE-HTTP-REQUEST.md"
+        "migration/GO-LIVE-HTTP-REQUEST.md",
+        "migration/GO-LIVE-PARITY-DECISION-2026-11-01.md"
       ],
       "acceptance": "Document every Go feature, evidence status and security/policy disposition; separate read-only API access from unsupported personal-account selfbot, spoofed rewarded activity, challenge bypass and automated claims. Never mark the full Go implementation completed from read-only success alone.",
       "depends_on": [

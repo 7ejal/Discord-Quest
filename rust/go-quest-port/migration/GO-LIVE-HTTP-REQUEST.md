@@ -31,4 +31,4 @@ The user wants the Rust CLI to accept an account credential locally and use the 
 
 Inspect the exact Go reference at commit `352d7f457c9511bc9e7c9b940a71012bfb47572e`. Start by validating design choices and writing mock-based tests, then implement approved code. Commit to GitHub, fast-forward pull to `/root/quest-rust-ci-20261101`, run `scripts/test-linux.sh` with low resource limits, and update task evidence on the tested immutable commit.
 
-**Status as of this document:** requested only; **no new live HTTP functionality implemented or tested**.
+**Status update (2026-11-01):** Protocol/security/feature audits `AUD-009`, `SEC-005`, `NET-005`, `AUD-010` are documented in [HTTP audit](GO-HTTP-AUTH-AUDIT-2026-11-01.md) and [feature parity matrix](GO-LIVE-PARITY-DECISION-2026-11-01.md). Current private Quest access remains unsupported and `NET-007` is partial/blocked. **No live HTTP functionality or account testing is implemented.**

@@ -65,3 +65,7 @@
 - Releasing compiled binaries with stable checksums and provenance (REL-002/REL-003).
 
 **AI change policy:** For every changed ADR, record why, what is implemented, relevant test IDs, code commit and tracker update. Proposed is not implemented.
+
+## ADR-013 — Raw personal-user Authorization rejected for this Rust product (2026-11-01)
+
+**State:** Reviewed. [Pinned Go HTTP audit](GO-HTTP-AUTH-AUDIT-2026-11-01.md) confirms bare personal-token header and private Quest routes; official OAuth2 `identify` supports only a distinct user-identity request. Discord's policy prohibits selfbot/client impersonation and fake Quest completion. The scope excludes Go-style raw personal credentials. Live Quest schema access remains unverified under `NET-007`; optional authorized OAuth2 account identity is a separate decision and not implemented. [Complete parity matrix](GO-LIVE-PARITY-DECISION-2026-11-01.md).
