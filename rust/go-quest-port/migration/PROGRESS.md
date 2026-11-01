@@ -25,7 +25,7 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 ## Next uncompleted high-priority release gates
 
 | ID | Priority | Blocker | Dependencies |
-|---|---|---|
+|---|---|---|---|
 | `AUD-001` | P0 | Verify real task-group schema variants against sanitized fixtures | `MODEL-004` |
 | `AUD-002` | P0 | Diff Go behavior and Rust behavior with a version-pinned contract table | `INV-002` |
 | `OPS-003` | P0 | Evidence must identify tested commit or immutable file and not just a claim | `OPS-002` |
