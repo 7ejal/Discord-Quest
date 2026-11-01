@@ -16,10 +16,14 @@ BINARY = HERE / "target" / "release" / "go-quest-port"
 AT = "2026-11-01T12:00:00Z"
 
 
-def make_fixture(n: int) -> dict:
-    return {
-        "quests": [
-            {
+def write_fixture(path: pathlib.Path, n: int) -> None:
+    # Stream records instead of materializing a huge Python list on the server.
+    with path.open("w", encoding="utf-8") as out:
+        out.write('{"quests":[')
+        for i in range(n):
+            if i:
+                out.write(",")
+            json.dump({
                 "id": f"synthetic-{i}",
                 "config": {
                     "starts_at": "2026-01-01T00:00:00Z",
@@ -27,10 +31,8 @@ def make_fixture(n: int) -> dict:
                     "task_config_v2": {"tasks": {"WATCH_VIDEO": {"target": 60}}},
                 },
                 "user_status": None,
-            }
-            for i in range(n)
-        ]
-    }
+            }, out, separators=(",", ":"))
+        out.write("]}")
 
 
 def run_case(n: int) -> None:
@@ -38,8 +40,7 @@ def run_case(n: int) -> None:
         raise ValueError("Use only the documented bounded synthetic fixture sizes")
     with tempfile.TemporaryDirectory(prefix="quest-linux-benchmark-") as temp_dir:
         fixture = pathlib.Path(temp_dir) / "synthetic.json"
-        with fixture.open("w", encoding="utf-8") as out:
-            json.dump(make_fixture(n), out, separators=(",", ":"))
+        write_fixture(fixture, n)
         size = fixture.stat().st_size
         started = time.perf_counter()
         before = resource.getrusage(resource.RUSAGE_CHILDREN)
