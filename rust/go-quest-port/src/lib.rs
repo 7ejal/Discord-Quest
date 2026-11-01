@@ -402,8 +402,9 @@ mod tests {
 
     #[test]
     fn leading_utf8_bom_is_accepted() {
-        let (records, _) = parse_quests("\u{feff}{\"id\":\"bom-1\",\"config\":{\"expires_at\":\"2030-01-01T00:00:00Z\"}}").unwrap();
-        assert_eq!(records[0].id, "bom-1");
+        let input = format!("\u{feff}{}", fixture());
+        let (records, _) = parse_quests(&input).unwrap();
+        assert_eq!(records[0].id, "demo-001");
     }
 
     #[test]

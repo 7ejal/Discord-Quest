@@ -30,6 +30,7 @@
           "numeric_goal_reached": false,
           "server_task_completed": false,
           "application_id": "fictional-game-1",
+          "application_id_source": "task_config",
           "reported_event_name": null,
           "progress_updated_at": null,
           "heartbeat_last_beat_at": null,
@@ -44,6 +45,7 @@
           "numeric_goal_reached": true,
           "server_task_completed": true,
           "application_id": "fictional-app-1",
+          "application_id_source": "campaign_application",
           "reported_event_name": null,
           "progress_updated_at": null,
           "heartbeat_last_beat_at": null,
@@ -76,6 +78,7 @@
           "numeric_goal_reached": true,
           "server_task_completed": true,
           "application_id": "fictional-app-2",
+          "application_id_source": "campaign_application",
           "reported_event_name": null,
           "progress_updated_at": null,
           "heartbeat_last_beat_at": null,
@@ -90,6 +93,7 @@
           "numeric_goal_reached": false,
           "server_task_completed": false,
           "application_id": "fictional-app-2",
+          "application_id_source": "campaign_application",
           "reported_event_name": null,
           "progress_updated_at": null,
           "heartbeat_last_beat_at": null,
@@ -121,6 +125,7 @@
           "numeric_goal_reached": true,
           "server_task_completed": true,
           "application_id": "fictional-app-3",
+          "application_id_source": "campaign_application",
           "reported_event_name": null,
           "progress_updated_at": null,
           "heartbeat_last_beat_at": null,
@@ -131,4 +136,3 @@
     }
   ]
 }
-

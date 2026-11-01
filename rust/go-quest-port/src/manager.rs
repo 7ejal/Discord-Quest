@@ -71,6 +71,7 @@ pub struct TaskAssessment {
     pub numeric_goal_reached: Option<bool>,
     pub server_task_completed: bool,
     pub application_id: Option<String>,
+    pub application_id_source: &'static str,
     /// Values below are reported by the supplied local file, not authenticated.
     pub reported_event_name: Option<String>,
     pub progress_updated_at: Option<String>,
@@ -202,6 +203,13 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
                 numeric_goal_reached,
                 server_task_completed,
                 application_id,
+                application_id_source: if def.applications.iter().any(|app| !app.id.trim().is_empty()) {
+                    "task_config"
+                } else if !quest.config.application.id.trim().is_empty() {
+                    "campaign_application"
+                } else {
+                    "missing"
+                },
                 reported_event_name: progress.and_then(|p| p.event_name.clone()),
                 progress_updated_at: progress.and_then(|p| p.updated_at.clone()),
                 heartbeat_last_beat_at: progress

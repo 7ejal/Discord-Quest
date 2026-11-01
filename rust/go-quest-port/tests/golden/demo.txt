@@ -18,4 +18,3 @@ Example OR Campaign (synthetic-2)
 Example Claimed Reward (synthetic-3)
   reported status: RewardClaimed; operator: single; external redemption: unknown
   PLAY_ACTIVITY                 120/120    reported_complete=true family=embedded_activity
-

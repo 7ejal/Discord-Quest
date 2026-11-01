@@ -39,7 +39,11 @@ fn pinned_go_pure_helpers_match_valid_synthetic_records() {
     expired["config"]["expires_at"] = json!("2000-01-01T00:00:00Z");
     let mut mobile = q("mobile");
     mobile["config"]["task_config_v2"]["tasks"] = json!({"WATCH_VIDEO_ON_MOBILE":{"target":60}});
-    let input = json!({"quests":[q("active"),completed,claimed,expired,mobile]});
+    let mut preview = q("preview");
+    preview["preview"] = json!(true);
+    let mut future = q("future");
+    future["config"]["starts_at"] = json!("2100-01-01T00:00:00Z");
+    let input = json!({"quests":[q("active"),completed,claimed,expired,mobile,preview,future]});
     let reference = go(&input);
     let doc = parse_document(&input.to_string()).unwrap();
     let manager = QuestManager::new(doc.quests, None);
