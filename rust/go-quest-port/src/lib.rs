@@ -5,7 +5,7 @@ pub mod manager;
 pub mod model;
 pub mod output;
 
-use model::Quest;
+use model::{Quest, QuestPartial};
 use serde_json::Value;
 use std::collections::BTreeMap;
 
@@ -55,37 +55,95 @@ fn parse_quest_list(values: Vec<Value>) -> Result<Vec<Quest>, String> {
     Ok(unique)
 }
 
-/// Parse a Go-like response with quests, an array of Quests, or one Quest.
-/// Never loads accounts or performs network requests.
-pub fn parse_quests(input: &str) -> Result<(Vec<Quest>, Option<String>), String> {
+/// Preserve the complete and partial Quest records separately. A partial
+/// excluded Quest must never be treated as a full, eligible campaign.
+#[derive(Debug)]
+pub struct ParsedDocument {
+    pub quests: Vec<Quest>,
+    pub excluded_quests: Vec<QuestPartial>,
+    pub enrollment_blocked_until: Option<String>,
+}
+
+fn parse_excluded(values: Vec<Value>) -> Result<Vec<QuestPartial>, String> {
+    if values.len() > MAX_QUESTS {
+        return Err(format!("Too many excluded Quests: maximum is {MAX_QUESTS}"));
+    }
+    let mut seen = BTreeMap::<String, Value>::new();
+    let mut unique = Vec::with_capacity(values.len());
+    for (index, value) in values.into_iter().enumerate() {
+        let object = value
+            .as_object()
+            .ok_or_else(|| format!("Excluded Quest at index {index} must be an object"))?;
+        let id = object.get("id").and_then(Value::as_str).unwrap_or("");
+        if id.trim().is_empty() {
+            return Err(format!("Excluded Quest at index {index} must have a non-empty id"));
+        }
+        let partial: QuestPartial = serde_json::from_value(value.clone())
+            .map_err(|error| format!("Excluded Quest at index {index}: invalid field: {error}"))?;
+        if let Some(previous) = seen.get(&partial.id) {
+            if previous != &value {
+                return Err(format!("Conflicting excluded records for ID at index {index}"));
+            }
+            continue;
+        }
+        seen.insert(partial.id.clone(), value);
+        unique.push(partial);
+    }
+    Ok(unique)
+}
+
+/// Parse one full Quest, a full Quest array or a Go-style wrapped response.
+/// No account access, authentication or network requests are performed.
+pub fn parse_document(input: &str) -> Result<ParsedDocument, String> {
     if input.len() > MAX_JSON_BYTES {
         return Err(format!("JSON exceeds {}-byte input limit", MAX_JSON_BYTES));
     }
     let document: Value =
         serde_json::from_str(input).map_err(|error| format!("Invalid JSON: {error}"))?;
     match document {
-        Value::Array(quests) => Ok((parse_quest_list(quests)?, None)),
+        Value::Array(records) => Ok(ParsedDocument {
+            quests: parse_quest_list(records)?,
+            excluded_quests: Vec::new(),
+            enrollment_blocked_until: None,
+        }),
         Value::Object(mut fields) if fields.contains_key("quests") => {
-            // Keep wrapper metadata distinct from the Quest records; reject
-            // malformed full records rather than accepting zero-filled structs.
             let raw_quests = fields.remove("quests").ok_or("Missing quests array")?;
             let records = raw_quests
                 .as_array()
                 .ok_or("quests must be an array")?
                 .clone();
-            let blocked = fields.remove("quest_enrollment_blocked_until");
-            let blocked = match blocked {
+            let excluded = match fields.remove("excluded_quests") {
+                None | Some(Value::Null) => Vec::new(),
+                Some(Value::Array(values)) => parse_excluded(values)?,
+                _ => return Err("excluded_quests must be an array or null".to_owned()),
+            };
+            let blocked = match fields.remove("quest_enrollment_blocked_until") {
                 None | Some(Value::Null) => None,
                 Some(Value::String(s)) => Some(s),
                 _ => {
                     return Err("quest_enrollment_blocked_until must be a string or null".to_owned())
                 }
             };
-            Ok((parse_quest_list(records)?, blocked))
+            Ok(ParsedDocument {
+                quests: parse_quest_list(records)?,
+                excluded_quests: excluded,
+                enrollment_blocked_until: blocked,
+            })
         }
-        quest @ Value::Object(_) => Ok((vec![parse_full_quest(quest, 0)?], None)),
+        quest @ Value::Object(_) => Ok(ParsedDocument {
+            quests: vec![parse_full_quest(quest, 0)?],
+            excluded_quests: Vec::new(),
+            enrollment_blocked_until: None,
+        }),
         _ => Err("Expected a Quest object, array of Quests, or {\"quests\":[...]}".to_owned()),
     }
+}
+
+/// Compatibility helper: callers needing only full campaigns can keep using
+/// the historical tuple API; CLI uses parse_document to retain excluded data.
+pub fn parse_quests(input: &str) -> Result<(Vec<Quest>, Option<String>), String> {
+    let document = parse_document(input)?;
+    Ok((document.quests, document.enrollment_blocked_until))
 }
 
 #[cfg(test)]
