@@ -6,6 +6,12 @@
 
 This is a Rust port of the **reusable Go Quest data model, campaign filtering, classification, status evaluation and concurrent processing**. It is **not an operational selfbot** and does **not** copy the Go project's personal-account login, synthetic engagement/video/streaming methods, automated challenge solving, or reward-claiming behavior. Discord [does not permit applications that simulate Quest activity to earn rewards](https://discord.com/safety/platform-manipulation-policy-explainer).
 
+## AI progress tracker (read this before editing)
+
+**[Master migration progress checklist](migration/PROGRESS.md)** · **[Machine-readable task IDs, evidence and acceptance](migration/progress.json)** · **[Full Go-to-Rust spec](migration/SPEC.md)** · **[All original Go files/functions mapped](migration/GO-FILE-MAP.md)**.
+
+AI coding agents should follow [AGENTS.md](AGENTS.md) and [migration/AI-WORKFLOW.md](migration/AI-WORKFLOW.md). Every code change must identify task IDs, pass the relevant tests, and update both trackers. Run `python3 migration/check_progress.py --check`. **Excluded** tasks are intentional, not unfinished features.
+
 ## What works in the source
 
 - Parse Go-compatible Quest JSON supplied from a **local file**: a single Quest, array, or `{"quests":[...]}` wrapper.
