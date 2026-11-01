@@ -3,7 +3,10 @@
 use crate::model::{has_timestamp, invalid_timestamp, ExpiryState, Quest, TaskConfig, TaskKind};
 use chrono::{DateTime, Utc};
 use serde::Serialize;
-use std::{sync::atomic::{AtomicBool, Ordering}, thread};
+use std::{
+    sync::atomic::{AtomicBool, Ordering},
+    thread,
+};
 
 #[derive(Debug)]
 pub struct QuestManager {
@@ -322,22 +325,34 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
             let claimed = parse_time(&record.claimed_at);
             enrolled.zip(completed).is_some_and(|(a, b)| a > b)
                 || completed.zip(claimed).is_some_and(|(a, b)| a > b)
-                || [enrolled, completed, claimed].into_iter().flatten().any(|date| date > *now)
-                || record.progress.values().any(|p| parse_time(&p.completed_at).is_some_and(|date| date > *now || enrolled.is_some_and(|e| date < e)))
+                || [enrolled, completed, claimed]
+                    .into_iter()
+                    .flatten()
+                    .any(|date| date > *now)
+                || record.progress.values().any(|p| {
+                    parse_time(&p.completed_at)
+                        .is_some_and(|date| date > *now || enrolled.is_some_and(|e| date < e))
+                })
         });
     if invalid_order {
         warnings.push("Input contains contradictory timestamp ordering.".to_owned());
     }
 
     let malformed_status = status.is_some_and(|s| {
-        [&s.enrolled_at, &s.completed_at, &s.claimed_at].into_iter().any(invalid_timestamp)
-            || s.progress.values().any(|p| invalid_timestamp(&p.completed_at))
+        [&s.enrolled_at, &s.completed_at, &s.claimed_at]
+            .into_iter()
+            .any(invalid_timestamp)
+            || s.progress
+                .values()
+                .any(|p| invalid_timestamp(&p.completed_at))
     });
     if quest.config.task_config_v2.is_some() && quest.config.task_config.is_some() {
-        warnings.push("Both task configs supplied; v2 takes precedence without merging.".to_owned());
+        warnings
+            .push("Both task configs supplied; v2 takes precedence without merging.".to_owned());
     }
     if !matches!(operator.as_str(), "single" | "and" | "or") {
-        warnings.push("Missing/unknown join_operator for task group; group is unsupported.".to_owned());
+        warnings
+            .push("Missing/unknown join_operator for task group; group is unsupported.".to_owned());
     }
     let verdict = if inconsistent_id
         || invalid_order
@@ -365,7 +380,11 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
         Verdict::NotStarted
     } else if !enrolled {
         Verdict::NotEnrolled
-    } else if tasks.is_empty() || tasks.iter().any(|t| t.family == "unknown" || t.family == "historical_deprecated") {
+    } else if tasks.is_empty()
+        || tasks
+            .iter()
+            .any(|t| t.family == "unknown" || t.family == "historical_deprecated")
+    {
         Verdict::Unsupported
     } else {
         let group_satisfied = match operator.as_str() {
@@ -386,7 +405,13 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
     QuestAssessment {
         input_trust: "unverified_local_json",
         external_redemption: "unknown",
-        reward_claim_availability: if verdict == Verdict::QuestConfirmedUnclaimed { "reported_completed_unclaimed_eligibility_unverified" } else if verdict == Verdict::RewardClaimed { "reported_claimed" } else { "unknown" },
+        reward_claim_availability: if verdict == Verdict::QuestConfirmedUnclaimed {
+            "reported_completed_unclaimed_eligibility_unverified"
+        } else if verdict == Verdict::RewardClaimed {
+            "reported_claimed"
+        } else {
+            "unknown"
+        },
         quest_id: quest.id.clone(),
         name: quest.name().to_owned(),
         verdict,
@@ -401,8 +426,14 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
 
 /// Source integer values outside IEEE-754's exact range cannot be compared reliably.
 fn valid_number(value: f64, allow_zero: bool) -> bool {
-    value.is_finite() && value.fract() == 0.0 && value <= 9_007_199_254_740_991.0
-        && if allow_zero { value >= 0.0 } else { value > 0.0 }
+    value.is_finite()
+        && value.fract() == 0.0
+        && value <= 9_007_199_254_740_991.0
+        && if allow_zero {
+            value >= 0.0
+        } else {
+            value > 0.0
+        }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -413,21 +444,29 @@ pub enum AnalysisError {
 
 /// All workers are joined before any result is returned, including error paths.
 fn analyze_with<T: Send, F: Fn(usize) -> Result<T, AnalysisError> + Sync>(
-    count: usize, workers: usize, evaluate: F,
+    count: usize,
+    workers: usize,
+    evaluate: F,
 ) -> Result<Vec<T>, AnalysisError> {
-    if count == 0 { return Ok(Vec::new()); }
+    if count == 0 {
+        return Ok(Vec::new());
+    }
     let workers = workers.clamp(1, 32).min(count);
     let batches = thread::scope(|scope| {
         let mut handles = Vec::new();
         for worker in 0..workers {
             let evaluate = &evaluate;
             handles.push(scope.spawn(move || {
-                (worker..count).step_by(workers).map(|index|
-                    evaluate(index).map(|value| (index, value))
-                ).collect::<Result<Vec<_>, _>>()
+                (worker..count)
+                    .step_by(workers)
+                    .map(|index| evaluate(index).map(|value| (index, value)))
+                    .collect::<Result<Vec<_>, _>>()
             }));
         }
-        handles.into_iter().map(|handle| handle.join()).collect::<Vec<_>>()
+        handles
+            .into_iter()
+            .map(|handle| handle.join())
+            .collect::<Vec<_>>()
     });
     let mut indexed = Vec::with_capacity(count);
     for batch in batches {
@@ -438,17 +477,28 @@ fn analyze_with<T: Send, F: Fn(usize) -> Result<T, AnalysisError> + Sync>(
 }
 
 pub fn try_analyze_parallel(
-    quests: &[Quest], now: DateTime<Utc>, workers: usize, cancelled: &AtomicBool,
+    quests: &[Quest],
+    now: DateTime<Utc>,
+    workers: usize,
+    cancelled: &AtomicBool,
 ) -> Result<Vec<QuestAssessment>, AnalysisError> {
-    if cancelled.load(Ordering::Relaxed) { return Err(AnalysisError::Cancelled); }
+    if cancelled.load(Ordering::Relaxed) {
+        return Err(AnalysisError::Cancelled);
+    }
     analyze_with(quests.len(), workers, |index| {
-        if cancelled.load(Ordering::Relaxed) { return Err(AnalysisError::Cancelled); }
+        if cancelled.load(Ordering::Relaxed) {
+            return Err(AnalysisError::Cancelled);
+        }
         Ok(assess_quest(&quests[index], &now))
     })
 }
 
 /// Compatibility API: a failed worker panics rather than returning partial success.
-pub fn analyze_parallel(quests: &[Quest], now: DateTime<Utc>, workers: usize) -> Vec<QuestAssessment> {
+pub fn analyze_parallel(
+    quests: &[Quest],
+    now: DateTime<Utc>,
+    workers: usize,
+) -> Vec<QuestAssessment> {
     try_analyze_parallel(quests, now, workers, &AtomicBool::new(false))
         .expect("offline analysis failed")
 }
@@ -462,7 +512,9 @@ mod worker_tests {
     fn worker_panic_returns_no_partial_success_and_joins_other_workers() {
         let finished = AtomicUsize::new(0);
         let result = analyze_with(20, 2, |index| {
-            if index == 0 { panic!("synthetic worker failure"); }
+            if index == 0 {
+                panic!("synthetic worker failure");
+            }
             finished.fetch_add(1, Ordering::Relaxed);
             Ok(index)
         });
@@ -473,7 +525,9 @@ mod worker_tests {
     #[test]
     fn worker_error_returns_no_partial_success() {
         let result = analyze_with(20, 2, |index| {
-            if index == 3 { return Err(AnalysisError::Cancelled); }
+            if index == 3 {
+                return Err(AnalysisError::Cancelled);
+            }
             Ok(index)
         });
         assert_eq!(result, Err(AnalysisError::Cancelled));
@@ -481,7 +535,9 @@ mod worker_tests {
 
     #[test]
     fn cancellation_is_observed_before_scheduling() {
-        assert!(matches!(try_analyze_parallel(&[], Utc::now(), 32, &AtomicBool::new(true)), Err(AnalysisError::Cancelled)));
+        assert!(matches!(
+            try_analyze_parallel(&[], Utc::now(), 32, &AtomicBool::new(true)),
+            Err(AnalysisError::Cancelled)
+        ));
     }
 }
-

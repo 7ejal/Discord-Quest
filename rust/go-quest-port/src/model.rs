@@ -8,9 +8,17 @@ use std::collections::BTreeMap;
 /// Recognition only: these variants never execute engagement.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum TaskKind {
-    WatchVideo, WatchVideoOnMobile, PlayOnDesktop, PlayOnDesktopV2,
-    StreamOnDesktop, PlayActivity, PlayOnXbox, PlayOnPlaystation,
-    AchievementInActivity, AchievementInGame, Unknown(String),
+    WatchVideo,
+    WatchVideoOnMobile,
+    PlayOnDesktop,
+    PlayOnDesktopV2,
+    StreamOnDesktop,
+    PlayActivity,
+    PlayOnXbox,
+    PlayOnPlaystation,
+    AchievementInActivity,
+    AchievementInGame,
+    Unknown(String),
 }
 
 impl From<&str> for TaskKind {
@@ -40,12 +48,13 @@ impl TaskKind {
             Self::StreamOnDesktop => "desktop_stream",
             Self::PlayActivity => "embedded_activity",
             Self::PlayOnXbox | Self::PlayOnPlaystation => "linked_console",
-            Self::AchievementInActivity | Self::AchievementInGame => "publisher_or_activity_achievement",
+            Self::AchievementInActivity | Self::AchievementInGame => {
+                "publisher_or_activity_achievement"
+            }
             Self::Unknown(_) => "unknown",
         }
     }
 }
-
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct AllQuestsResponse {
@@ -377,4 +386,3 @@ impl Quest {
         PRIORITY.into_iter().find(|task| tasks.contains_key(*task))
     }
 }
-

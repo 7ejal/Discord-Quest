@@ -1,9 +1,14 @@
 //! Synthetic state regressions; no engagement handlers or network requests.
 use chrono::{DateTime, Utc};
-use go_quest_port::{manager::{assess_quest, Verdict}, parse_document};
+use go_quest_port::{
+    manager::{assess_quest, Verdict},
+    parse_document,
+};
 use serde_json::{json, Value};
 
-fn at() -> DateTime<Utc> { "2026-11-01T12:00:00Z".parse().unwrap() }
+fn at() -> DateTime<Utc> {
+    "2026-11-01T12:00:00Z".parse().unwrap()
+}
 fn record() -> Value {
     json!({"id":"synthetic", "config":{
         "starts_at":"2026-01-01T00:00:00Z", "expires_at":"2027-01-01T00:00:00Z",
@@ -28,8 +33,11 @@ fn unsafe_numeric_values_cannot_satisfy_task_group() {
     for field in ["target", "value"] {
         for invalid in [-1.0, 0.5, 9_007_199_254_740_992.0] {
             let mut q = record();
-            if field == "target" { q["config"]["task_config_v2"]["tasks"]["WATCH_VIDEO"][field] = json!(invalid); }
-            else { q["user_status"]["progress"]["WATCH_VIDEO"][field] = json!(invalid); }
+            if field == "target" {
+                q["config"]["task_config_v2"]["tasks"]["WATCH_VIDEO"][field] = json!(invalid);
+            } else {
+                q["user_status"]["progress"]["WATCH_VIDEO"][field] = json!(invalid);
+            }
             assert_eq!(verdict(q), Verdict::Inconsistent, "{field}={invalid}");
         }
     }
@@ -59,11 +67,14 @@ fn group_operator_and_missing_progress_table() {
         for bits in 0..4 {
             let mut q = record();
             q["config"]["task_config_v2"]["tasks"]["PLAY_ACTIVITY"] = json!({"target":60});
-            if operator != "missing" { q["config"]["task_config_v2"]["join_operator"] = json!(operator); }
+            if operator != "missing" {
+                q["config"]["task_config_v2"]["join_operator"] = json!(operator);
+            }
             q["user_status"]["progress"] = json!({});
-            for (bit, name) in [(1,"WATCH_VIDEO"),(2,"PLAY_ACTIVITY")] {
+            for (bit, name) in [(1, "WATCH_VIDEO"), (2, "PLAY_ACTIVITY")] {
                 if bits & bit != 0 {
-                    q["user_status"]["progress"][name] = json!({"completed_at":"2026-11-01T11:00:00Z"});
+                    q["user_status"]["progress"][name] =
+                        json!({"completed_at":"2026-11-01T11:00:00Z"});
                 }
             }
             let expected = match operator {
@@ -89,8 +100,13 @@ fn v2_precedence_never_merges_or_falls_back_from_empty_map() {
 
 #[test]
 fn wrong_nested_types_fail_with_sanitized_diagnostics() {
-    for path in ["/user_status", "/user_status/progress", "/user_status/enrolled_at",
-        "/config/task_config_v2/join_operator", "/user_status/progress/WATCH_VIDEO/value"] {
+    for path in [
+        "/user_status",
+        "/user_status/progress",
+        "/user_status/enrolled_at",
+        "/config/task_config_v2/join_operator",
+        "/user_status/progress/WATCH_VIDEO/value",
+    ] {
         let mut q = record();
         if path.ends_with("join_operator") {
             q["config"]["task_config_v2"]["join_operator"] = json!({"token":"DO_NOT_ECHO_CANARY"});
@@ -105,9 +121,18 @@ fn wrong_nested_types_fail_with_sanitized_diagnostics() {
 
 #[test]
 fn all_ten_identifiers_are_classification_only() {
-    for name in ["WATCH_VIDEO", "WATCH_VIDEO_ON_MOBILE", "PLAY_ON_DESKTOP", "PLAY_ON_DESKTOP_V2",
-        "STREAM_ON_DESKTOP", "PLAY_ACTIVITY", "PLAY_ON_XBOX", "PLAY_ON_PLAYSTATION",
-        "ACHIEVEMENT_IN_ACTIVITY", "ACHIEVEMENT_IN_GAME"] {
+    for name in [
+        "WATCH_VIDEO",
+        "WATCH_VIDEO_ON_MOBILE",
+        "PLAY_ON_DESKTOP",
+        "PLAY_ON_DESKTOP_V2",
+        "STREAM_ON_DESKTOP",
+        "PLAY_ACTIVITY",
+        "PLAY_ON_XBOX",
+        "PLAY_ON_PLAYSTATION",
+        "ACHIEVEMENT_IN_ACTIVITY",
+        "ACHIEVEMENT_IN_GAME",
+    ] {
         let mut q = record();
         q["config"]["task_config_v2"]["tasks"] = json!({name:{"target":60}});
         q["user_status"]["progress"] = json!({name:{"value":60}});
@@ -148,4 +173,3 @@ fn unknown_task_in_or_group_never_proves_group_support() {
     q["config"]["task_config_v2"]["join_operator"] = json!("or");
     assert_eq!(verdict(q), Verdict::Unsupported);
 }
-

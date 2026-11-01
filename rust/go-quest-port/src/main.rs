@@ -33,11 +33,15 @@ impl fmt::Display for CliError {
 }
 
 impl From<io::Error> for CliError {
-    fn from(error: io::Error) -> Self { Self::Io(error) }
+    fn from(error: io::Error) -> Self {
+        Self::Io(error)
+    }
 }
 
 impl From<String> for CliError {
-    fn from(message: String) -> Self { Self::Input(message) }
+    fn from(message: String) -> Self {
+        Self::Input(message)
+    }
 }
 
 #[derive(Serialize)]
@@ -79,15 +83,28 @@ fn run() -> Result<(), CliError> {
     let mut args = env::args_os().skip(1);
     let command = args.next().unwrap_or_else(|| "--help".into());
     if command == "--help" || command == "-h" || command == "--version" || command == "-V" {
-        if args.next().is_some() { return Err(CliError::Usage("Unexpected argument")); }
-        if command == "--help" || command == "-h" { usage(); }
-        else { println!("go-quest-port {}", env!("CARGO_PKG_VERSION")); }
+        if args.next().is_some() {
+            return Err(CliError::Usage("Unexpected argument"));
+        }
+        if command == "--help" || command == "-h" {
+            usage();
+        } else {
+            println!("go-quest-port {}", env!("CARGO_PKG_VERSION"));
+        }
         return Ok(());
     }
     let path = if command == "inspect" {
-        Some(args.next().ok_or(CliError::Usage("Missing local JSON file path"))?)
-    } else if command == "demo" { None }
-    else { return Err(CliError::Usage("Unsupported command (run --help for usage)")); };
+        Some(
+            args.next()
+                .ok_or(CliError::Usage("Missing local JSON file path"))?,
+        )
+    } else if command == "demo" {
+        None
+    } else {
+        return Err(CliError::Usage(
+            "Unsupported command (run --help for usage)",
+        ));
+    };
 
     let mut workers: usize = 4;
     let mut output_json = false;
@@ -100,21 +117,33 @@ fn run() -> Result<(), CliError> {
             Some("--json") => output_json = true,
             Some("--verbose") => verbose = true,
             Some("--at") => {
-                let text = args.next().ok_or(CliError::Usage("Missing RFC3339 value for --at"))?;
-                let parsed = DateTime::parse_from_rfc3339(text.to_str().unwrap_or(""))
-                    .map_err(|_| CliError::Usage("Invalid --at timestamp; expected RFC3339 with timezone"))?;
+                let text = args
+                    .next()
+                    .ok_or(CliError::Usage("Missing RFC3339 value for --at"))?;
+                let parsed =
+                    DateTime::parse_from_rfc3339(text.to_str().unwrap_or("")).map_err(|_| {
+                        CliError::Usage("Invalid --at timestamp; expected RFC3339 with timezone")
+                    })?;
                 evaluated_at = Some(parsed.with_timezone(&Utc));
             }
             Some("--workers" | "--max-input-bytes" | "--max-output-bytes") => {
-                let amount = args.next().ok_or(CliError::Usage("Missing numeric flag value"))?;
-                let amount: usize = amount.to_str().and_then(|text| text.parse().ok())
+                let amount = args
+                    .next()
+                    .ok_or(CliError::Usage("Missing numeric flag value"))?;
+                let amount: usize = amount
+                    .to_str()
+                    .and_then(|text| text.parse().ok())
                     .ok_or(CliError::Usage("Expected an unsigned integer flag value"))?;
                 let limit = match flag.to_str() {
                     Some("--workers") => 32,
                     Some("--max-input-bytes") => go_quest_port::MAX_JSON_BYTES,
                     _ => MAX_OUTPUT_BYTES,
                 };
-                if !(1..=limit).contains(&amount) { return Err(CliError::Usage("Numeric flag value outside supported range")); }
+                if !(1..=limit).contains(&amount) {
+                    return Err(CliError::Usage(
+                        "Numeric flag value outside supported range",
+                    ));
+                }
                 match flag.to_str() {
                     Some("--workers") => workers = amount,
                     Some("--max-input-bytes") => max_input = amount,
@@ -129,22 +158,33 @@ fn run() -> Result<(), CliError> {
     let input = if let Some(path) = path {
         let mut input = String::new();
         if path == "-" {
-            io::stdin().lock().take((max_input + 1) as u64).read_to_string(&mut input)?;
+            io::stdin()
+                .lock()
+                .take((max_input + 1) as u64)
+                .read_to_string(&mut input)?;
         } else {
-            fs::File::open(path)?.take((max_input + 1) as u64).read_to_string(&mut input)?;
+            fs::File::open(path)?
+                .take((max_input + 1) as u64)
+                .read_to_string(&mut input)?;
         }
         input
-    } else { include_str!("../examples/sample-quests.json").to_owned() };
+    } else {
+        include_str!("../examples/sample-quests.json").to_owned()
+    };
     if input.len() > max_input {
         return Err(CliError::Input("Local JSON exceeds input limit".to_owned()));
     }
     let parsed = parse_document(&input)?;
-    let excluded: Vec<_> = parsed.excluded_quests.into_iter().map(|partial| ExcludedQuestSummary {
-        id: partial.id,
-        preview: partial.preview,
-        has_config: partial.config.is_some(),
-        has_status: partial.user_status.is_some(),
-    }).collect();
+    let excluded: Vec<_> = parsed
+        .excluded_quests
+        .into_iter()
+        .map(|partial| ExcludedQuestSummary {
+            id: partial.id,
+            preview: partial.preview,
+            has_config: partial.config.is_some(),
+            has_status: partial.user_status.is_some(),
+        })
+        .collect();
     let manager = QuestManager::new(parsed.quests, parsed.enrollment_blocked_until.clone());
     let now = evaluated_at.unwrap_or_else(Utc::now);
     let report = Report {
@@ -154,7 +194,8 @@ fn run() -> Result<(), CliError> {
         analyzed: manager.quests().len(),
         go_filter_valid: manager.filter_valid(now).len(),
         go_filter_redeemable: manager.filter_redeemable().len(),
-        enrollment_blocked_until: parsed.enrollment_blocked_until
+        enrollment_blocked_until: parsed
+            .enrollment_blocked_until
             .filter(|raw| DateTime::parse_from_rfc3339(raw).is_ok()),
         excluded_count: excluded.len(),
         excluded_quests: excluded,
@@ -169,41 +210,81 @@ fn run() -> Result<(), CliError> {
     // Buffer both formats: errors leave stdout empty, never a truncated report.
     let mut output = LimitedWriter::new(max_output.saturating_sub(1));
     if output_json {
-        serde_json::to_writer_pretty(&mut output, &report)
-            .map_err(|_| CliError::Input("Cannot serialize report within output limit".to_owned()))?;
+        serde_json::to_writer_pretty(&mut output, &report).map_err(|_| {
+            CliError::Input("Cannot serialize report within output limit".to_owned())
+        })?;
     } else {
         render_text(&mut output, &report)?;
     }
     let mut bytes = output.into_bytes();
-    if output_json { bytes.push(b'\n'); }
+    if output_json {
+        bytes.push(b'\n');
+    }
     io::stdout().lock().write_all(&bytes)?;
     Ok(())
 }
 
 fn render_text(output: &mut impl Write, report: &Report) -> io::Result<()> {
-    writeln!(output, "Input data: unverified local JSON (not authenticated server status).")?;
+    writeln!(
+        output,
+        "Input data: unverified local JSON (not authenticated server status)."
+    )?;
     writeln!(output, "Evaluated at (UTC): {}", report.evaluated_at)?;
-    writeln!(output, "Analyzed {} Quest record(s); Go-style eligible: {}; reported completed/unclaimed: {}.",
-        report.analyzed, report.go_filter_valid, report.go_filter_redeemable)?;
+    writeln!(
+        output,
+        "Analyzed {} Quest record(s); Go-style eligible: {}; reported completed/unclaimed: {}.",
+        report.analyzed, report.go_filter_valid, report.go_filter_redeemable
+    )?;
     if let Some(blocked) = &report.enrollment_blocked_until {
-        writeln!(output, "Enrollment blocked until (source data): {}", escape_terminal(blocked))?;
+        writeln!(
+            output,
+            "Enrollment blocked until (source data): {}",
+            escape_terminal(blocked)
+        )?;
     }
     if report.excluded_count > 0 {
-        writeln!(output, "Excluded partial Quest records (not evaluated): {}", report.excluded_count)?;
+        writeln!(
+            output,
+            "Excluded partial Quest records (not evaluated): {}",
+            report.excluded_count
+        )?;
         for partial in &report.excluded_quests {
-            writeln!(output, "  excluded: {} (preview={}, config_present={})",
-                escape_terminal(&partial.id), partial.preview, partial.has_config)?;
+            writeln!(
+                output,
+                "  excluded: {} (preview={}, config_present={})",
+                escape_terminal(&partial.id),
+                partial.preview,
+                partial.has_config
+            )?;
         }
     }
     for quest in &report.assessments {
-        writeln!(output, "\n{} ({})", escape_terminal(&quest.name), escape_terminal(&quest.quest_id))?;
-        writeln!(output, "  reported status: {:?}; operator: {}; external redemption: unknown",
-            quest.verdict, escape_terminal(&quest.join_operator))?;
+        writeln!(
+            output,
+            "\n{} ({})",
+            escape_terminal(&quest.name),
+            escape_terminal(&quest.quest_id)
+        )?;
+        writeln!(
+            output,
+            "  reported status: {:?}; operator: {}; external redemption: unknown",
+            quest.verdict,
+            escape_terminal(&quest.join_operator)
+        )?;
         for task in &quest.tasks {
-            let value = task.reported_progress.map_or_else(|| "?".to_owned(), |v| v.to_string());
+            let value = task
+                .reported_progress
+                .map_or_else(|| "?".to_owned(), |v| v.to_string());
             let goal = task.goal.map_or_else(|| "?".to_owned(), |v| v.to_string());
-            writeln!(output, "  {:26} {:>6}/{:<6} reported_complete={} family={}",
-                escape_terminal(&task.task_type), value, goal, task.server_task_completed, task.family)?;
+            writeln!(
+                output,
+                "  {:26} {:>6}/{:<6} reported_complete={} family={}",
+                escape_terminal(&task.task_type),
+                value,
+                goal,
+                task.server_task_completed,
+                task.family
+            )?;
         }
         for warning in &quest.warnings {
             writeln!(output, "  note: {}", escape_terminal(warning))?;
@@ -223,4 +304,3 @@ fn main() {
         });
     }
 }
-

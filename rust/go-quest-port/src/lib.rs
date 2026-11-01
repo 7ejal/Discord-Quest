@@ -31,22 +31,50 @@ fn parse_full_quest(value: Value, index: usize) -> Result<Quest, String> {
     if !obj.get("config").is_some_and(Value::is_object) {
         return Err(format!("Quest at index {index} must have an object config"));
     }
-    if obj.get("config").and_then(Value::as_object).is_some_and(|config| config.is_empty()) {
+    if obj
+        .get("config")
+        .and_then(Value::as_object)
+        .is_some_and(|config| config.is_empty())
+    {
         return Err(format!("Quest at index {index} has an empty config"));
     }
     if let Some(Value::Object(status)) = obj.get("user_status") {
-        if !status.is_empty() && !["quest_id", "user_id", "enrolled_at", "completed_at", "claimed_at", "progress"]
-            .iter().any(|key| status.contains_key(*key)) {
-            return Err(format!("Quest at index {index}: unrecognized user_status shape"));
+        if !status.is_empty()
+            && ![
+                "quest_id",
+                "user_id",
+                "enrolled_at",
+                "completed_at",
+                "claimed_at",
+                "progress",
+            ]
+            .iter()
+            .any(|key| status.contains_key(*key))
+        {
+            return Err(format!(
+                "Quest at index {index}: unrecognized user_status shape"
+            ));
         }
     }
     let mut field_warnings = Vec::new();
     for (field, state) in [
         ("user_status", obj.get("user_status")),
-        ("progress", obj.get("user_status").and_then(|s| s.get("progress"))),
-        ("enrolled_at", obj.get("user_status").and_then(|s| s.get("enrolled_at"))),
-        ("completed_at", obj.get("user_status").and_then(|s| s.get("completed_at"))),
-        ("claimed_at", obj.get("user_status").and_then(|s| s.get("claimed_at"))),
+        (
+            "progress",
+            obj.get("user_status").and_then(|s| s.get("progress")),
+        ),
+        (
+            "enrolled_at",
+            obj.get("user_status").and_then(|s| s.get("enrolled_at")),
+        ),
+        (
+            "completed_at",
+            obj.get("user_status").and_then(|s| s.get("completed_at")),
+        ),
+        (
+            "claimed_at",
+            obj.get("user_status").and_then(|s| s.get("claimed_at")),
+        ),
     ] {
         if state.is_none() {
             field_warnings.push(format!("Input has missing {field}; no milestone inferred."));
@@ -138,23 +166,34 @@ pub fn parse_document(input: &str) -> Result<ParsedDocument, String> {
     let mut escaped = false;
     for byte in normalized.bytes() {
         if in_string {
-            if escaped { escaped = false; }
-            else if byte == b'\\' { escaped = true; }
-            else if byte == b'"' { in_string = false; }
+            if escaped {
+                escaped = false;
+            } else if byte == b'\\' {
+                escaped = true;
+            } else if byte == b'"' {
+                in_string = false;
+            }
         } else {
             match byte {
                 b'"' => in_string = true,
                 b'{' | b'[' => {
                     depth += 1;
-                    if depth > MAX_DEPTH { return Err("JSON nesting exceeds depth limit".to_owned()); }
+                    if depth > MAX_DEPTH {
+                        return Err("JSON nesting exceeds depth limit".to_owned());
+                    }
                 }
                 b'}' | b']' => depth = depth.saturating_sub(1),
                 _ => {}
             }
         }
     }
-    let document: Value = serde_json::from_str(normalized)
-        .map_err(|error| format!("Invalid JSON at line {}, column {}", error.line(), error.column()))?;
+    let document: Value = serde_json::from_str(normalized).map_err(|error| {
+        format!(
+            "Invalid JSON at line {}, column {}",
+            error.line(),
+            error.column()
+        )
+    })?;
     let mut pending = vec![&document];
     let mut task_count = 0usize;
     while let Some(value) = pending.pop() {
@@ -162,7 +201,8 @@ pub fn parse_document(input: &str) -> Result<ParsedDocument, String> {
             Value::Object(fields) => {
                 for (key, child) in fields {
                     if key == "tasks" || key == "progress" {
-                        task_count = task_count.saturating_add(child.as_object().map_or(0, |m| m.len()));
+                        task_count =
+                            task_count.saturating_add(child.as_object().map_or(0, |m| m.len()));
                         if task_count > MAX_TASKS {
                             return Err("Task/progress entries exceed document limit".to_owned());
                         }
@@ -620,4 +660,3 @@ mod tests {
         assert!(parse_quests("not JSON").is_err());
     }
 }
-
