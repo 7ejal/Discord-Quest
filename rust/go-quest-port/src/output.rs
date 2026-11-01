@@ -47,6 +47,9 @@ mod tests {
 
     #[test]
     fn keeps_carriage_return_out_of_log_lines() {
-        assert_eq!(escape_terminal("title\rstatus: success"), "title\\u{000D}status: success");
+        assert_eq!(
+            escape_terminal("title\rstatus: success"),
+            "title\\u{000D}status: success"
+        );
     }
 }
