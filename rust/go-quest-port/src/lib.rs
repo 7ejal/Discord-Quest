@@ -2,6 +2,7 @@
 //! Deliberately excludes personal-token logins, engagement spoofing and claims.
 
 pub mod gateway_trace;
+pub mod live;
 pub mod manager;
 pub mod mock_http;
 pub mod model;
