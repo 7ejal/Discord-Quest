@@ -37,7 +37,7 @@ def broken_links() -> list[str]:
                 failures.append(f"{path.relative_to(ROOT)}: broken relative link {uri}")
     # Prevent previously observed literal escaped newline corruption in README.
     root_readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    if "\\\\n\\\\n" in root_readme:
+    if "\\n\\n" in root_readme:
         failures.append("README.md: literal escaped double-newline sequence found")
 
     # Every local evidence reference for a DONE task must correspond to a real
