@@ -323,7 +323,13 @@ fn application_identity_is_kept_per_quest() {
         json!([{"id":"second-app"}]);
     let parsed = parse_document(&json!([first, second]).to_string()).unwrap();
     let results = analyze_parallel(&parsed.quests, at(), 2);
-    assert_eq!(results[0].tasks[0].application_id.as_deref(), Some("first-app"));
-    assert_eq!(results[1].tasks[0].application_id.as_deref(), Some("second-app"));
+    assert_eq!(
+        results[0].tasks[0].application_id.as_deref(),
+        Some("first-app")
+    );
+    assert_eq!(
+        results[1].tasks[0].application_id.as_deref(),
+        Some("second-app")
+    );
     assert_eq!(results[0].tasks[0].application_id_source, "task_config");
 }
