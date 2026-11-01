@@ -11,15 +11,15 @@ Project: [rust/go-quest-port](../) · Source: [pinned upstream Go](https://githu
 
 | Status | Count | Interpretation |
 |---|---:|---|
-| DONE | 60 | Acceptance evidence recorded; check verification commit |
-| PARTIAL | 23 | Some implementation exists but acceptance incomplete |
-| TODO | 37 | Work not yet demonstrated |
+| DONE | 67 | Acceptance evidence recorded; check verification commit |
+| PARTIAL | 22 | Some implementation exists but acceptance incomplete |
+| TODO | 31 | Work not yet demonstrated |
 | EXCLUDED | 7 | Deliberately outside approved scope |
 | **TOTAL** | **127** | Inventory snapshot, not a completion percentage |
 
 ## Release-gating status (approved offline scope only)
 
-**103 required tasks · 49 open release gates · 54 done release gates.**
+**103 required tasks · 44 open release gates · 59 done release gates.**
 Optional and excluded tasks do not block release. See [release criteria](RELEASE-GATES.md). A green historical CI run does not verify future commits.
 
 ## Ready to start (all dependencies DONE)
@@ -31,19 +31,19 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 | `OPS-003` | P0 | Evidence must identify tested commit or immutable file and not just a claim | `OPS-002` |
 | `QA-001` | P0 | Maintain test-to-requirement traceability for all release-gating tasks | `TEST-002` |
 | `QA-005` | P0 | Negative end-to-end test ensures no Discord network, user-token, or reward submission | `SEC-001` |
-| `REL-007` | P0 | Document Linux artifact provenance and retention | `ENV-004` |
 | `AUD-004` | P1 | Audit source links, file map, and documentation consistency | `DOC-002` |
 | `AUD-005` | P1 | Prevent drift between Rust task families and data/task-types.json | `MODEL-005` |
 | `AUD-008` | P1 | Document upstream code/license provenance and version baselines | `ENV-009` |
 | `QA-008` | P1 | Test tracker checker itself against malformed manifests | `OPS-002` |
-| `REL-001` | P1 | Pin Linux x86_64 Rust toolchain and document supported target | `ENV-005` |
 | `STATE-005` | P1 | Correctly evaluate AND/OR task groups | — |
 | `STATUS-014` | P1 | Keep unsupported/unknown tasks distinguishable even on completed Quest records | `MODEL-005` |
 | `TEST-003` | P1 | 22 offline method validation cases | — |
 | `CLI-002` | P2 | Add --version and --verbose and structured errors | `CLI-001` |
 | `CLI-003` | P2 | Robust CLI UX for invalid inputs and safe help output | — |
 | `ENV-006` | P2 | Add fmt, clippy and dependency audit checks | `ENV-003` |
-| `ENV-007` | P2 | Produce verified Linux x86_64 release candidate on main-server | `ENV-003` |
+| `MODEL-002` | P2 | Port core Quest, status, task, reward data types | — |
+| `MODEL-008` | P2 | Validate timestamps, invalid values, and untrusted local input | — |
+| `PAR-002` | P2 | Add cancellation, clean shutdown and race tests | `PAR-001` |
 
 ## Blocked release gates (prerequisites not DONE)
 
@@ -52,7 +52,6 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 | `DOC-005` | P0 | Document provenance limits and safe local JSON input workflows | `STATUS-013` PARTIAL/P0 |
 | `PARSE-005` | P0 | Bound input file bytes, nesting depth, quest count, and output size | `CLI-003` PARTIAL/P2 |
 | `PARSE-006` | P0 | Validate target/progress numeric domain and overflow cases | `MODEL-008` PARTIAL/P2 |
-| `REL-002` | P0 | Build, test and package native Linux release candidate on main-server | `ENV-007` PARTIAL/P2 |
 | `STATUS-013` | P0 | Label provenance and trust for each reported milestone | `STATE-007` PARTIAL/P2 |
 | `STATUS-015` | P0 | Verify AND/OR groups with mixed progress, missing task statuses, and other operators | `STATE-005` PARTIAL/P1, `AUD-001` TODO/P0 |
 | `UX-006` | P0 | Keep debug logs sanitized and do not echo raw input or secrets | `SEC-002` TODO/P2 |
@@ -66,7 +65,8 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 | `QA-010` | P1 | Propagate worker errors and panic failures without false-success reports | `PAR-002` TODO/P2 |
 | `REL-003` | P1 | Publish versioned Linux x86_64 release with checksum | `ENV-008` TODO/P2 |
 | `REL-004` | P1 | Harden main-server-only test execution and dependency review | `ENV-006` PARTIAL/P2 |
-| `REL-006` | P1 | Verify locked Linux source build, build-info and artifact hashes | `REL-001` PARTIAL/P1 |
+| `SEC-004` | P1 | Minimize user identifiers and unexpected sensitive content in output | `STATUS-013` PARTIAL/P0 |
+| `STATUS-017` | P1 | Compare Go and Rust filtering behavior for preview, blocking, starts and duplicates | `AUD-002` PARTIAL/P0 |
 
 ## Detailed task inventory
 
@@ -103,7 +103,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `ENV-004` | DONE | P1 | Optional/excluded | Historical Windows EXE CI verification (retired platform) | Windows CI run 41256646888 compiled and smoke tested EXE and uploaded artifact 13063362600. | — | [source](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888) |
 | `ENV-005` | DONE | P2 | Required | Commit Cargo.lock for reproducible builds | Cargo.lock committed and CI uses --locked; updates deliberately reviewed. | `ENV-001` | `migration/MAIN-SERVER-CI-2026-11-01.md` |
 | `ENV-006` | PARTIAL | P2 | Required | Add fmt, clippy and dependency audit checks | CI fails on cargo fmt --check and clippy -D warnings; audit policy documented. | `ENV-003` | `migration/MAIN-SERVER-CI-2026-11-01.md` |
-| `ENV-007` | PARTIAL | P2 | Required | Produce verified Linux x86_64 release candidate on main-server | scripts/package-linux.sh builds, tests and archives native Linux executable, includes README/NOTICE/LICENSE/build-info and checksums; server artifact path, SHA256 and executable dependencies verified. | `ENV-003` | `scripts/test-linux.sh` |
+| `ENV-007` | DONE | P2 | Required | Produce verified Linux x86_64 release candidate on main-server | scripts/package-linux.sh builds, tests and archives native Linux executable, includes README/NOTICE/LICENSE/build-info and checksums; server artifact path, SHA256 and executable dependencies verified. | `ENV-003` | `scripts/package-linux.sh` |
 | `ENV-008` | TODO | P2 | Optional/excluded | Optional tagged Linux release publication and checksums | If explicitly publishing, attach the main-server-tested Linux archive and matching SHA256 to a versioned public GitHub release. Do not invent asset URLs or claim a local file is public. | `ENV-004`, `ENV-007` | — |
 | `ENV-009` | DONE | P2 | Required | Preserve original MIT licensing and attribution | Retain MIT license with original yeweroooo copyright in Linux archives; NOTICE identifies pinned original Go source and redistribution limitations. | `INV-001` | `LICENSE` |
 | `ENV-010` | EXCLUDED | P2 | Optional/excluded | Create optional Windows .bat launcher | Launcher invokes verified local exe with safely quoted args, without adding capabilities. | `ENV-004` | — |
@@ -220,12 +220,12 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `QA-003` | DONE | P0 | Required | Golden CLI snapshots with deterministic fixture time and text/JSON outputs | Committed expected outputs compare identically on Windows/Linux with normalized paths/timezones; fixture changes reviewed. | `STATUS-016`, `UX-002` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
 | `QA-005` | TODO | P0 | Required | Negative end-to-end test ensures no Discord network, user-token, or reward submission | Offline CLI works with network blocked and denies user-token operation flags; evidence proves no credential requirement. | `SEC-001` | — |
 | `QA-002` | TODO | P1 | Required | Property tests and fuzz harness for schema and untrusted JSON | Fuzz/property tests demonstrate no panics and stable unknown/invalid classification with bounded synthetic inputs; CI smoke-level fuzz schedule specified. | `PARSE-005` | — |
-| `QA-004` | TODO | P1 | Required | Stress test duplicate IDs, 100k mock tasks, large values and empty lists | Test resource limits, correct ordering, duplicate handling and no panic on synthetic large/empty documents. | `PARSE-005`, `PARSE-002` | — |
+| `QA-004` | PARTIAL | P1 | Required | Stress test duplicate IDs, 100k mock tasks, large values and empty lists | Test resource limits, correct ordering, duplicate handling and no panic on synthetic large/empty documents. | `PARSE-005`, `PARSE-002` | `scripts/benchmark-linux.py` |
 | `QA-007` | TODO | P1 | Required | Regression corpus for source-level failures in related Go/Python/TS projects | Each known false-success, infinite retry, stale status and conditional EventEmitter case has a synthetic input and expected safe diagnostic. | `TEST-003` | — |
 | `QA-008` | PARTIAL | P1 | Required | Test tracker checker itself against malformed manifests | Unit tests confirm checker rejects duplicate IDs, broken deps/cycles, stale Markdown, invalid statuses and nonexistent path evidence appropriately. | `OPS-002` | `migration/test_check_progress.py` |
 | `QA-009` | TODO | P1 | Required | Differential offline Go-versus-Rust fixtures for original pure methods | Use only non-network Go model/Quest/filter helpers and synthetic JSON; compare deterministic outputs with Rust for known parity and document intentional divergences; never execute selfbot login. | `AUD-002`, `STATE-019` | — |
 | `QA-010` | TODO | P1 | Required | Propagate worker errors and panic failures without false-success reports | Tests inject synthetic worker error/panic conditions and show no task/Quest can be marked confirmed from partial results; cancellation and thread cleanup behavior explicit. | `PAR-002` | — |
-| `QA-006` | TODO | P2 | Optional/excluded | Reproducible CPU/RAM performance and binary-size measurements | Benchmark setup, platform/hardware, time/memory and reproducible input sets published; no speculative improvement claims. | `TEST-005` | — |
+| `QA-006` | DONE | P2 | Optional/excluded | Reproducible CPU/RAM performance and binary-size measurements | Benchmark setup, platform/hardware, time/memory and reproducible input sets published; no speculative improvement claims. | `TEST-005` | `scripts/benchmark-linux.py` |
 
 ### Security
 
@@ -240,15 +240,15 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
-| `REL-002` | TODO | P0 | Required | Build, test and package native Linux release candidate on main-server | Linux x86_64 archive passes main-server's full test-linux.sh checks, executes extracted binary, records exact Git SHA, compiler and SHA256; no Windows or hosted CI. | `ENV-007` | — |
-| `REL-007` | PARTIAL | P0 | Required | Document Linux artifact provenance and retention | README and build manifest show tested commit, Linux architecture, local archive/checksum path and public-vs-private availability; no stale Windows EXE link marketed as current download. | `ENV-004` | `README.md` |
+| `REL-002` | DONE | P0 | Required | Build, test and package native Linux release candidate on main-server | Linux x86_64 archive passes main-server's full test-linux.sh checks, executes extracted binary, records exact Git SHA, compiler and SHA256; no Windows or hosted CI. | `ENV-007` | `scripts/package-linux.sh` |
+| `REL-007` | DONE | P0 | Required | Document Linux artifact provenance and retention | README and build manifest show tested commit, Linux architecture, local archive/checksum path and public-vs-private availability; no stale Windows EXE link marketed as current download. | `ENV-004` | `README.md` |
 | `REL-008` | DONE | P0 | Required | Create final release readiness checklist with stop conditions | Must-pass checklist covers tests, release source, schema conformance, policy scope, licenses, docs, reproducibility and rollback. | `ENV-008` | `migration/RELEASE-GATES.md` |
-| `REL-001` | PARTIAL | P1 | Required | Pin Linux x86_64 Rust toolchain and document supported target | rust-toolchain.toml pins compiler 1.98.1, server test script refuses silent toolchain installations and checks x86_64 Linux; verify running correctly on main-server. | `ENV-005` | `rust-toolchain.toml` |
+| `REL-001` | DONE | P1 | Required | Pin Linux x86_64 Rust toolchain and document supported target | rust-toolchain.toml pins compiler 1.98.1, server test script refuses silent toolchain installations and checks x86_64 Linux; verify running correctly on main-server. | `ENV-005` | `rust-toolchain.toml` |
 | `REL-003` | TODO | P1 | Required | Publish versioned Linux x86_64 release with checksum | An actual downloadable Linux archive and checksum are available at a verified public release URL, source SHA matches verified main-server test, provenance and limitations documented. | `ENV-008` | — |
-| `REL-004` | TODO | P1 | Required | Harden main-server-only test execution and dependency review | No GitHub-hosted or Windows runners. Main-server-only scripts are bounded, do not collect secrets, install packages, alter network services or run untrusted pull requests; dependencies/updates reviewed. | `ENV-006` | — |
-| `REL-006` | TODO | P1 | Required | Verify locked Linux source build, build-info and artifact hashes | Exact Rust version/source SHA/Cargo.lock recorded; main-server --locked build succeeds; archive and embedded file SHA256SUMS verified after extraction. | `ENV-005`, `REL-001` | — |
+| `REL-004` | PARTIAL | P1 | Required | Harden main-server-only test execution and dependency review | No GitHub-hosted or Windows runners. Main-server-only scripts are bounded, do not collect secrets, install packages, alter network services or run untrusted pull requests; dependencies/updates reviewed. | `ENV-006` | `scripts/test-linux.sh` |
+| `REL-006` | DONE | P1 | Required | Verify locked Linux source build, build-info and artifact hashes | Exact Rust version/source SHA/Cargo.lock recorded; main-server --locked build succeeds; archive and embedded file SHA256SUMS verified after extraction. | `ENV-005`, `REL-001` | `scripts/package-linux.sh` |
 | `REL-009` | EXCLUDED | P1 | Optional/excluded | Verify native Windows EXE dependencies on a clean target machine | CI and documentation verify binary launches on a fresh supported Windows runner without installed Go/Node/Python/Discord; identify required DLL/runtime dependencies and target architecture rather than assuming fully static. | `REL-002` | — |
-| `REL-005` | TODO | P2 | Optional/excluded | Generate SBOM or dependency/license inventory for release | Catalog all transitive crates and licenses, verify upstream notice obligations, attach inventory to release. | `ENV-009`, `ENV-005` | — |
+| `REL-005` | PARTIAL | P2 | Optional/excluded | Generate SBOM or dependency/license inventory for release | Catalog all transitive crates and licenses, verify upstream notice obligations, attach inventory to release. | `ENV-009`, `ENV-005` | `scripts/package-linux.sh` |
 
 ### Tracking
 
@@ -273,7 +273,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `DOC-002` | DONE | P1 | Required | Publish master 1:1 migration spec, file map, tracker | Docs contain exact scoped goals and all Go source files; machine tracker has statuses, acceptance and evidence. | — | `migration/SPEC.md` |
 | `DOC-003` | DONE | P1 | Required | AI agent updating protocol | Agent guidance requires rechecking CI, modifying tracker with code changes, and no false completion claims. | — | `AGENTS.md` |
 | `DOC-004` | DONE | P1 | Required | Keep progress manifest and Markdown view synchronized | A local checker or generator validates IDs/statuses/dependencies and summary counts; CI runs it. | `DOC-002` | `migration/check_progress.py` |
-| `DOC-006` | PARTIAL | P2 | Optional/excluded | Document Linux CLI installation, usage and troubleshooting | Linux x86_64 instructions cover build/run/inspect/stdin/JSON, runtime shared libraries, invalid inputs, source trust and safe Linux artifact verification. | `REL-007`, `UX-004` | `README.md` |
+| `DOC-006` | DONE | P2 | Optional/excluded | Document Linux CLI installation, usage and troubleshooting | Linux x86_64 instructions cover build/run/inspect/stdin/JSON, runtime shared libraries, invalid inputs, source trust and safe Linux artifact verification. | `REL-007`, `UX-004` | `README.md` |
 
 ### Excluded
 
