@@ -1250,7 +1250,7 @@
       "id": "AUD-002",
       "phase": "audit",
       "title": "Diff Go behavior and Rust behavior with a version-pinned contract table",
-      "status": "todo",
+      "status": "partial",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1263,17 +1263,20 @@
         "migration/GAP-AUDIT.md"
       ],
       "acceptance": "For every Go state/filter/dispatcher method, identify exact Rust behavior, intentional differences, and expected offline fixture outputs.",
-      "evidence": [],
+      "evidence": [
+        "migration/GAP-AUDIT.md",
+        "migration/GO-FILE-MAP.md"
+      ],
       "depends_on": [
         "INV-002"
       ],
-      "notes": ""
+      "notes": "Source-level discrepancies cataloged. Contract fixtures and parity assertions still missing."
     },
     {
       "id": "AUD-003",
       "phase": "audit",
       "title": "Resolve duplicate Rust project ownership",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1284,15 +1287,19 @@
         "rust/go-quest-port/AGENTS.md"
       ],
       "acceptance": "Document and enforce rust/go-quest-port as the only active code path; archive or explicitly label rust/quest-audit-cli as nonshippable research to prevent agents editing it by mistake.",
-      "evidence": [],
+      "evidence": [
+        "rust/quest-audit-cli/README.md",
+        "AGENTS.md",
+        "migration/START-HERE.md"
+      ],
       "depends_on": [],
-      "notes": ""
+      "notes": "Old incomplete crate explicitly designated historical; CI Rust working directory targets go-quest-port."
     },
     {
       "id": "AUD-004",
       "phase": "audit",
       "title": "Audit source links, file map, and documentation consistency",
-      "status": "todo",
+      "status": "partial",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1303,11 +1310,15 @@
         "migration/check_progress.py"
       ],
       "acceptance": "Automated check verifies tracked relative markdown links, source-file mapping, and no unresolved placeholder file paths presented as implemented.",
-      "evidence": [],
+      "evidence": [
+        "migration/check_links.py",
+        "migration/GO-FILE-MAP.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41260136915"
+      ],
       "depends_on": [
         "DOC-002"
       ],
-      "notes": ""
+      "notes": "Local link/evidence checking runs; automatic full Go source-function coverage and placeholder checks still need work."
     },
     {
       "id": "AUD-005",
@@ -1334,7 +1345,7 @@
       "id": "AUD-006",
       "phase": "audit",
       "title": "Inventory original feature claims versus actually evidenced operation",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1345,17 +1356,20 @@
         "migration/CAPABILITY-CONTRACT.md"
       ],
       "acceptance": "Matrix must distinguish source handler, precondition, server confirmation, and real-world verification; no handler or README claim may imply supported engagement.",
-      "evidence": [],
+      "evidence": [
+        "migration/CAPABILITY-CONTRACT.md",
+        "migration/GO-FILE-MAP.md"
+      ],
       "depends_on": [
         "INV-003"
       ],
-      "notes": ""
+      "notes": "Matrix distinguishes recognition, original Go claims, external prerequisites and no Rust live task functionality."
     },
     {
       "id": "AUD-007",
       "phase": "audit",
       "title": "Clean literal escaped newline sequences and stale links in root documentation",
-      "status": "todo",
+      "status": "done",
       "priority": "P2",
       "required_for_release": false,
       "go_source": [
@@ -1365,17 +1379,21 @@
         "README.md"
       ],
       "acceptance": "Root README headings, relative links and status statements render correctly on GitHub; targeted formatting check verifies no literal '\\n\\n' artifacts in prose.",
-      "evidence": [],
+      "evidence": [
+        "README.md",
+        "migration/check_links.py",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41260136915"
+      ],
       "depends_on": [
         "DOC-001"
       ],
-      "notes": ""
+      "notes": "Malformed paragraph escape sequences corrected; local link and root README check passes in Linux CI."
     },
     {
       "id": "AUD-008",
       "phase": "audit",
       "title": "Document upstream code/license provenance and version baselines",
-      "status": "todo",
+      "status": "partial",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1387,11 +1405,13 @@
         "migration/SOURCE-BASELINE.md"
       ],
       "acceptance": "Record upstream Git SHA, original Go dependencies, Rust toolchain minimum, scoped license obligations, and evidence for each third-party claim.",
-      "evidence": [],
+      "evidence": [
+        "migration/SOURCE-BASELINE.md"
+      ],
       "depends_on": [
         "ENV-009"
       ],
-      "notes": ""
+      "notes": "Go SHA, license and original module dependencies documented; Rust MSRV/complete notice inventory not yet verified."
     },
     {
       "id": "PARSE-001",
@@ -1923,7 +1943,7 @@
       "id": "QA-001",
       "phase": "quality",
       "title": "Maintain test-to-requirement traceability for all release-gating tasks",
-      "status": "todo",
+      "status": "partial",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1933,11 +1953,13 @@
         "migration/TEST-MATRIX.md"
       ],
       "acceptance": "Every release-gate task has test file/case ID or a verified non-code acceptance artifact; CI checks missing test mapping.",
-      "evidence": [],
+      "evidence": [
+        "migration/TEST-MATRIX.md"
+      ],
       "depends_on": [
         "TEST-002"
       ],
-      "notes": ""
+      "notes": "38-case test-to-task matrix authored but many tests not executable yet; CI cannot confirm all release gate criteria."
     },
     {
       "id": "QA-002",
@@ -2069,7 +2091,7 @@
       "id": "QA-008",
       "phase": "quality",
       "title": "Test tracker checker itself against malformed manifests",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2079,11 +2101,14 @@
         "migration/test_check_progress.py"
       ],
       "acceptance": "Unit tests confirm checker rejects duplicate IDs, broken deps/cycles, stale Markdown, invalid statuses and nonexistent path evidence appropriately.",
-      "evidence": [],
+      "evidence": [
+        "migration/test_check_progress.py",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41260136915"
+      ],
       "depends_on": [
         "OPS-002"
       ],
-      "notes": ""
+      "notes": "14 stdlib tests for manifest validation, cycles, priority, evidence and auto-generated task rows passed in Linux CI."
     },
     {
       "id": "REL-001",
@@ -2235,7 +2260,7 @@
       "id": "REL-008",
       "phase": "release",
       "title": "Create final release readiness checklist with stop conditions",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2245,17 +2270,19 @@
         "migration/RELEASE-GATES.md"
       ],
       "acceptance": "Must-pass checklist covers tests, release source, schema conformance, policy scope, licenses, docs, reproducibility and rollback.",
-      "evidence": [],
+      "evidence": [
+        "migration/RELEASE-GATES.md"
+      ],
       "depends_on": [
         "ENV-008"
       ],
-      "notes": ""
+      "notes": "Mandatory stop conditions, evidence record and release criteria documented for approved offline scope."
     },
     {
       "id": "OPS-001",
       "phase": "tracking",
       "title": "Regenerate Markdown task rows automatically from canonical JSON",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2265,17 +2292,21 @@
         "migration/check_progress.py"
       ],
       "acceptance": "Adding/removing a task ID through JSON and --write updates whole table, phase headings, counts without manual copying, preserving existing curated prose.",
-      "evidence": [],
+      "evidence": [
+        "migration/check_progress.py",
+        "migration/PROGRESS.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41260136915"
+      ],
       "depends_on": [
         "DOC-004"
       ],
-      "notes": ""
+      "notes": "--write regenerates entire Markdown inventory from canonical JSON; --check fails drift; unit tested in CI."
     },
     {
       "id": "OPS-002",
       "phase": "tracking",
       "title": "Validate expanded tracker schema, dependencies, cycles, and priorities",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2286,11 +2317,15 @@
         "migration/progress.json"
       ],
       "acceptance": "Checker enforces required fields, unique IDs, permitted statuses/P0-P3, release_gate flags, DAG dependencies and consistent summaries.",
-      "evidence": [],
+      "evidence": [
+        "migration/check_progress.py",
+        "migration/test_check_progress.py",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41260136915"
+      ],
       "depends_on": [
         "DOC-004"
       ],
-      "notes": ""
+      "notes": "Validates schema_version, task IDs/statuses, priority, release flag, evidence, dependencies and dependency cycles."
     },
     {
       "id": "OPS-003",
@@ -2317,7 +2352,7 @@
       "id": "OPS-004",
       "phase": "tracking",
       "title": "Summarize release-gating versus optional tasks separately",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2327,17 +2362,21 @@
         "migration/PROGRESS.md"
       ],
       "acceptance": "Dashboard computes open release blockers from task metadata; excluded and optional tasks do not distort readiness percentage.",
-      "evidence": [],
+      "evidence": [
+        "migration/check_progress.py",
+        "migration/PROGRESS.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41260136915"
+      ],
       "depends_on": [
         "OPS-002"
       ],
-      "notes": ""
+      "notes": "Generator reports required, done and open release gates separately from optional and excluded tasks."
     },
     {
       "id": "OPS-005",
       "phase": "tracking",
       "title": "Maintain architecture decision log and unresolved assumptions",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2347,17 +2386,19 @@
         "migration/DECISIONS.md"
       ],
       "acceptance": "ADR file records exact decision/rationale/evidence for source compatibility, offline-only scope, crate choices and stage changes.",
-      "evidence": [],
+      "evidence": [
+        "migration/DECISIONS.md"
+      ],
       "depends_on": [
         "AUD-002"
       ],
-      "notes": ""
+      "notes": "ADR covers active Rust crate, scope, pinned upstream, concurrency, provenance and explicit open questions."
     },
     {
       "id": "OPS-006",
       "phase": "tracking",
       "title": "Provide one copy-paste next-session AI handoff with task order",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2367,17 +2408,20 @@
         "migration/START-HERE.md"
       ],
       "acceptance": "Session entry names files, branch, actual status, top five dependencies, exact verification commands, and completion reporting format.",
-      "evidence": [],
+      "evidence": [
+        "migration/START-HERE.md",
+        "AGENTS.md"
+      ],
       "depends_on": [
         "DOC-003"
       ],
-      "notes": ""
+      "notes": "Fresh-agent handoff includes reading order, task priority, commands, evidence and status report format."
     },
     {
       "id": "OPS-007",
       "phase": "tracking",
       "title": "Check markdown links and declared implemented paths in CI",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2387,17 +2431,20 @@
         "migration/check_links.py"
       ],
       "acceptance": "CI catches broken repo-relative links and evidence paths marked as implemented; designed to avoid false failures for proposed paths.",
-      "evidence": [],
+      "evidence": [
+        "migration/check_links.py",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41260136915"
+      ],
       "depends_on": [
         "AUD-004"
       ],
-      "notes": ""
+      "notes": "CI checks active documentation local links, completed-task evidence paths and root escaped-newline corruption."
     },
     {
       "id": "OPS-008",
       "phase": "tracking",
       "title": "PR/issue template requires task ID, tests, tracker update and residual risk",
-      "status": "todo",
+      "status": "done",
       "priority": "P2",
       "required_for_release": false,
       "go_source": [
@@ -2407,11 +2454,14 @@
         ".github/pull_request_template.md"
       ],
       "acceptance": "GitHub templates prompt authors for task IDs, evidence on current commit, docs status, policy scope and pending blockers.",
-      "evidence": [],
+      "evidence": [
+        ".github/pull_request_template.md",
+        ".github/ISSUE_TEMPLATE/rust_task.md"
+      ],
       "depends_on": [
         "DOC-003"
       ],
-      "notes": ""
+      "notes": "PR and issue templates require IDs, acceptance, tests, evidence, remaining risks and exclusions."
     }
   ],
   "migration_mode": "native offline Quest analysis; excludes user-account selfbot impersonation and engagement spoofing",
