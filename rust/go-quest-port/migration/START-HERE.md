@@ -16,6 +16,10 @@ Complete the **supported native Rust offline Quest inspection** application unde
 
 At the current tracker snapshot, the P0 release tasks whose dependencies are already marked DONE are: `AUD-001`, `AUD-002`, `PARSE-001`, `STATUS-010`, `UX-002`, `QA-005`, `REL-007`, `OPS-003`, `OPS-009`. Other P0 tasks may be **blocked** by unfinished P1/P2 prerequisites. The list will become stale after code changes; choose from the canonical JSON dependency graph, not from this static list. `OPS-009` will make this queue automatic.
 
+## Required main-server test step
+
+After Rust code changes, use the user-authorized [main-server validation workflow](MAIN-SERVER-WORKFLOW.md), not GitHub Actions alone. Work in the dedicated isolated checkout, use fast-forward Git import, cap CPU use, record tested SHA, and then confirm Windows CI. Do not run untrusted PR code on production.
+
 ## Every session, follow this order
 
 1. Read [`../AGENTS.md`](../AGENTS.md), [SPEC](SPEC.md), [GO-FILE-MAP](GO-FILE-MAP.md), [GAP-AUDIT](GAP-AUDIT.md), [DECISIONS](DECISIONS.md), [RELEASE-GATES](RELEASE-GATES.md).
