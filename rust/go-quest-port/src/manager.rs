@@ -249,9 +249,7 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
         warnings.push("Input contains contradictory timestamp ordering.".to_owned());
     }
 
-    let verdict = if inconsistent_id || invalid_order {
-        Verdict::Inconsistent
-    } else if rewards_claimed && !quest_completed {
+    let verdict = if inconsistent_id || invalid_order || (rewards_claimed && !quest_completed) {
         Verdict::Inconsistent
     } else if quest_completed {
         if rewards_claimed {
@@ -261,9 +259,8 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
         }
     } else if expiry_state == ExpiryState::Expired {
         Verdict::Expired
-    } else if matches!(expiry_state, ExpiryState::Missing | ExpiryState::Invalid) {
-        Verdict::Unsupported
-    } else if invalid_timestamp(&quest.config.starts_at) {
+    } else if matches!(expiry_state, ExpiryState::Missing | ExpiryState::Invalid)
+        || invalid_timestamp(&quest.config.starts_at) {
         Verdict::Unsupported
     } else if not_started {
         Verdict::NotStarted
