@@ -1,6 +1,6 @@
 # Mandatory main-server validation after Rust code edits
 
-**Purpose:** The user's requested engineering workflow is **GitHub source first → import into isolated main-server checkout → run all tests on main-server → verify Windows GitHub Actions**. No automatic deployment is implied.
+**Purpose:** The user's requested engineering workflow is **GitHub source first → import into isolated main-server checkout → run all tests on main-server → package Linux x86_64 only**. No automatic deployment is implied.
 
 ## Approved execution target
 
@@ -13,6 +13,8 @@
 - **Do not run untrusted pull-request code or arbitrary user-supplied scripts on a production machine.** Test reviewed/committed `main` revisions only.
 - Use the Gateway **git_clone/git_pull** typed operations to import source, **execute_command** for build/test commands. Confirm `git status` and refuse destructive updates when unrelated changes are present.
 
+**Current override:** [LINUX-ONLY.md](LINUX-ONLY.md) is authoritative over historical Windows and GitHub Actions references elsewhere. No GitHub hosted or Windows test workflow is active.
+
 ## Required steps following a Rust code commit
 
 1. Commit source and unit/regression tests to `7ejal/Discord-Quest` branch `main` via authorized GitHub tooling.
@@ -23,17 +25,10 @@
 ```sh
 set -euo pipefail
 export CARGO_BUILD_JOBS=2
-python3 migration/check_progress.py --check
-python3 migration/test_check_progress.py
-python3 migration/check_links.py
-cargo fmt --all -- --check
-nice -n 10 cargo clippy --all-targets --locked -- -D warnings
-nice -n 10 cargo test --all-targets --locked
-nice -n 10 cargo run --release --locked -- demo --json > /tmp/quest-rust-ci-demo.json
-python3 -m json.tool /tmp/quest-rust-ci-demo.json >/dev/null
+CARGO_BUILD_JOBS=2 nice -n 10 bash scripts/test-linux.sh
 ```
 
-5. Check that GitHub Actions' **Linux and Windows** build/test/smoke run passes at the relevant commit. Linux validation on main-server does not replace Windows-native validation.
+5. Run `CARGO_BUILD_JOBS=2 nice -n 10 bash scripts/package-linux.sh` to build, checksum and smoke-test the Linux x86_64 release candidate locally. Hosted GitHub Actions is disabled; main-server is the only validation host.
 6. Record tests performed, exact commit, run URL, failed checks and unverified scope in a durable [main-server validation log](MAIN-SERVER-CI-2026-11-01.md) or new dated log. If a check fails, fix code on GitHub, pull the new revision, and rerun.
 7. Update [progress.json](progress.json) evidence/status only after acceptance passes, regenerate [PROGRESS.md](PROGRESS.md), then rerun the tracker/CI checks on the updated commit.
 
@@ -41,7 +36,7 @@ python3 -m json.tool /tmp/quest-rust-ci-demo.json >/dev/null
 
 This testing is for the **offline native Rust CLI**. It never needs a personal Discord user token, a Discord client, fabricated Quest activity or a CAPTCHA solver. The main-server checkout is only a **test workspace**, not a persistent daemon, a live Discord integration, or an auto-deployed service.
 
-If `main-server` is unreachable, lacks safe resources, or has uncommitted unrelated changes, **do not silently skip the step or fabricate success**. Report the exact reason and use GitHub Actions as available, marking main-server verification as not performed.
+If `main-server` is unreachable, lacks safe resources, or has uncommitted unrelated changes, **do not silently skip the step or fabricate success**. Report the exact reason and report the block and leave main-server verification incomplete; do not claim historical GitHub Actions results apply.
 
 This procedure must not be misinterpreted as authority to run commands indefinitely or schedule background jobs without an explicit automation request.
 
