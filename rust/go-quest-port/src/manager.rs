@@ -1,6 +1,6 @@
 //! Port of the Go QuestManager / FilterValid / FilterRedeemable logic.
 //! Adds explicit server-authoritative status reporting and AND/OR interpretation.
-use crate::model::{has_timestamp, Quest, TaskConfig};
+use crate::model::{has_timestamp, invalid_timestamp, Quest, TaskConfig};
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use std::thread;
@@ -154,6 +154,23 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
                 server_task_completed,
                 application_id,
             });
+        }
+    }
+
+    if let Some(record) = status {
+        for (name, field) in [
+            ("enrolled_at", &record.enrolled_at),
+            ("completed_at", &record.completed_at),
+            ("claimed_at", &record.claimed_at),
+        ] {
+            if invalid_timestamp(field) {
+                warnings.push(format!("Input has invalid {name} timestamp."));
+            }
+        }
+        for (name, progress) in &record.progress {
+            if invalid_timestamp(&progress.completed_at) {
+                warnings.push(format!("Input has invalid timestamp for task {name}."));
+            }
         }
     }
 
