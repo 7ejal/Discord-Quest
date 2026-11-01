@@ -39,14 +39,26 @@ for package in packages:
 PY
 
 cargo metadata --locked --offline --format-version 1 --filter-platform x86_64-unknown-linux-gnu > "$tmp/metadata.json"
-python3 - "$tmp/metadata.json" > "$tmp/$name/DEPENDENCY-LICENSES.txt" <<'PY'
-import json, pathlib, sys
+python3 - "$tmp/metadata.json" "$tmp/$name" > "$tmp/$name/DEPENDENCY-LICENSES.txt" <<'PY'
+import json, pathlib, shutil, sys
 metadata = json.loads(pathlib.Path(sys.argv[1]).read_text())
 for package in sorted(metadata["packages"], key=lambda p: (p["name"], p["version"])):
     license_id = package.get("license") or ""
     if not license_id:
         raise SystemExit("Missing dependency license declaration")
     print(package["name"], package["version"], license_id)
+    if package.get("source"):
+        directory = pathlib.Path(package["manifest_path"]).parent
+        notices = [p for p in directory.iterdir() if p.is_file()
+                   and p.name.upper().startswith(("LICENSE", "LICENCE", "COPYING", "NOTICE", "COPYRIGHT"))]
+        if package.get("license_file"):
+            notices.append(directory / package["license_file"])
+        if not notices:
+            raise SystemExit("Missing dependency license/notice text: " + package["name"])
+        destination = pathlib.Path(sys.argv[2]) / "THIRD-PARTY-LICENSES" / (package["name"] + "-" + package["version"])
+        destination.mkdir(parents=True)
+        for notice in set(notices):
+            shutil.copyfile(notice, destination / notice.name)
 PY
 
 cat > "$tmp/$name/BUILD-INFO.txt" <<EOF
@@ -61,7 +73,7 @@ Verification: scripts/test-linux.sh passed on this machine
 Source trust: unverified local JSON; not a Discord selfbot
 EOF
 
-(cd "$tmp/$name" && sha256sum go-quest-port README.md LICENSE NOTICE BUILD-INFO.txt LOCKED-DEPENDENCIES.txt DEPENDENCY-LICENSES.txt Cargo.lock > SHA256SUMS)
+(cd "$tmp/$name" && find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
 archive="$target_dir/$name.tar.gz"
 tar -C "$tmp" -czf "$archive" "$name"
 sha256sum "$archive" > "$archive.sha256"
@@ -84,4 +96,3 @@ if command -v ldd >/dev/null 2>&1; then
 else
   echo "(ldd unavailable)"
 fi
-

@@ -7,7 +7,7 @@ WebSocket, TLS-client, browser, CAPTCHA or async runtime dependency was added.
 The Cargo.lock graph remains pinned. Release packaging runs Cargo metadata with
 `--locked --offline --filter-platform x86_64-unknown-linux-gnu`, requires a
 declared license for each resolved crate and includes the resulting inventory
-and Cargo.lock in the archive. Review SPDX identifiers and upstream notices
+and Cargo.lock in the archive. It also bundles each dependency's shipped license/notice texts under THIRD-PARTY-LICENSES, including Unicode notices, and hashes every included file. Review SPDX identifiers and upstream notices
 before accepting dependency changes. Preserve the upstream MIT license and
 NOTICE. Do not silently permit an unlicensed or unknown-license update.
 
