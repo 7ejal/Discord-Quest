@@ -1,8 +1,12 @@
 //! Standalone offline CLI for the safe, portable parts of the Go project.
 use chrono::{DateTime, Utc};
-use go_quest_port::{manager::QuestManager, output::escape_terminal, parse_document};
+use go_quest_port::{
+    manager::QuestManager,
+    output::{escape_terminal, LimitedWriter, MAX_OUTPUT_BYTES},
+    parse_document,
+};
 use serde::Serialize;
-use std::{env, error::Error, fs, io::Read, process};
+use std::{env, error::Error, fs, io::{self, Read, Write}, process};
 
 #[derive(Serialize)]
 struct ExcludedQuestSummary {
@@ -31,7 +35,7 @@ fn usage() {
         "Go Quest -> Rust (offline port)\n\
          Usage:\n\
          go-quest-port demo [--json] [--workers N] [--at RFC3339]\n\
-         go-quest-port inspect <local-quests.json> [--json] [--workers N] [--at RFC3339]\n\
+         go-quest-port inspect <local-quests.json|-> [--json] [--workers N] [--at RFC3339]\n\
          \n\
          No account token, network connection, game spoofing, or reward claims."
     );
@@ -54,9 +58,16 @@ fn run() -> Result<(), Box<dyn Error>> {
         "inspect" => {
             let path = args.next().ok_or("Missing local JSON file path")?;
             let mut input = String::new();
-            fs::File::open(&path)?
-                .take((go_quest_port::MAX_JSON_BYTES + 1) as u64)
-                .read_to_string(&mut input)?;
+            if path == "-" {
+                io::stdin()
+                    .lock()
+                    .take((go_quest_port::MAX_JSON_BYTES + 1) as u64)
+                    .read_to_string(&mut input)?;
+            } else {
+                fs::File::open(&path)?
+                    .take((go_quest_port::MAX_JSON_BYTES + 1) as u64)
+                    .read_to_string(&mut input)?;
+            }
             if input.len() > go_quest_port::MAX_JSON_BYTES {
                 return Err("Local JSON exceeds the 8 MiB input limit".into());
             }
@@ -117,7 +128,14 @@ fn run() -> Result<(), Box<dyn Error>> {
         assessments: manager.assess_all(now, workers),
     };
     if output_json {
-        println!("{}", serde_json::to_string_pretty(&report)?);
+        // Serialize to a size-limited buffer before touching stdout so an
+        // oversized report never corrupts a JSON pipeline with partial data.
+        let mut output = LimitedWriter::new(MAX_OUTPUT_BYTES);
+        serde_json::to_writer_pretty(&mut output, &report)?;
+        let bytes = output.into_bytes();
+        let mut stdout = io::stdout().lock();
+        stdout.write_all(&bytes)?;
+        stdout.write_all(b"\n")?;
         return Ok(());
     }
 
