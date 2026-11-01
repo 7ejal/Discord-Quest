@@ -15,6 +15,8 @@ This document prevents mistaken claims that recognizing a Quest task ID means th
 | ACHIEVEMENT_IN_ACTIVITY | Offline application-achievement category | Application-specific provider/OAuth flow | Actual Activity-provider achievement | **None** |
 | ACHIEVEMENT_IN_GAME | Offline publisher-achievement category | No general handler | Actual publisher/game reporting | **None** |
 
+**Source authenticity warning:** A local JSON file can contain fabricated `completed_at`/task progress fields. The offline Rust CLI cannot verify the file was produced by Discord; status labels mean “present in supplied input,” **not** an independently authenticated server result. See `STATUS-013` / [pre-code audit](PRE-CODE-REVIEW-2026-11-01.md).
+
 **Current supported behavior:** Local `demo`, local `inspect`, JSON reporting, task recognition, optional application ID parsing, AND/OR groups, time-based status assessment and bounded offline parallel processing. `15` tests passed in a previous Linux CI run, plus Windows EXE smoke test.
 
 **Never say:** “supports 10 Quest types” without specifying whether **recognition**, **local evaluation**, **real action**, or **confirmed server credit** is intended.
