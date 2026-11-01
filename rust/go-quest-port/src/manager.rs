@@ -136,7 +136,10 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
                 }
                 _ => None,
             };
-            if def.target.is_some_and(|target| !target.is_finite() || target <= 0.0) {
+            if def
+                .target
+                .is_some_and(|target| !target.is_finite() || target <= 0.0)
+            {
                 warnings.push(format!("Input has invalid target for task {name}."));
             }
             if reported.is_some_and(|value| !value.is_finite() || value < 0.0) {
@@ -220,8 +223,12 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
     let operator = join_operator(group);
     let expiry_state = quest.expiry_state(*now);
     match expiry_state {
-        ExpiryState::Missing => warnings.push("Input has missing expires_at; eligibility is unknown.".to_owned()),
-        ExpiryState::Invalid => warnings.push("Input has invalid expires_at; eligibility is unknown.".to_owned()),
+        ExpiryState::Missing => {
+            warnings.push("Input has missing expires_at; eligibility is unknown.".to_owned())
+        }
+        ExpiryState::Invalid => {
+            warnings.push("Input has invalid expires_at; eligibility is unknown.".to_owned())
+        }
         _ => {}
     }
     if invalid_timestamp(&quest.config.starts_at) {
@@ -232,7 +239,10 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
     let not_started = start.is_some_and(|date| now < &date);
     let inconsistent_id = (!quest.config.id.trim().is_empty() && quest.config.id != quest.id)
         || status.is_some_and(|record| {
-            record.quest_id.as_ref().is_some_and(|id| id.trim().is_empty() || id != &quest.id)
+            record
+                .quest_id
+                .as_ref()
+                .is_some_and(|id| id.trim().is_empty() || id != &quest.id)
         });
     if inconsistent_id {
         warnings.push("Quest ID disagrees with config or user_status Quest ID.".to_owned());
@@ -260,7 +270,8 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
     } else if expiry_state == ExpiryState::Expired {
         Verdict::Expired
     } else if matches!(expiry_state, ExpiryState::Missing | ExpiryState::Invalid)
-        || invalid_timestamp(&quest.config.starts_at) {
+        || invalid_timestamp(&quest.config.starts_at)
+    {
         Verdict::Unsupported
     } else if not_started {
         Verdict::NotStarted
