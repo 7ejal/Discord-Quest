@@ -3089,6 +3089,220 @@
       ],
       "notes": "Generator separates ready release tasks from blocked tasks, lists unfinished dependency statuses and priorities. Three new tracker tests passed on main-server at b4eb94c.",
       "validation": "migration/ACCEPTANCE-EVIDENCE.md"
+    },
+    {
+      "status": "todo",
+      "evidence": [],
+      "priority": "P0",
+      "required_for_release": false,
+      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "id": "AUD-009",
+      "phase": "audit",
+      "title": "Audit the original Go HTTP Authorization and Quest REST calls against current platform permissions",
+      "go_source": [
+        "client.go",
+        "manager.go",
+        "constants.go"
+      ],
+      "rust_paths": [
+        "migration/GO-LIVE-HTTP-REQUEST.md",
+        "migration/GO-FILE-MAP.md"
+      ],
+      "acceptance": "Produce an exact endpoint/header/request/response/provenance matrix from a pinned Go commit; verify present-day API authorization support and account/terms risk before enabling any live HTTP integration. Never assume that a private user-token API is officially supported.",
+      "depends_on": [
+        "AUD-002"
+      ]
+    },
+    {
+      "status": "todo",
+      "evidence": [],
+      "priority": "P0",
+      "required_for_release": false,
+      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "id": "SEC-005",
+      "phase": "security",
+      "title": "Design safe local credential handling for the requested Go-style account check",
+      "go_source": [
+        "client.go",
+        ".env.example"
+      ],
+      "rust_paths": [
+        "src/main.rs",
+        "src/account.rs",
+        "tests/account_security.rs"
+      ],
+      "acceptance": "Define opt-in credential handling and threat model; no token passed as CLI argument, printed, stored in repo, written into logs, leaked via error details, propagated across redirects or retained longer than necessary. Only synthetic tokens in tests.",
+      "depends_on": [
+        "SEC-002"
+      ]
+    },
+    {
+      "status": "todo",
+      "evidence": [],
+      "priority": "P0",
+      "required_for_release": false,
+      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "id": "NET-005",
+      "phase": "network",
+      "title": "Validate proposed raw Authorization header behavior and service permission constraints",
+      "go_source": [
+        "client.go",
+        "main.go"
+      ],
+      "rust_paths": [
+        "migration/GO-LIVE-HTTP-REQUEST.md",
+        "migration/DECISIONS.md"
+      ],
+      "acceptance": "Record whether raw personal-account Authorization is supportable and permissible for a read-only CLI, including exact authentication semantics and denial/rate-limit responses; document risk and a supported alternative if approval is not possible. Do not claim login success without a tested implementation.",
+      "depends_on": [
+        "AUD-009"
+      ]
+    },
+    {
+      "status": "todo",
+      "evidence": [],
+      "priority": "P1",
+      "required_for_release": false,
+      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "id": "NET-006",
+      "phase": "network",
+      "title": "Implement isolated opt-in read-only account connectivity check, only if service authorization permits",
+      "go_source": [
+        "client.go"
+      ],
+      "rust_paths": [
+        "src/account.rs",
+        "src/main.rs",
+        "tests/account_http.rs"
+      ],
+      "acceptance": "A dedicated Linux-only CLI check performs exactly one fixed HTTPS users/@me GET with user-requested header semantics, if approved in NET-005; rejects malformed credentials, disables token forwarding on redirects, limits body/timeout, never prints user identifiers or credentials, and returns minimal results. Local mock tests cover 200, 401, 403, 429, redirect and error cases.",
+      "depends_on": [
+        "NET-005",
+        "SEC-005",
+        "NET-001"
+      ]
+    },
+    {
+      "status": "todo",
+      "evidence": [],
+      "priority": "P0",
+      "required_for_release": false,
+      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "id": "NET-007",
+      "phase": "network",
+      "title": "Verify legitimately accessible live Quest read endpoints and schema",
+      "go_source": [
+        "client.go",
+        "manager.go",
+        "types.go"
+      ],
+      "rust_paths": [
+        "migration/GO-LIVE-HTTP-REQUEST.md",
+        "migration/MODEL-COVERAGE.md",
+        "tests/fixtures/"
+      ],
+      "acceptance": "Identify endpoints and granted access used to read Quest records; obtain only authorized, sanitized and provenance-labeled examples. If unsupported, record explicit blocker rather than relying on guessed Discord private APIs or fabricated task group operators.",
+      "depends_on": [
+        "AUD-009",
+        "AUD-001"
+      ]
+    },
+    {
+      "status": "todo",
+      "evidence": [],
+      "priority": "P1",
+      "required_for_release": false,
+      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "id": "NET-008",
+      "phase": "network",
+      "title": "Import authorized read-only HTTP Quest data into the existing bounded offline analyzer",
+      "go_source": [
+        "manager.go",
+        "types.go"
+      ],
+      "rust_paths": [
+        "src/main.rs",
+        "src/lib.rs",
+        "tests/account_http.rs"
+      ],
+      "acceptance": "After NET-007 verifies legitimate access, a separate opt-in command fetches bounded Quest JSON and feeds the existing parser; validates API status and schemas, labels authenticated provenance accurately, does not enroll, heartbeat, simulate activity, claim or redeem rewards; strictly limits memory and output.",
+      "depends_on": [
+        "NET-006",
+        "NET-007"
+      ]
+    },
+    {
+      "status": "todo",
+      "evidence": [],
+      "priority": "P1",
+      "required_for_release": false,
+      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "id": "NET-009",
+      "phase": "network",
+      "title": "Add bounded live HTTP transport lifecycle, timeout and rate-limit tests",
+      "go_source": [
+        "client.go"
+      ],
+      "rust_paths": [
+        "src/account.rs",
+        "tests/account_http.rs",
+        "scripts/test-linux.sh"
+      ],
+      "acceptance": "Mocked transport tests show one-shot request behavior, timeout and cancel handling, 429 fail-closed/no uncontrolled retries, suppressed server bodies/errors and no token leakage, plus Linux CPU/RAM verification. No production network calls during CI.",
+      "depends_on": [
+        "NET-006",
+        "NET-002"
+      ]
+    },
+    {
+      "status": "todo",
+      "evidence": [],
+      "priority": "P1",
+      "required_for_release": false,
+      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "id": "QA-011",
+      "phase": "quality",
+      "title": "End-to-end Linux-only mocked HTTP account and Quest integration regression",
+      "go_source": [
+        "client.go",
+        "manager.go"
+      ],
+      "rust_paths": [
+        "tests/account_http.rs",
+        "scripts/test-linux.sh",
+        "migration/GO-LIVE-HTTP-REQUEST.md"
+      ],
+      "acceptance": "Main-server Linux-only test suite passes reproducible local-mock authentication and Quest ingestion, wrong token/denied/rate-limit cases, no secret logs, no real personal user token in CI, and documented immutable source revision; no false claims of live validation.",
+      "depends_on": [
+        "NET-008",
+        "NET-009"
+      ]
+    },
+    {
+      "status": "todo",
+      "evidence": [],
+      "priority": "P1",
+      "required_for_release": false,
+      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "id": "AUD-010",
+      "phase": "audit",
+      "title": "Reconcile user-requested full Go parity against the supported Rust CLI capability contract",
+      "go_source": [
+        "main.go",
+        "client.go",
+        "manager.go",
+        "quest.go",
+        "captcha.go"
+      ],
+      "rust_paths": [
+        "migration/GO-FILE-MAP.md",
+        "migration/CAPABILITY-CONTRACT.md",
+        "migration/GO-LIVE-HTTP-REQUEST.md"
+      ],
+      "acceptance": "Document every Go feature, evidence status and security/policy disposition; separate read-only API access from unsupported personal-account selfbot, spoofed rewarded activity, challenge bypass and automated claims. Never mark the full Go implementation completed from read-only success alone.",
+      "depends_on": [
+        "AUD-009"
+      ]
     }
   ],
   "migration_mode": "native offline Quest analysis; excludes user-account selfbot impersonation and engagement spoofing",
@@ -3103,5 +3317,24 @@
     "authoritative_document": "migration/LINUX-ONLY.md",
     "decision_date": "2026-11-01"
   },
-  "traceability_required": true
+  "traceability_required": true,
+  "requested_live_http_parity": {
+    "recorded_on": "2026-11-01",
+    "status": "requested_not_implemented",
+    "reference": "migration/GO-LIVE-HTTP-REQUEST.md",
+    "new_task_ids": [
+      "AUD-009",
+      "SEC-005",
+      "NET-005",
+      "NET-006",
+      "NET-007",
+      "NET-008",
+      "NET-009",
+      "QA-011",
+      "AUD-010"
+    ],
+    "release_scope": "separate_future_milestone",
+    "platform": "linux-x86_64",
+    "credential_policy": "never_share_tokens_in_chat_or_repo"
+  }
 }
