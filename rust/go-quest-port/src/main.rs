@@ -84,9 +84,14 @@ fn run() -> Result<(), Box<dyn Error>> {
     }
     for quest in report.assessments {
         println!("\n{} ({})", quest.name, quest.quest_id);
-        println!("  status: {:?}; operator: {}", quest.verdict, quest.join_operator);
+        println!(
+            "  status: {:?}; operator: {}",
+            quest.verdict, quest.join_operator
+        );
         for task in quest.tasks {
-            let value = task.reported_progress.map_or_else(|| "?".to_owned(), |v| v.to_string());
+            let value = task
+                .reported_progress
+                .map_or_else(|| "?".to_owned(), |v| v.to_string());
             let goal = task.goal.map_or_else(|| "?".to_owned(), |v| v.to_string());
             println!(
                 "  {:26} {:>6}/{:<6} confirmed={} family={}",
