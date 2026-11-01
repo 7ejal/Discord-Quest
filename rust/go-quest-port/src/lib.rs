@@ -140,7 +140,7 @@ mod tests {
         })
         .to_string();
         let (quests, block) = parse_quests(&text).unwrap();
-        assert_eq!(quests.len(), 2);
+        assert_eq!(quests.len(), 1); // Identical IDs deduplicate.
         assert!(block.unwrap().starts_with("2026-11-02"));
     }
 
