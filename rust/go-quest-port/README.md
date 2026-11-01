@@ -1,147 +1,57 @@
-# Go Discord Quest project → Rust port (offline, read-only)
+# Go Quest models → native Rust CLI (Linux only)
 
-**Status:** **Built and tested successfully in GitHub Actions on November 1, 2026.** The Linux job passed **65 Rust tests (36 library + 29 integration)**, strict formatting and Clippy checks, plus a CLI smoke test. The Windows job passed the full **65 Rust tests**, built `go-quest-port.exe`, completed a CLI smoke test, and uploaded the binary artifact. [Successful CI run](https://github.com/7ejal/Discord-Quest/actions/runs/41276966591).
+**Active target: Linux x86_64, command-line only. Verification and packaging run on the connected `main-server` in an isolated Git checkout.** The project is an **offline, read-only inspector for locally supplied Quest JSON**. It is not an operational Discord selfbot, does not authenticate input as server data and cannot perform rewarded engagement, bypass verification, or automatically claim rewards.
 
-**Upstream:** [yeweroooo/Discord-Quest-Auto-Completion-Selfbot](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot), commit [352d7f457c9511bc9e7c9b940a71012bfb47572e](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e).
+Original Go reference: [yeweroooo/Discord-Quest-Auto-Completion-Selfbot @ `352d7f4`](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e). The original MIT copyright notice is retained in [LICENSE](LICENSE), with attribution in [NOTICE](NOTICE).
 
-This is a Rust port of the **reusable Go Quest data model, campaign filtering, classification, status evaluation and concurrent processing**. It is **not an operational selfbot** and does **not** copy the Go project's personal-account login, synthetic engagement/video/streaming methods, automated challenge solving, or reward-claiming behavior. Discord [does not permit applications that simulate Quest activity to earn rewards](https://discord.com/safety/platform-manipulation-policy-explainer).
+## Build and test — main-server only
 
-## Final pre-code compatibility audit
+The repository has **no active GitHub-hosted test workflow** and no Windows release target. Do not install a self-hosted runner or alter production services.
 
-Before modifying Rust, read the [November 1 source-level re-audit](migration/PRE-CODE-REVIEW-2026-11-01.md), especially Go TaskConfigV2's missing `join_operator`, 26-to-12 struct inventory comparison, reward-model mismatches, local JSON provenance limits, and new input/terminal-safety tasks. Then select work from the **canonical 127-task** [tracker](migration/progress.json); do not rely on historical conversation claims.
+After a GitHub commit is fast-forward pulled into `/root/quest-rust-ci-20261101`, run:
 
-## Active Rust project — start here
-
-This is the **only active Rust CLI** in this repository. The separate `rust/quest-audit-cli` is a superseded non-runnable research library; never implement features there. For each task, start at [migration/START-HERE.md](migration/START-HERE.md), [migration/GAP-AUDIT.md](migration/GAP-AUDIT.md), and [migration/TEST-MATRIX.md](migration/TEST-MATRIX.md). The generated [progress dashboard](migration/PROGRESS.md) must agree with the canonical JSON and pass CI.
-
-## AI progress tracker (read this before editing)
-
-**[Master migration progress checklist](migration/PROGRESS.md)** · **[Machine-readable task IDs, evidence and acceptance](migration/progress.json)** · **[Full Go-to-Rust spec](migration/SPEC.md)** · **[All original Go files/functions mapped](migration/GO-FILE-MAP.md)**.
-
-AI coding agents should follow [AGENTS.md](AGENTS.md) and [migration/AI-WORKFLOW.md](migration/AI-WORKFLOW.md). Every code change must identify task IDs, pass the relevant tests, and update both trackers. Run `python3 migration/check_progress.py --check`. **Excluded** tasks are intentional, not unfinished features.
-
-## What works in the source
-
-- Parse Go-compatible Quest JSON supplied from a **local file**: a single Quest, array, or `{"quests":[...]}` wrapper.
-- Preserve Go methods' intent: `is_expired`, `is_enrolled`, `is_completed`, `has_claimed_rewards`, `is_android_video_only`, `original_go_first_task`.
-- Discover and classify all 10 documented current/historical task names.
-- Parse either current `task_config_v2` or historical `task_config`; evaluate `and` / `or` groups, and mark unknown multi-task operators unsupported.
-- Inspect per-task application IDs, falling back to campaign-level ID only when missing.
-- Distinguish **local numeric goal**, **reported task completed**, **reported Quest completed**, and **reported reward claimed**. All supplied JSON is **unverified local input**, not authenticated server evidence.
-- Preserve Go's task `type` and reward SKU/asset metadata, validate task type and event consistency, and report expired heartbeat observations.
-- Retain `excluded_quests` as **separate partial records**, with a count and non-sensitive summaries. Raw targeting/traffic fields are never echoed in CLI output.
-- Print a readable status report or JSON output.
-- Bounded parallel evaluation using Rust scoped threads, preserving original Quest order.
-- Reject conflicting duplicate Quest IDs, collapse identical duplicates, and flag contradictory timestamps or Quest IDs.
-- Fail closed on missing or invalid expiration and reject invalid numeric goals or reported progress.
-- Escape ANSI controls, CR/LF and bidirectional formatting sequences when printing untrusted local names, IDs and errors.
-- Synthetic fixtures and unit tests that target the specific false-success problems in the Go and Python projects.
-- **No network calls or credentials**.
-
-## Current pipeline and golden-output validation
-
-[Main-server + cross-platform validation record](migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md) covers **65 passing Rust tests**, including bounded stdin, UTF-8 BOM and Windows Unicode paths, 16 MiB bounded JSON output and deterministic JSON/text golden comparisons. The workflow runs the full test suite on both Linux and Windows. Full file/terminal output resource stress tests and durable signed releases remain unfinished.
-
-## Windows setup
-
-Install a stable Rust toolchain using [rustup.rs](https://rustup.rs/), open PowerShell in this directory and run:
-
-```powershell
-cargo test --all-targets --locked
-cargo run --release --locked -- demo
-cargo run --release --locked -- inspect .\examples\sample-quests.json
-cargo run --release --locked -- inspect .\examples\sample-quests.json --json
-cargo build --release --locked
+```bash
+cd /root/quest-rust-ci-20261101/rust/go-quest-port
+CARGO_BUILD_JOBS=2 nice -n 10 bash scripts/test-linux.sh
+CARGO_BUILD_JOBS=2 nice -n 10 bash scripts/package-linux.sh
 ```
 
-The built executable is in `target\release\go-quest-port.exe` on Windows. **[Download the verified Windows EXE artifact from GitHub Actions](https://github.com/7ejal/Discord-Quest/actions/runs/41276966591/artifacts/13071611929)** (GitHub sign-in may be required; artifacts may expire). You can create a `.bat` wrapper to launch that executable; `.bat` is only a launcher.
+The first script checks the progress manifest, 17 tracker unit tests, local documentation links, formatting, strict Clippy, locked Cargo tests and a Linux release build with synthetic JSON smoke tests. The second packages the **tested Linux x86_64 executable**, README, license/notice and file checksums into `dist/linux-x86_64/`. Scripts prevent automatic rustup toolchain installation. A local server archive is **not** a GitHub release or public downloadable artifact.
 
-On Linux/macOS: `cargo run --release --locked -- demo`.
+See [Linux-only contract](migration/LINUX-ONLY.md), [main-server procedure](migration/MAIN-SERVER-WORKFLOW.md), and [release gates](migration/RELEASE-GATES.md).
 
-## CLI options
+## Run the native CLI on Linux
+
+```bash
+./target/release/go-quest-port --version
+./target/release/go-quest-port demo --json --at 2026-11-01T12:00:00Z
+./target/release/go-quest-port inspect examples/sample-quests.json --json
+cat examples/sample-quests.json | ./target/release/go-quest-port inspect - --json
+```
 
 ```text
 go-quest-port demo [--json] [--workers N] [--at RFC3339]
 go-quest-port inspect <local-quests.json|-> [--json] [--workers N] [--at RFC3339]
+go-quest-port --version
 ```
 
-- `demo`: uses bundled **fictional synthetic** Quests. No outside access.
-- `inspect`: reads an existing local JSON file, or `inspect -` reads piped UTF-8 JSON from standard input. Documents are limited to **8 MiB** and **10,000 Quest objects**; invalid or excessively nested JSON is rejected. A leading UTF-8 BOM is accepted. It does **not** fetch or authenticate live account data.
-- `--json`: machine-readable report with `schema_version: 1`, `input_trust: "unverified_local_json"` and an `evaluated_at` UTC timestamp. JSON reports have a **16 MiB** output limit and are completely buffered before stdout; errors go to stderr without leaking partial JSON.
-- `--workers N`: between 1 and 32 analysis threads (default 4).
-- `--at YYYY-MM-DDTHH:MM:SSZ`: evaluate campaign eligibility at a supplied RFC3339 instant, including timezone offsets. Otherwise the current clock is used.
-- `--version` (or `-V`): display the native executable version.
+**Limits and behavior:** UTF-8 JSON only, optional initial UTF-8 BOM; 8 MiB input cap, maximum 10,000 Quest objects, 16 MiB buffered JSON output cap. `--workers` accepts 1–32 bounded analysis threads. `--at` makes report times deterministic. JSON includes `schema_version` and `input_trust: "unverified_local_json"`. The parser separates excluded partial Quests, handles task IDs/reward metadata, flags contradictory status or malformed timestamps and escapes untrusted terminal-control characters. It **never** connects to Discord.
 
-## Terminal pipeline examples
+The [golden JSON/text snapshots](tests/golden/) and [test suites](tests/) are synthetic: they do not prove any Quest was genuinely completed.
 
-From a Linux shell:
+## State of development and tracking
 
-```bash
-cat examples/sample-quests.json | ./target/release/go-quest-port inspect - --json --at 2026-11-01T12:00:00Z
-```
+The authoritative status is [progress.json](migration/progress.json), rendered as [PROGRESS.md](migration/PROGRESS.md). Start work using [START-HERE.md](migration/START-HERE.md), [GO-FILE-MAP.md](migration/GO-FILE-MAP.md), [GAP-AUDIT.md](migration/GAP-AUDIT.md) and [SPEC.md](migration/SPEC.md).
 
-From PowerShell (Windows):
+**Historical verification:** [GitHub Actions run #41277276280](https://github.com/7ejal/Discord-Quest/actions/runs/41277276280) passed 65 Rust tests on Linux and Windows before the Linux-only decision. Those results are historical; new validation runs on `main-server` only. Do not claim current code passed based on an earlier commit.
 
-```powershell
-Get-Content -Raw .\examples\sample-quests.json | .\target\release\go-quest-port.exe inspect - --json --at 2026-11-01T12:00:00Z
-```
+**Remaining engineering work:** Complete model/schema coverage, robustness and stress testing, honest provenance and status reporting, credential-free offline boundary tests, Linux release verification and optional distribution. The tracker distinguishes `done`, `partial`, `todo` and `excluded`; the absence of Windows or GUI support is deliberate, not missing functionality.
 
-Both pipelines use **only local or piped JSON**, not a Discord account. For repeatable reports, supply `--at`. See the committed [golden JSON and text fixtures](tests/golden/) and [CLI snapshot tests](tests/cli_golden.rs).
+## Source and licensing
 
-## Original Go → Rust mapping
+- [Go-to-Rust file mapping](migration/GO-FILE-MAP.md)
+- [Capability limitations](migration/CAPABILITY-CONTRACT.md)
+- [Linux-only platform/test policy](migration/LINUX-ONLY.md)
+- [MIT LICENSE](LICENSE) · [NOTICE](NOTICE)
 
-| Go file/function | Rust equivalent | Notes |
-|---|---|---|
-| `go.mod` | `Cargo.toml` | Rust native binary; Serde JSON and chrono |
-| `types.go` | `src/model.rs` | Typed Quest models, optional statuses, per-task app IDs |
-| `quest.go:IsExpired` | `Quest::is_expired` | RFC3339 parsing through chrono |
-| `quest.go:IsCompleted/IsEnrolled/HasClaimedRewards` | `Quest::is_completed/is_enrolled/has_claimed_rewards` | Server status timestamps only |
-| `quest.go:GetTaskName` | `Quest::original_go_first_task` | **For comparison only**; it is flawed for AND/OR |
-| `quest.go:IsAndroidQuest` | `Quest::is_android_video_only` | Classifies mobile-video-only campaigns |
-| `manager.go:FilterValid` | `QuestManager::filter_valid` | Noncompleted and nonexpired |
-| `manager.go:FilterRedeemable` | `QuestManager::filter_redeemable` | Confirmed completion, reward not claimed |
-| `main.go` Quest goroutines + WaitGroup | `analyze_parallel` | Bounded scoped Rust threads, no network side effects |
-| `main.go` | `src/main.rs` | Offline `demo` and `inspect` CLI |
-| Go engagement-specific task handlers | **Not ported** | No simulation of rewarded activity |
-| `client.go` personal-account WebSocket/REST/Identify | **Not ported** | No credential-based client automation |
-| `captcha.go`, OAuth achievement and claiming logic | **Not ported** | Account safety and reward integrity |
-
-**Important engineering improvements** over original Go:
-
-1. Correctly evaluate `AND/OR`; never treat the first matching task as entire Quest completion.
-2. Inspect the Quest-level `completed_at` field separately from task timers; **the offline tool cannot authenticate its provenance**.
-3. Distinguish status from claim and redemption; completed does not mean claimed.
-4. Preserve unknown/deprecated task type distinctions, with explicit warnings.
-5. Use bounded concurrency rather than a new unbounded goroutine for every campaign.
-6. Keep the source local and avoid handling personal account credentials.
-
-## Project files
-
-```text
-rust/go-quest-port/
-├── Cargo.toml
-├── Cargo.lock       # Reproducible dependency resolution
-├── README.md
-├── examples/sample-quests.json
-└── src/
-    ├── lib.rs          # Parser and 32 unit tests
-    ├── main.rs         # CLI entry point
-    ├── manager.rs      # QuestManager, task group evaluation, parallel analysis
-    └── model.rs        # Typed Go-compatible JSON models
-```
-
-## Testing/verification status
-
-- Source file presence verified in the GitHub repository.
-- **65 tests passed** (36 library and 29 integration) on Linux, with only synthetic local JSON.
-- **Linux CLI smoke test passed.**
-- **Windows EXE release build and CLI smoke test passed**, with [artifact uploaded](https://github.com/7ejal/Discord-Quest/actions/runs/41276966591/artifacts/13071611929).
-- [Full successful workflow](https://github.com/7ejal/Discord-Quest/actions/runs/41276966591).
-- No Rust CPU/RAM performance measurements have been taken.
-- No Discord Quest has been executed, and no universal Quest completion claim is made.
-
-**Previous Go-model batch:** [Go model and excluded Quest report](migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md), **52 passing Rust tests**, 17 tracker tests, clean formatting and strict Clippy, verified on commit `5043f64b`. The Windows EXE passed the matching [GitHub CI](https://github.com/7ejal/Discord-Quest/actions/runs/41276966591). All tests are offline and synthetic.
-
-**Older main-server validation:** [deterministic timestamp CLI / 38-test validation](migration/MAIN-SERVER-CI-2026-11-01-BATCH3.md), including `cargo fmt --check`, `cargo clippy --locked -D warnings`, 38 Rust tests and JSON verification. These checks do not validate operational selfbot behavior.
-
-For research and evidence: [detailed Go audit](../../audits/GO-YEWEROOOO.md) and [method comparison](../../research/standalone/METHODS-DEEP-DIVE-2026-11-01.md).
+No credentials, publisher achievements or gameplay are requested or collected.
