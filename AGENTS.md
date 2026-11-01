@@ -2,6 +2,10 @@
 
 **This repository is a source-backed research and Rust engineering project, not a verified universal Discord Quest completer.** Do not use real personal Discord account tokens or develop inauthentic reward-earning features.
 
+## Required starting point for a fresh AI
+
+**[rust/go-quest-port/migration/START-HERE.md](rust/go-quest-port/migration/START-HERE.md)** gives exact source, working directory, priority order, commands, evidence requirements and the out-of-scope boundary. The source-backed [gap audit](rust/go-quest-port/migration/GAP-AUDIT.md), [decision record](rust/go-quest-port/migration/DECISIONS.md), [38-case test plan](rust/go-quest-port/migration/TEST-MATRIX.md), and [release gates](rust/go-quest-port/migration/RELEASE-GATES.md) are also mandatory reading. **Only rust/go-quest-port is active; rust/quest-audit-cli is historical.**
+
 ## Where the active Rust work is tracked
 
 - **[Go-to-Rust progress dashboard](rust/go-quest-port/migration/PROGRESS.md)** — current completed, partial, unstarted and excluded tasks.
