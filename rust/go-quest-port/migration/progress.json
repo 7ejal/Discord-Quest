@@ -925,7 +925,7 @@
     {
       "id": "TEST-001",
       "phase": "tests",
-      "title": "Rust synthetic regression suite passing (23 tests)",
+      "title": "Native Rust offline CLI regression suite: 35 passing tests",
       "status": "done",
       "go_source": [
         "all"
@@ -933,14 +933,15 @@
       "rust_paths": [
         "src/lib.rs"
       ],
-      "acceptance": "23 Rust library tests passed on commit 36e386b7f0d4ddef6f3743f997ec3bc5830e525c.",
+      "acceptance": "On source revision 635d0f5bf814e48771a62b42f5cab78ea0b3d7b2, 32 unit tests and 3 native CLI integration tests passed on main-server with locked Cargo; historical and newer revisions require new CI evidence.",
       "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md",
         "src/lib.rs",
-        "migration/MAIN-SERVER-CI-2026-11-01.md",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+        "src/output.rs",
+        "tests/cli_safety.rs"
       ],
       "depends_on": [],
-      "notes": "",
+      "notes": "This measures offline synthetic tests only, not live task completion.",
       "priority": "P1",
       "required_for_release": true
     },
@@ -948,7 +949,7 @@
       "id": "TEST-002",
       "phase": "tests",
       "title": "Separate integration tests and golden JSON snapshots",
-      "status": "todo",
+      "status": "partial",
       "go_source": [
         "all"
       ],
@@ -956,11 +957,15 @@
         "tests/"
       ],
       "acceptance": "Integration and golden tests verify CLI JSON output, operator logic, timestamp problems and fixtures.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md",
+        "src/lib.rs",
+        "tests/cli_safety.rs"
+      ],
       "depends_on": [
         "TEST-001"
       ],
-      "notes": "",
+      "notes": "New regression coverage passes on main-server code SHA 635d0f5; broader acceptance tests and policies remain to be completed.",
       "priority": "P1",
       "required_for_release": true
     },
@@ -1452,7 +1457,7 @@
       "id": "PARSE-002",
       "phase": "parser",
       "title": "Define duplicate quest IDs and reproduce intentional Go map-dedup semantics",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1463,11 +1468,14 @@
         "src/manager.rs"
       ],
       "acceptance": "Multiple entries with same ID have documented deterministic conflict handling, not accidental double counting; tests cover same/different statuses.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md",
+        "src/lib.rs"
+      ],
       "depends_on": [
         "AUD-002"
       ],
-      "notes": ""
+      "notes": "Exact duplicate input records collapse to one; differing JSON for same Quest ID fails closed. Rust behavior deliberately differs from Go's overwriting map. Verified with main-server tests on 635d0f5."
     },
     {
       "id": "PARSE-003",
@@ -1541,7 +1549,7 @@
       "id": "PARSE-006",
       "phase": "parser",
       "title": "Validate target/progress numeric domain and overflow cases",
-      "status": "todo",
+      "status": "partial",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1553,11 +1561,15 @@
         "tests/"
       ],
       "acceptance": "Negative, zero, nonfinite/out-of-range targets and values cannot become confirmed completion; warnings/tests cover arithmetic safety.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md",
+        "src/lib.rs",
+        "tests/cli_safety.rs"
+      ],
       "depends_on": [
         "MODEL-008"
       ],
-      "notes": ""
+      "notes": "New regression coverage passes on main-server code SHA 635d0f5; broader acceptance tests and policies remain to be completed."
     },
     {
       "id": "PARSE-007",
@@ -1671,7 +1683,7 @@
       "id": "STATUS-011",
       "phase": "state",
       "title": "Detect impossible ordering and contradictory status timestamps",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1682,17 +1694,22 @@
         "src/manager.rs"
       ],
       "acceptance": "Synthetic claim-before-completion, completion-before-enrollment, starts-after-expiry, and invalid clocks yield explicit inconsistent/unknown states.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md",
+        "src/model.rs",
+        "src/manager.rs",
+        "src/lib.rs"
+      ],
       "depends_on": [
         "STATUS-010"
       ],
-      "notes": ""
+      "notes": "Verified via passing regression tests and main-server Cargo/Clippy on commit 635d0f5. Input remains unauthenticated local JSON."
     },
     {
       "id": "STATUS-012",
       "phase": "state",
       "title": "Avoid silent unexpired treatment of malformed/missing expiration dates",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1703,11 +1720,16 @@
         "src/manager.rs"
       ],
       "acceptance": "Distinguish missing/invalid expires_at from valid future expiry and display uncertainty in filters/status; tests cover malformed dates.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md",
+        "src/model.rs",
+        "src/manager.rs",
+        "src/lib.rs"
+      ],
       "depends_on": [
         "STATE-008"
       ],
-      "notes": ""
+      "notes": "Verified via passing regression tests and main-server Cargo/Clippy on commit 635d0f5. Input remains unauthenticated local JSON."
     },
     {
       "id": "STATUS-013",
@@ -1949,7 +1971,7 @@
       "id": "UX-006",
       "phase": "ux",
       "title": "Keep debug logs sanitized and do not echo raw input or secrets",
-      "status": "todo",
+      "status": "partial",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1959,11 +1981,15 @@
         "src/main.rs"
       ],
       "acceptance": "Tests show token-like strings inside malformed JSON/errors cannot be emitted; diagnostic truncation and escaping documented.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md",
+        "src/lib.rs",
+        "tests/cli_safety.rs"
+      ],
       "depends_on": [
         "SEC-002"
       ],
-      "notes": ""
+      "notes": "New regression coverage passes on main-server code SHA 635d0f5; broader acceptance tests and policies remain to be completed."
     },
     {
       "id": "QA-001",
@@ -2542,7 +2568,7 @@
       "id": "STATE-019",
       "phase": "state",
       "title": "Validate Quest ID consistency across wrapper, config and user status",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2555,12 +2581,17 @@
         "src/manager.rs"
       ],
       "acceptance": "When quest.id, config.id and user_status.quest_id coexist, report conflicting IDs as inconsistent/unknown and do not display a confirmed reward for mismatched records; synthetic tests.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md",
+        "src/model.rs",
+        "src/manager.rs",
+        "src/lib.rs"
+      ],
       "depends_on": [
         "PARSE-001",
         "STATUS-010"
       ],
-      "notes": "Go QuestUserStatus.QuestID exists but Rust omits it."
+      "notes": "Verified via passing regression tests and main-server Cargo/Clippy on commit 635d0f5. Input remains unauthenticated local JSON."
     },
     {
       "id": "STATE-020",
@@ -2612,7 +2643,7 @@
       "id": "SEC-003",
       "phase": "security",
       "title": "Sanitize terminal control sequences and Unicode formatting attacks",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2624,11 +2655,15 @@
         "tests/cli_safety.rs"
       ],
       "acceptance": "Escape or visibly render ANSI/OSC controls, newlines, carriage returns and bidi override characters in untrusted Quest names/IDs/errors; tests prove report cannot manipulate terminal output.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md",
+        "src/output.rs",
+        "tests/cli_safety.rs"
+      ],
       "depends_on": [
         "CLI-003"
       ],
-      "notes": "Current CLI prints Quest names and IDs from local JSON directly, allowing control-sequence/log injection."
+      "notes": "Verified via passing regression tests and main-server Cargo/Clippy on commit 635d0f5. Input remains unauthenticated local JSON."
     },
     {
       "id": "SEC-004",
