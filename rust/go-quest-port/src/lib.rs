@@ -200,7 +200,9 @@ mod tests {
     #[test]
     fn excessive_local_json_is_rejected_before_parsing() {
         let too_large = " ".repeat(super::MAX_JSON_BYTES + 1);
-        assert!(parse_quests(&too_large).unwrap_err().contains("input limit"));
+        assert!(parse_quests(&too_large)
+            .unwrap_err()
+            .contains("input limit"));
     }
 
     #[test]
@@ -208,7 +210,9 @@ mod tests {
         let sample = json!({"id":"valid","config":{}});
         let values = vec![sample; super::MAX_QUESTS + 1];
         let input = serde_json::to_string(&values).unwrap();
-        assert!(parse_quests(&input).unwrap_err().contains("Too many Quests"));
+        assert!(parse_quests(&input)
+            .unwrap_err()
+            .contains("Too many Quests"));
     }
 
     #[test]
@@ -219,7 +223,10 @@ mod tests {
         assert!(!quest.is_enrolled());
         let report = assess_quest(&quest, &now());
         assert_eq!(report.verdict, Verdict::NotEnrolled);
-        assert!(report.warnings.iter().any(|s| s.contains("invalid enrolled_at")));
+        assert!(report
+            .warnings
+            .iter()
+            .any(|s| s.contains("invalid enrolled_at")));
     }
 
     #[test]
