@@ -80,6 +80,9 @@ pub struct TaskConfig {
 
 #[derive(Debug, Clone, Default, Deserialize)]
 pub struct TaskEntry {
+    /// The Go source carries its own task type in addition to the task-map key.
+    #[serde(default, rename = "type")]
+    pub task_type: Option<String>,
     #[serde(default)]
     pub target: Option<f64>,
     #[serde(default)]
@@ -91,7 +94,13 @@ pub struct TaskEntry {
 #[derive(Debug, Clone, Default, Deserialize)]
 pub struct RewardsConfig {
     #[serde(default)]
+    pub assignment_method: Option<i64>,
+    #[serde(default)]
     pub rewards: Vec<Reward>,
+    #[serde(default)]
+    pub rewards_expire_at: Option<String>,
+    #[serde(default)]
+    pub platforms: Vec<i64>,
 }
 
 #[derive(Debug, Clone, Default, Deserialize)]
@@ -99,9 +108,26 @@ pub struct Reward {
     #[serde(default)]
     pub r#type: Option<i64>,
     #[serde(default)]
+    pub sku_id: Option<String>,
+    #[serde(default)]
+    pub asset: Option<String>,
+    #[serde(default)]
+    pub asset_video: Option<String>,
+    #[serde(default)]
+    pub messages: RewardMessages,
+    /// These optional quantity keys are extensions, not fields in pinned Go QuestReward.
+    #[serde(default)]
     pub orb_quantity: Option<i64>,
     #[serde(default)]
     pub premium_orb_quantity: Option<i64>,
+}
+
+#[derive(Debug, Clone, Default, Deserialize)]
+pub struct RewardMessages {
+    #[serde(default)]
+    pub name: String,
+    #[serde(default)]
+    pub name_with_article: String,
 }
 
 #[derive(Debug, Clone, Default, Deserialize)]
@@ -122,9 +148,23 @@ pub struct QuestUserStatus {
 #[derive(Debug, Clone, Default, Deserialize)]
 pub struct TaskProgress {
     #[serde(default)]
+    pub event_name: Option<String>,
+    #[serde(default)]
     pub value: Option<f64>,
     #[serde(default)]
+    pub updated_at: Option<String>,
+    #[serde(default)]
     pub completed_at: Option<String>,
+    #[serde(default)]
+    pub heartbeat: Option<TaskHeartbeat>,
+}
+
+#[derive(Debug, Clone, Default, Deserialize)]
+pub struct TaskHeartbeat {
+    #[serde(default)]
+    pub last_beat_at: Option<String>,
+    #[serde(default)]
+    pub expires_at: Option<String>,
 }
 
 /// True only for a syntactically valid RFC3339 timestamp supplied in the
