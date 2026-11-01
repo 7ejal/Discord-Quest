@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "input_trust": "unverified_local_json",
+  "evaluated_at": "2026-11-01T12:00:00+00:00",
+  "analyzed": 3,
+  "go_filter_valid": 1,
+  "go_filter_redeemable": 1,
+  "enrollment_blocked_until": null,
+  "excluded_count": 0,
+  "excluded_quests": [],
+  "assessments": [
+    {
+      "quest_id": "synthetic-1",
+      "name": "Example AND Campaign",
+      "verdict": "in_progress",
+      "join_operator": "and",
+      "enrolled": true,
+      "quest_completed": false,
+      "rewards_claimed": false,
+      "tasks": [
+        {
+          "task_type": "PLAY_ON_DESKTOP",
+          "family": "desktop_game",
+          "goal": 300.0,
+          "reported_progress": 0.0,
+          "numeric_goal_reached": false,
+          "server_task_completed": false,
+          "application_id": "fictional-game-1",
+          "reported_event_name": null,
+          "progress_updated_at": null,
+          "heartbeat_last_beat_at": null,
+          "heartbeat_expires_at": null
+        },
+        {
+          "task_type": "WATCH_VIDEO",
+          "family": "video",
+          "goal": 60.0,
+          "reported_progress": 60.0,
+          "numeric_goal_reached": true,
+          "server_task_completed": true,
+          "application_id": "fictional-app-1",
+          "reported_event_name": null,
+          "progress_updated_at": null,
+          "heartbeat_last_beat_at": null,
+          "heartbeat_expires_at": null
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "quest_id": "synthetic-2",
+      "name": "Example OR Campaign",
+      "verdict": "quest_confirmed_unclaimed",
+      "join_operator": "or",
+      "enrolled": true,
+      "quest_completed": true,
+      "rewards_claimed": false,
+      "tasks": [
+        {
+          "task_type": "WATCH_VIDEO",
+          "family": "video",
+          "goal": 90.0,
+          "reported_progress": 90.0,
+          "numeric_goal_reached": true,
+          "server_task_completed": true,
+          "application_id": "fictional-app-2",
+          "reported_event_name": null,
+          "progress_updated_at": null,
+          "heartbeat_last_beat_at": null,
+          "heartbeat_expires_at": null
+        },
+        {
+          "task_type": "WATCH_VIDEO_ON_MOBILE",
+          "family": "video",
+          "goal": 90.0,
+          "reported_progress": 0.0,
+          "numeric_goal_reached": false,
+          "server_task_completed": false,
+          "application_id": "fictional-app-2",
+          "reported_event_name": null,
+          "progress_updated_at": null,
+          "heartbeat_last_beat_at": null,
+          "heartbeat_expires_at": null
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "quest_id": "synthetic-3",
+      "name": "Example Claimed Reward",
+      "verdict": "reward_claimed",
+      "join_operator": "single",
+      "enrolled": true,
+      "quest_completed": true,
+      "rewards_claimed": true,
+      "tasks": [
+        {
+          "task_type": "PLAY_ACTIVITY",
+          "family": "embedded_activity",
+          "goal": 120.0,
+          "reported_progress": 120.0,
+          "numeric_goal_reached": true,
+          "server_task_completed": true,
+          "application_id": "fictional-app-3",
+          "reported_event_name": null,
+          "progress_updated_at": null,
+          "heartbeat_last_beat_at": null,
+          "heartbeat_expires_at": null
+        }
+      ],
+      "warnings": []
+    }
+  ]
+}
