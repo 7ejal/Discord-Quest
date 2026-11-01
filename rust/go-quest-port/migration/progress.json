@@ -9,13 +9,13 @@
   },
   "verification": {
     "kind": "source_scoped_ci",
-    "run_id": 41270140534,
+    "run_id": 41275135541,
     "result": "success",
-    "head_sha": "36e386b7f0d4ddef6f3743f997ec3bc5830e525c",
-    "linux_test_count": 23,
-    "windows_binary_artifact_id": 13068464279,
-    "main_server_test_record": "migration/MAIN-SERVER-CI-2026-11-01.md",
-    "note": "Subsequent documentation changes require their own CI."
+    "head_sha": "5043f64b141b03917a14976c109c9e60a6562903",
+    "linux_test_count": 52,
+    "windows_binary_artifact_id": null,
+    "main_server_test_record": "migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md",
+    "note": "Future docs/tracker commits need matching CI; no operational Discord task completion tested."
   },
   "status_meanings": {
     "done": "Implemented or documented, with listed evidence. Historical build evidence may not cover later changes.",
@@ -478,7 +478,7 @@
       "id": "MODEL-009",
       "phase": "models",
       "title": "Full read-only reward metadata support",
-      "status": "partial",
+      "status": "done",
       "go_source": [
         "types.go:QuestReward",
         "types.go:QuestRewardsConfig"
@@ -488,10 +488,12 @@
       ],
       "acceptance": "Map Go QuestRewardsConfig and QuestReward field-by-field (assignment_method, rewards_expire_at, platforms, sku_id, asset, asset_video, messages); handle extra Rust fields as separately sourced extensions or remove them.",
       "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41275135541",
         "src/model.rs"
       ],
       "depends_on": [],
-      "notes": "Rust Reward includes orb_quantity/premium_orb_quantity but pinned Go QuestReward has sku_id, asset, asset_video, messages and no such quantity fields. Do not label Rust rewards model equivalent.",
+      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Go rewards_config and reward fields parsed; pinned Go fields tested. Optional orb quantity fields remain explicitly tagged as extensions.",
       "priority": "P2",
       "required_for_release": true
     },
@@ -925,7 +927,7 @@
     {
       "id": "TEST-001",
       "phase": "tests",
-      "title": "Native Rust offline CLI regression suite: 35 passing tests",
+      "title": "Native Rust offline CLI regression suite: 52 passing tests",
       "status": "done",
       "go_source": [
         "all"
@@ -933,15 +935,13 @@
       "rust_paths": [
         "src/lib.rs"
       ],
-      "acceptance": "On source revision 635d0f5bf814e48771a62b42f5cab78ea0b3d7b2, 32 unit tests and 3 native CLI integration tests passed on main-server with locked Cargo; historical and newer revisions require new CI evidence.",
+      "acceptance": "All 52 Rust tests pass under locked Cargo on the isolated main-server checkout at commit 5043f64b141b03917a14976c109c9e60a6562903, with matching successful Linux/Windows GitHub Actions run 41275135541.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md",
-        "src/lib.rs",
-        "src/output.rs",
-        "tests/cli_safety.rs"
+        "migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41275135541"
       ],
       "depends_on": [],
-      "notes": "This measures offline synthetic tests only, not live task completion.",
+      "notes": "32 library + 6 CLI + 4 excluded Quest + 10 model parity synthetic tests; no live Discord activity.",
       "priority": "P1",
       "required_for_release": true
     },
@@ -1481,7 +1481,7 @@
       "id": "PARSE-003",
       "phase": "parser",
       "title": "Retain excluded_quests and preview/traffic metadata in reports",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1494,11 +1494,17 @@
         "src/main.rs"
       ],
       "acceptance": "Go wrapper's excluded list is not discarded, and incomplete excluded configurations are labeled partial/not evaluated; tests prove no silent loss.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41275135541",
+        "src/model.rs",
+        "src/lib.rs",
+        "src/main.rs"
+      ],
       "depends_on": [
         "MODEL-002"
       ],
-      "notes": ""
+      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Partial excluded_quests preserved in parse_document; CLI reports count/ID/preview/config-status flags without targeting or traffic metadata leakage."
     },
     {
       "id": "PARSE-004",
@@ -2524,7 +2530,7 @@
       "id": "MODEL-010",
       "phase": "models",
       "title": "Check TaskEntry.type against task-map key and supported task family",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2535,17 +2541,22 @@
         "src/manager.rs"
       ],
       "acceptance": "Parse Go TaskEntry.type and compare it to the map key where both exist; mismatches, unrecognized types, empty application IDs and task-specific app mappings remain explicit unknown/inconsistent cases.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41275135541",
+        "src/model.rs",
+        "src/manager.rs"
+      ],
       "depends_on": [
         "PARSE-010"
       ],
-      "notes": "Current Rust TaskEntry has target/event_name/applications but omits Go type field, even though it is part of source schema."
+      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: TaskEntry.type validated against task map name; unknown/mismatched declared types reported inconsistent; whitespace app IDs warned and fallback tested."
     },
     {
       "id": "MODEL-011",
       "phase": "models",
       "title": "Correct reward wire models without inventing source fields",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2557,12 +2568,16 @@
         "tests/rewards.rs"
       ],
       "acceptance": "Cover every Go QuestRewardsConfig/QuestReward field with serde aliases, null handling and golden fixture; any Rust orb quantities documented as non-Go extensions, not claimed Go parity.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41275135541",
+        "src/model.rs"
+      ],
       "depends_on": [
         "MODEL-009",
         "PARSE-010"
       ],
-      "notes": "Original Go type contains sku_id, asset, asset_video and messages, unlike current simplified Rust Reward."
+      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Go reward mapping tested with SKU, assets/video, assignment method, expiry, platforms, message name, null optional metadata."
     },
     {
       "id": "STATE-019",
@@ -2597,7 +2612,7 @@
       "id": "STATE-020",
       "phase": "state",
       "title": "Retain and interpret task progress freshness metadata",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2609,18 +2624,23 @@
         "src/manager.rs"
       ],
       "acceptance": "Parse QuestTaskProgress.updated_at and optional heartbeat last_beat_at/expires_at, and report stale/unknown observation time separately from success; do not fake heartbeats.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41275135541",
+        "src/model.rs",
+        "src/manager.rs"
+      ],
       "depends_on": [
         "PARSE-010",
         "STATUS-010"
       ],
-      "notes": ""
+      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Event, update time and heartbeat dates retained in task report; expired/invalid heartbeat and timestamp warnings tested, independent of completion."
     },
     {
       "id": "STATE-021",
       "phase": "state",
       "title": "Validate task and progress event name consistency",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2632,12 +2652,17 @@
         "src/manager.rs"
       ],
       "acceptance": "Parse TaskEntry.type/event_name and QuestTaskProgress.event_name; classify mismatched task reports as unverified/inconsistent, with synthetic tests.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41275135541",
+        "src/model.rs",
+        "src/manager.rs"
+      ],
       "depends_on": [
         "MODEL-010",
         "STATE-020"
       ],
-      "notes": ""
+      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Matching and mismatching task-config versus progress event names tested; mismatch gives Inconsistent rather than apparent completion."
     },
     {
       "id": "SEC-003",
