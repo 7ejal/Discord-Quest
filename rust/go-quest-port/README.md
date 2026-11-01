@@ -1,6 +1,6 @@
 # Go Discord Quest project → Rust port (offline, read-only)
 
-**Status:** Source implementation committed on November 1, 2026. The Rust CLI, parsing, analysis and 15 unit tests are authored. GitHub Actions checks the build and tests when CI is enabled. Do not treat tests as passing until a run finishes successfully.
+**Status:** **Built and tested successfully in GitHub Actions on November 1, 2026.** The Linux job passed all **15 Rust unit tests** and a CLI smoke test. The Windows job compiled `go-quest-port.exe`, passed a Windows CLI smoke test, and uploaded its executable artifact. [Successful CI run](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888).
 
 **Upstream:** [yeweroooo/Discord-Quest-Auto-Completion-Selfbot](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot), commit [352d7f457c9511bc9e7c9b940a71012bfb47572e](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e).
 
@@ -31,7 +31,7 @@ cargo run --release -- inspect .\examples\sample-quests.json --json
 cargo build --release
 ```
 
-The built executable, if compilation succeeds, is in `target\release\go-quest-port.exe` on Windows. You can create a `.bat` wrapper to launch that executable; `.bat` is only a launcher.
+The built executable is in `target\release\go-quest-port.exe` on Windows. **[Download the verified Windows EXE artifact from GitHub Actions](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888/artifacts/13063362600)** (GitHub sign-in may be required; artifacts may expire). You can create a `.bat` wrapper to launch that executable; `.bat` is only a launcher.
 
 On Linux/macOS: `cargo run --release -- demo`.
 
@@ -91,8 +91,10 @@ rust/go-quest-port/
 ## Testing/verification status
 
 - Source file presence verified in the GitHub repository.
-- 15 unit tests authored using invented offline JSON.
-- **Compilation and test execution not yet verified unless the associated GitHub Actions workflow has a passing run.** CI may be disabled by repository settings.
+- **15 unit tests passed** using invented offline JSON (Linux GitHub Actions).
+- **Linux CLI smoke test passed.**
+- **Windows EXE release build and CLI smoke test passed**, with [artifact uploaded](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888/artifacts/13063362600).
+- [Full successful workflow](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888).
 - No Rust CPU/RAM performance measurements have been taken.
 - No Discord Quest has been executed, and no universal Quest completion claim is made.
 
