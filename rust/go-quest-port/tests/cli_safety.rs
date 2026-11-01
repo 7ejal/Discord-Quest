@@ -119,3 +119,59 @@ fn json_report_labels_untrusted_source_and_has_version() {
     assert_eq!(report["input_trust"], "unverified_local_json");
     assert_eq!(report["analyzed"], 1);
 }
+
+#[test]
+fn native_cli_reads_unicode_spaced_path_and_utf8_bom() {
+    let stamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
+    let path = std::env::temp_dir().join(format!(
+        "quest JSON 日本語 with spaces {}-{stamp}.json",
+        std::process::id()
+    ));
+    let data = format!(
+        "\u{feff}{}",
+        serde_json::json!({
+            "id": "unicode-path",
+            "config": {
+                "expires_at": "2030-01-01T00:00:00Z",
+                "messages": {"quest_name": "مرحبا 日本語"}
+            }
+        })
+    );
+    fs::write(&path, data).unwrap();
+    let result = Command::new(env!("CARGO_BIN_EXE_go-quest-port"))
+        .arg("inspect")
+        .arg(&path)
+        .args(["--json", "--at", "2026-11-01T12:00:00Z"])
+        .output()
+        .unwrap();
+    fs::remove_file(path).unwrap();
+    assert!(result.status.success(), "{:?}", result.stderr);
+    let doc: serde_json::Value = serde_json::from_slice(&result.stdout).unwrap();
+    assert_eq!(doc["assessments"][0]["name"], "مرحبا 日本語");
+    assert_eq!(doc["assessments"][0]["quest_id"], "unicode-path");
+}
+
+#[test]
+fn native_cli_rejects_non_utf8_file_without_partial_json() {
+    let stamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
+    let path = std::env::temp_dir().join(format!(
+        "quest-non-utf8-{}-{stamp}.json",
+        std::process::id()
+    ));
+    fs::write(&path, [0xff, 0xfe]).unwrap();
+    let result = Command::new(env!("CARGO_BIN_EXE_go-quest-port"))
+        .arg("inspect")
+        .arg(&path)
+        .arg("--json")
+        .output()
+        .unwrap();
+    fs::remove_file(path).unwrap();
+    assert!(!result.status.success());
+    assert!(result.stdout.is_empty());
+}
