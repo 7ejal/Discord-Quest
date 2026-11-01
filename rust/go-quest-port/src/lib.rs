@@ -43,7 +43,9 @@ fn parse_quest_list(values: Vec<Value>) -> Result<Vec<Quest>, String> {
         let quest = parse_full_quest(value.clone(), index)?;
         if let Some(previous) = seen.get(&quest.id) {
             if previous != &value {
-                return Err(format!("Conflicting records for duplicate Quest ID at index {index}"));
+                return Err(format!(
+                    "Conflicting records for duplicate Quest ID at index {index}"
+                ));
             }
             continue;
         }
@@ -264,22 +266,35 @@ mod tests {
             q["config"]["expires_at"] = expiry;
             let quest = decode(q);
             assert_eq!(assess_quest(&quest, &now()).verdict, Verdict::Unsupported);
-            assert_eq!(QuestManager::new(vec![quest], None).filter_valid(now()).len(), 0);
+            assert_eq!(
+                QuestManager::new(vec![quest], None)
+                    .filter_valid(now())
+                    .len(),
+                0
+            );
         }
     }
 
     #[test]
     fn contradictory_milestone_ordering_is_inconsistent() {
-        for (first, second) in [("enrolled_at", "completed_at"),
-                                ("completed_at", "claimed_at")] {
+        for (first, second) in [
+            ("enrolled_at", "completed_at"),
+            ("completed_at", "claimed_at"),
+        ] {
             let mut q = fixture();
             q["user_status"][first] = json!("2026-11-01T12:00:00Z");
             q["user_status"][second] = json!("2026-11-01T11:00:00Z");
-            assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::Inconsistent);
+            assert_eq!(
+                assess_quest(&decode(q), &now()).verdict,
+                Verdict::Inconsistent
+            );
         }
         let mut q = fixture();
         q["config"]["starts_at"] = json!("2027-12-01T00:00:00Z");
-        assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::Inconsistent);
+        assert_eq!(
+            assess_quest(&decode(q), &now()).verdict,
+            Verdict::Inconsistent
+        );
     }
 
     #[test]
@@ -287,10 +302,16 @@ mod tests {
         let mut q = fixture();
         q["config"]["id"] = json!("wrong-id");
         q["user_status"]["completed_at"] = json!("2026-11-01T11:30:00Z");
-        assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::Inconsistent);
+        assert_eq!(
+            assess_quest(&decode(q), &now()).verdict,
+            Verdict::Inconsistent
+        );
         let mut q = fixture();
         q["user_status"]["quest_id"] = json!("other-id");
-        assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::Inconsistent);
+        assert_eq!(
+            assess_quest(&decode(q), &now()).verdict,
+            Verdict::Inconsistent
+        );
     }
 
     #[test]
@@ -299,9 +320,18 @@ mod tests {
         q["config"]["task_config_v2"]["tasks"]["WATCH_VIDEO"]["target"] = json!(-5);
         q["user_status"]["progress"]["PLAY_ACTIVITY"]["value"] = json!(-10);
         let outcome = assess_quest(&decode(q), &now());
-        assert!(outcome.tasks.iter().all(|task| task.numeric_goal_reached != Some(true)));
-        assert!(outcome.warnings.iter().any(|w| w.contains("invalid target")));
-        assert!(outcome.warnings.iter().any(|w| w.contains("invalid progress")));
+        assert!(outcome
+            .tasks
+            .iter()
+            .all(|task| task.numeric_goal_reached != Some(true)));
+        assert!(outcome
+            .warnings
+            .iter()
+            .any(|w| w.contains("invalid target")));
+        assert!(outcome
+            .warnings
+            .iter()
+            .any(|w| w.contains("invalid progress")));
     }
 
     #[test]
