@@ -1,0 +1,16 @@
+Go-to-Rust Quest Inspector — licensing and source attribution
+
+Source concept and wire models:
+  yeweroooo/Discord-Quest-Auto-Completion-Selfbot
+  https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot
+  Pinned Go reference: 352d7f457c9511bc9e7c9b940a71012bfb47572e
+  Copyright (c) 2026 yeweroooo
+  License: MIT (see LICENSE)
+
+This Rust implementation is an offline CLI for reading locally supplied Quest
+JSON. It does not operate a personal-account selfbot, earn rewards, or access
+Discord APIs. Its Rust source, test fixtures, and documentation were developed
+separately. External crate license obligations are not replaced by this file;
+verify them before redistribution.
+
+This notice does not assert an affiliation with or endorsement by Discord.
