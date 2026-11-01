@@ -28,7 +28,7 @@ impl QuestManager {
     pub fn filter_valid(&self, now: DateTime<Utc>) -> Vec<&Quest> {
         self.quests
             .iter()
-            .filter(|quest| !quest.is_completed() && !quest.is_expired(now))
+            .filter(|quest| !quest.is_completed() && !quest.is_expired(now.clone()))
             .collect()
     }
 
