@@ -60,11 +60,15 @@ Use the [capability contract](CAPABILITY-CONTRACT.md) to prevent ambiguous wordi
 |---|---:|
 | Done | 38 |
 | Partial | 13 |
-| Todo | 71 |
+| Todo | 72 |
 | Intentionally excluded | 4 |
-| **Total** | **126** |
+| **Total** | **127** |
 
-**Approved offline-scope required tasks:** 107, of which **71 remain open**. These totals describe engineering work inventory, **not** percent completion of a personal-account selfbot.
+**Approved offline-scope required tasks:** 108, of which **72 remain open**. These totals describe engineering work inventory, **not** percent completion of a personal-account selfbot.
+
+## Final dependency-ordering finding
+
+`OPS-009` was added after cross-checking the task DAG: some P0 release blockers depend on P1/P2 tasks that have not been completed. The existing generated dashboard sorts by priority but does not distinguish immediately actionable from blocked tasks. Until it is fixed, agents must check dependency statuses before selecting work. With this addition, the canonical inventory is **127 tasks**, including 13 new tasks beyond the previous 114.
 
 ## GO/NO-GO pre-code instructions
 
