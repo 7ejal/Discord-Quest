@@ -6,7 +6,13 @@ use go_quest_port::{
     parse_document,
 };
 use serde::Serialize;
-use std::{env, error::Error, fs, io::{self, Read, Write}, process};
+use std::{
+    env,
+    error::Error,
+    fs,
+    io::{self, Read, Write},
+    process,
+};
 
 #[derive(Serialize)]
 struct ExcludedQuestSummary {
