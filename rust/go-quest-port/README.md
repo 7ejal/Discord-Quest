@@ -20,6 +20,8 @@ The first script checks the progress manifest, 17 tracker unit tests, local docu
 
 See [Linux-only contract](migration/LINUX-ONLY.md), [main-server procedure](migration/MAIN-SERVER-WORKFLOW.md), and [release gates](migration/RELEASE-GATES.md).
 
+**Verified Linux release candidate:** [main-server test, archive SHA256 and measured CPU/RAM](migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md). For extraction, system libraries and CLI errors, see [Linux troubleshooting](docs/TROUBLESHOOTING.md). The archive is server-resident; no permanent public GitHub release has been claimed.
+
 ## Run the native CLI on Linux
 
 ```bash
