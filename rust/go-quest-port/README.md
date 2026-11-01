@@ -6,6 +6,10 @@
 
 This is a Rust port of the **reusable Go Quest data model, campaign filtering, classification, status evaluation and concurrent processing**. It is **not an operational selfbot** and does **not** copy the Go project's personal-account login, synthetic engagement/video/streaming methods, automated challenge solving, or reward-claiming behavior. Discord [does not permit applications that simulate Quest activity to earn rewards](https://discord.com/safety/platform-manipulation-policy-explainer).
 
+## Active Rust project — start here
+
+This is the **only active Rust CLI** in this repository. The separate `rust/quest-audit-cli` is a superseded non-runnable research library; never implement features there. For each task, start at [migration/START-HERE.md](migration/START-HERE.md), [migration/GAP-AUDIT.md](migration/GAP-AUDIT.md), and [migration/TEST-MATRIX.md](migration/TEST-MATRIX.md). The generated [progress dashboard](migration/PROGRESS.md) must agree with the canonical JSON and pass CI.
+
 ## AI progress tracker (read this before editing)
 
 **[Master migration progress checklist](migration/PROGRESS.md)** · **[Machine-readable task IDs, evidence and acceptance](migration/progress.json)** · **[Full Go-to-Rust spec](migration/SPEC.md)** · **[All original Go files/functions mapped](migration/GO-FILE-MAP.md)**.
