@@ -26,7 +26,7 @@ This repository documents Discord Quest task types, observable progress models, 
 
 ## Final pre-code audit
 
-The [source-level pre-code verification](rust/go-quest-port/migration/PRE-CODE-REVIEW-2026-11-01.md) expanded the Rust migration inventory to **126 tracked tasks** and corrected two overclaimed statuses. The [generated dashboard](rust/go-quest-port/migration/PROGRESS.md) is authoritative for current counts; the review explains exactly why tasks were added and why local JSON cannot authenticate server completion. The supported app is an offline analyzer, not a 1:1 operational Quest selfbot.
+The [source-level pre-code verification](rust/go-quest-port/migration/PRE-CODE-REVIEW-2026-11-01.md) expanded the Rust migration inventory to **127 tracked tasks** and corrected two overclaimed statuses. The [generated dashboard](rust/go-quest-port/migration/PROGRESS.md) is authoritative for current counts; the review explains exactly why tasks were added and why local JSON cannot authenticate server completion. The supported app is an offline analyzer, not a 1:1 operational Quest selfbot.
 
 ## Start for the next AI agent
 
