@@ -1,5 +1,7 @@
 # Quest inspector — Linux x86_64 (offline + opt-in live reads)
 
+Current explicit user scope adds a one-shot raw Authorization diagnostic; see [diagnostic contract](migration/RAW-HTTP-DIAGNOSTIC-2026-11-01.md). This supersedes older raw-header exclusions only for that command. Live personal-account checks remain UNTESTED and require explicit informed approval.
+
 A native Rust CLI for inspecting synthetic or sanitized local Quest JSON.
 The offline commands need no Discord installation, credentials or network connection.
 **Opt-in live commands** can perform limited genuine HTTPS reads: an unauthenticated

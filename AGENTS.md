@@ -1,5 +1,7 @@
 # AI agent entry point — Discord Quest Research
 
+Current explicit user scope adds a one-shot raw Authorization diagnostic; see [diagnostic contract](rust/go-quest-port/migration/RAW-HTTP-DIAGNOSTIC-2026-11-01.md). This supersedes older raw-header exclusions only for that command. Live personal-account checks remain UNTESTED and require explicit informed approval.
+
 **This repository is a source-backed research and Rust engineering project, not a verified universal Discord Quest completer.** Do not use real personal Discord account tokens or develop inauthentic reward-earning features.
 
 ## Current Linux-only override

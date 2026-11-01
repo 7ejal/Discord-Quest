@@ -1,7 +1,7 @@
 //! Linux Quest analysis: offline inspection plus explicit, read-only live API commands.
 use chrono::{DateTime, Utc};
 use go_quest_port::{
-    live::{self, LiveError},
+    live::{self, LiveError, RawProbe},
     manager::{try_analyze_parallel, QuestManager},
     output::{escape_terminal, LimitedWriter, MAX_OUTPUT_BYTES},
     parse_document,
@@ -77,10 +77,12 @@ Usage:
   go-quest-port inspect <local-quests.json|-> [same options]
   go-quest-port quest-config <public-quest-id> [--json]
   go-quest-port oauth-check --oauth-token-stdin [--json]
+  go-quest-port raw-http-check --token-stdin [--quests] [--json]
   --max-input-bytes N   Lower the 8388608-byte offline input cap
   --max-output-bytes N  Lower the 16777216-byte offline report cap
   --version | --help
-Live checks do not read personal Quests, simulate engagement, or claim rewards."#
+Raw HTTP is an opt-in, unsupported personal user-token diagnostic.
+No engagement simulation, Quest enrollment, or reward claims."#
     );
 }
 
@@ -155,6 +157,45 @@ fn run() -> Result<(), CliError> {
             println!("{serialized}");
         } else {
             println!("OAuth2 identity verified. This does not grant Quest access.");
+        }
+        return Ok(());
+    }
+    if command == "raw-http-check" {
+        let mut token_stdin = false;
+        let mut output_json = false;
+        let mut probe = RawProbe::Account;
+        for arg in args {
+            match arg.to_str() {
+                Some("--token-stdin") if !token_stdin => token_stdin = true,
+                Some("--quests") if probe == RawProbe::Account => probe = RawProbe::Quests,
+                Some("--json") if !output_json => output_json = true,
+                _ => {
+                    return Err(CliError::Usage(
+                        "raw-http-check expects --token-stdin [--quests] [--json]",
+                    ))
+                }
+            }
+        }
+        if !token_stdin {
+            return Err(CliError::Usage("raw-http-check requires --token-stdin"));
+        }
+        let result = live::raw_http_check_from_stdin(probe).map_err(CliError::Live)?;
+        if output_json {
+            let output = serde_json::to_string_pretty(&result)
+                .map_err(|_| CliError::Live(LiveError::InvalidResponse))?;
+            println!("{output}");
+        } else {
+            println!(
+                "Raw HTTP GET {}: HTTP {}; response shape valid.",
+                result.endpoint, result.http_status
+            );
+            if let Some(count) = result.quest_count {
+                println!("Quest records: {count}");
+            }
+            if let Some(count) = result.excluded_quest_count {
+                println!("Excluded Quest records: {count}");
+            }
+            println!("Not an official user-token API authentication method.");
         }
         return Ok(());
     }

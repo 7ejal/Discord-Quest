@@ -12,7 +12,7 @@ fn help_lists_live_commands_with_clear_limits() {
     assert!(text.contains("quest-config <public-quest-id>"));
     assert!(text.contains("oauth-check --oauth-token-stdin"));
     assert!(!text.contains(r"\n\"));
-    assert!(text.contains("do not read personal Quests"));
+    assert!(text.contains("No engagement simulation"));
 }
 
 #[test]

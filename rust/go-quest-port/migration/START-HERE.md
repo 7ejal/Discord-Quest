@@ -1,5 +1,7 @@
 # AI START HERE — next-session handoff
 
+Current user-requested scope: [one-shot raw HTTP diagnostic](RAW-HTTP-DIAGNOSTIC-2026-11-01.md). This narrowly supersedes older raw-token exclusions; live checks remain UNTESTED and require explicit informed consent.
+
 **Read this page first.** This file is meant for an AI agent without previous conversation context.
 
 ## Mandatory final audit gate

@@ -3143,11 +3143,14 @@
     {
       "status": "done",
       "evidence": [
-        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md"
+        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md",
+        "src/live.rs",
+        "tests/raw_cli.rs",
+        "migration/RAW-HTTP-DIAGNOSTIC-2026-11-01.md"
       ],
       "priority": "P0",
       "required_for_release": false,
-      "notes": "Documented opt-in scoped-OAuth credential threat model, redaction/redirect/proxy/timeout boundaries and synthetic-only test plan. This is a design task, NOT implemented credential support.",
+      "notes": "User requested one-shot raw-header read-only diagnostic implemented; synthetic main-server tests pass. Live account/Quest checks UNTESTED; no consent/credential supplied. See RAW-HTTP-DIAGNOSTIC-2026-11-01.md. Broader acceptance and platform approval are not established.",
       "id": "SEC-005",
       "phase": "security",
       "title": "Design safe local credential handling for the requested Go-style account check",
@@ -3195,11 +3198,13 @@
       "status": "partial",
       "evidence": [
         "src/live.rs",
-        "migration/LIVE-HTTP-VERIFICATION-2026-11-01.md"
+        "migration/LIVE-HTTP-VERIFICATION-2026-11-01.md",
+        "tests/raw_cli.rs",
+        "migration/RAW-HTTP-DIAGNOSTIC-2026-11-01.md"
       ],
       "priority": "P1",
       "required_for_release": false,
-      "notes": "Distinct official OAuth2 identity command implemented and synthetic tested under LIVE-002. The originally requested bare personal-token Go-style account check remains intentionally unsupported and this acceptance is NOT satisfied. No personal-token login was attempted.",
+      "notes": "User requested one-shot raw-header read-only diagnostic implemented; synthetic main-server tests pass. Live account/Quest checks UNTESTED; no consent/credential supplied. See RAW-HTTP-DIAGNOSTIC-2026-11-01.md. Broader acceptance and platform approval are not established.",
       "id": "NET-006",
       "phase": "network",
       "title": "Implement isolated opt-in read-only account connectivity check, only if service authorization permits",
@@ -3276,11 +3281,14 @@
       "evidence": [
         "src/mock_http.rs",
         "tests/offline_network_fixtures.rs",
-        "migration/OFFLINE-NETWORK-FIXTURES.md"
+        "migration/OFFLINE-NETWORK-FIXTURES.md",
+        "src/live.rs",
+        "tests/raw_cli.rs",
+        "migration/RAW-HTTP-DIAGNOSTIC-2026-11-01.md"
       ],
       "priority": "P1",
       "required_for_release": false,
-      "notes": "Virtual bounded mock transport exercises statuses/retry/deadline/no response text. Real authorized HTTP transport, true cancellation, rate-limit headers and resource verification await NET-006 approval.",
+      "notes": "User requested one-shot raw-header read-only diagnostic implemented; synthetic main-server tests pass. Live account/Quest checks UNTESTED; no consent/credential supplied. See RAW-HTTP-DIAGNOSTIC-2026-11-01.md. Broader acceptance and platform approval are not established.",
       "id": "NET-009",
       "phase": "network",
       "title": "Add bounded live HTTP transport lifecycle, timeout and rate-limit tests",
@@ -3421,7 +3429,7 @@
   "traceability_required": true,
   "requested_live_http_parity": {
     "recorded_on": "2026-11-01",
-    "status": "requested_not_implemented",
+    "status": "raw_diagnostic_synthetic_verified_live_untested",
     "reference": "migration/GO-LIVE-HTTP-REQUEST.md",
     "new_task_ids": [
       "AUD-009",
