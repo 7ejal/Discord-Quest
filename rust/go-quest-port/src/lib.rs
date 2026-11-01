@@ -3,6 +3,7 @@
 
 pub mod manager;
 pub mod model;
+pub mod output;
 
 use model::Quest;
 use serde_json::Value;
