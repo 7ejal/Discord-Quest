@@ -65,7 +65,7 @@ fn run() -> Result<(), Box<dyn Error>> {
     let now = Utc::now();
     let report = Report {
         analyzed: manager.quests().len(),
-        go_filter_valid: manager.filter_valid(now).len(),
+        go_filter_valid: manager.filter_valid(now.clone()).len(),
         go_filter_redeemable: manager.filter_redeemable().len(),
         enrollment_blocked_until,
         assessments: manager.assess_all(now, workers),
