@@ -139,8 +139,10 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
                     task_type_mismatch = true;
                 }
                 if !declared_type.is_empty() && task_family(declared_type) == "unknown" {
+                    // Future task identifiers may be valid but unknown to this
+                    // offline version. Warn without calling matching wire keys
+                    // contradictory. A differing map key is inconsistent above.
                     warnings.push(format!("Task {name} has an unrecognized declared type."));
-                    task_type_mismatch = true;
                 }
             }
             let progress = status.and_then(|s| s.progress.get(name));
