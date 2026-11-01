@@ -2,7 +2,7 @@
 use chrono::Utc;
 use go_quest_port::{manager::QuestManager, parse_quests};
 use serde::Serialize;
-use std::{env, error::Error, fs, process};
+use std::{env, error::Error, fs, io::Read, process};
 
 #[derive(Serialize)]
 struct Report {
@@ -38,7 +38,14 @@ fn run() -> Result<(), Box<dyn Error>> {
         "demo" => include_str!("../examples/sample-quests.json").to_owned(),
         "inspect" => {
             let path = args.next().ok_or("Missing local JSON file path")?;
-            fs::read_to_string(&path)?
+            let mut input = String::new();
+            fs::File::open(&path)?
+                .take((go_quest_port::MAX_JSON_BYTES + 1) as u64)
+                .read_to_string(&mut input)?;
+            if input.len() > go_quest_port::MAX_JSON_BYTES {
+                return Err("Local JSON exceeds the 8 MiB input limit".into());
+            }
+            input
         }
         _ => {
             usage();
@@ -79,6 +86,7 @@ fn run() -> Result<(), Box<dyn Error>> {
         return Ok(());
     }
 
+    println!("Input data: unverified local JSON (not authenticated server status).");
     println!(
         "Analyzed {} Quest record(s); Go-style eligible: {}; claimable: {}.",
         report.analyzed, report.go_filter_valid, report.go_filter_redeemable
