@@ -13,13 +13,13 @@ Project: [rust/go-quest-port](../) · Source: [pinned upstream Go](https://githu
 |---|---:|---|
 | DONE | 38 | Acceptance evidence recorded; check verification commit |
 | PARTIAL | 13 | Some implementation exists but acceptance incomplete |
-| TODO | 71 | Work not yet demonstrated |
+| TODO | 72 | Work not yet demonstrated |
 | EXCLUDED | 4 | Deliberately outside approved scope |
-| **TOTAL** | **126** | Inventory snapshot, not a completion percentage |
+| **TOTAL** | **127** | Inventory snapshot, not a completion percentage |
 
 ## Release-gating status (approved offline scope only)
 
-**107 required tasks · 71 open release gates · 36 done release gates.**
+**108 required tasks · 72 open release gates · 36 done release gates.**
 Optional and excluded tasks do not block release. See [release criteria](RELEASE-GATES.md). A green historical CI run does not verify future commits.
 
 ## Next uncompleted high-priority release gates
@@ -31,6 +31,7 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 | `DOC-005` | P0 | Document provenance limits and safe local JSON input workflows | `STATUS-013` |
 | `MODEL-010` | P0 | Check TaskEntry.type against task-map key and supported task family | `PARSE-010` |
 | `OPS-003` | P0 | Evidence must identify tested commit or immutable file and not just a claim | `OPS-002` |
+| `OPS-009` | P0 | Generate a dependency-aware, actually-startable next-task queue | `OPS-002`, `OPS-004` |
 | `PARSE-001` | P0 | Reject empty or invalid Quest objects instead of silently accepting {} | `MODEL-001` |
 | `PARSE-002` | P0 | Define duplicate quest IDs and reproduce intentional Go map-dedup semantics | `AUD-002` |
 | `PARSE-005` | P0 | Bound input file bytes, nesting depth, quest count, and output size | `CLI-003` |
@@ -43,7 +44,6 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 | `SEC-003` | P0 | Sanitize terminal control sequences and Unicode formatting attacks | `CLI-003` |
 | `STATE-019` | P0 | Validate Quest ID consistency across wrapper, config and user status | `PARSE-001`, `STATUS-010` |
 | `STATUS-010` | P0 | Validate completion/enrollment/claim timestamps instead of nonempty-string truthiness | `STATE-001` |
-| `STATUS-011` | P0 | Detect impossible ordering and contradictory status timestamps | `STATUS-010` |
 
 ## Detailed task inventory
 
@@ -236,6 +236,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `OPS-003` | TODO | P0 | Required | Evidence must identify tested commit or immutable file and not just a claim | Tracker records verification date, commit/run/source and CI status; checker warns on unverified or outdated 'done' reports. | `OPS-002` | — |
 | `OPS-004` | DONE | P0 | Required | Summarize release-gating versus optional tasks separately | Dashboard computes open release blockers from task metadata; excluded and optional tasks do not distort readiness percentage. | `OPS-002` | `migration/check_progress.py` |
 | `OPS-006` | DONE | P0 | Required | Provide one copy-paste next-session AI handoff with task order | Session entry names files, branch, actual status, top five dependencies, exact verification commands, and completion reporting format. | `DOC-003` | `migration/START-HERE.md` |
+| `OPS-009` | TODO | P0 | Required | Generate a dependency-aware, actually-startable next-task queue | Dashboard distinguishes P0 tasks whose dependencies are DONE from tasks blocked by PARTIAL/TODO prerequisites, lists blocker IDs/status/priority, and tests update the ready queue automatically after manifest changes. | `OPS-002`, `OPS-004` | — |
 | `OPS-005` | DONE | P1 | Required | Maintain architecture decision log and unresolved assumptions | ADR file records exact decision/rationale/evidence for source compatibility, offline-only scope, crate choices and stage changes. | `AUD-002` | `migration/DECISIONS.md` |
 | `OPS-007` | DONE | P1 | Required | Check markdown links and declared implemented paths in CI | CI catches broken repo-relative links and evidence paths marked as implemented; designed to avoid false failures for proposed paths. | `AUD-004` | `migration/check_links.py` |
 | `OPS-008` | DONE | P2 | Optional/excluded | PR/issue template requires task ID, tests, tracker update and residual risk | GitHub templates prompt authors for task IDs, evidence on current commit, docs status, policy scope and pending blockers. | `DOC-003` | `.github/pull_request_template.md` |
