@@ -48,6 +48,12 @@
 
 **State:** Accepted 2026-11-01. [LINUX-ONLY.md](LINUX-ONLY.md) supersedes earlier cross-platform scope. No GitHub-hosted actions and no persistent GitHub runner on production. Linux release candidates must include LICENSE/NOTICE, locked dependency inventory, hashes and exact source commit. Published GitHub release assets are a separate decision; a file on main-server is not public.
 
+## ADR-012 — User-requested Go-style live HTTP parity is a separate unimplemented milestone
+
+**State:** Requested, not yet accepted as a supported network mode, 2026-11-01. The user explicitly asked for raw personal-token HTTP `Authorization` behavior like the Go original, account connectivity testing, live Quest retrieval and fuller Go parity, on Linux-only/main-server-only. The [backlog](GO-LIVE-HTTP-REQUEST.md) and new task IDs `AUD-009`, `SEC-005`, `NET-005` through `NET-009`, `QA-011` and `AUD-010` record the request. They are TODO, do not imply approval or working code, and are **not** required for the existing offline release.
+
+**Decision boundary:** Before live network code, verify protocol, present-day access permissions, platform terms and credential handling. The raw header method in the original Go is not equivalent to supported OAuth2 permissions. The original personal-account selfbot, fabricated rewarded engagement, challenge bypass and reward-claiming exclusions remain unchanged unless independently evaluated and explicitly approved. Do not claim full Go parity from a read-only account check.
+
 ## Unresolved decisions requiring validation
 
 - How to represent incomplete `excluded_quests` without inventing a complete config (PARSE-003).
