@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "project": "7ejal/Discord-Quest",
   "component": "rust/go-quest-port",
   "recorded_on": "2026-11-01",
@@ -39,7 +39,9 @@
         "https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "INV-002",
@@ -57,7 +59,9 @@
         "https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "INV-003",
@@ -78,7 +82,9 @@
         "https://github.com/7ejal/Discord-Quest/blob/main/research/standalone/GO.md"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "ENV-001",
@@ -98,7 +104,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "ENV-002",
@@ -117,7 +125,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "ENV-003",
@@ -135,7 +145,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "ENV-004",
@@ -154,7 +166,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888/artifacts/13063362600"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "ENV-005",
@@ -172,7 +186,9 @@
       "depends_on": [
         "ENV-001"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "ENV-006",
@@ -190,7 +206,9 @@
       "depends_on": [
         "ENV-003"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "ENV-007",
@@ -208,7 +226,9 @@
       "depends_on": [
         "ENV-003"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "ENV-008",
@@ -227,7 +247,9 @@
         "ENV-004",
         "ENV-007"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": false
     },
     {
       "id": "ENV-009",
@@ -248,7 +270,9 @@
       "depends_on": [
         "INV-001"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "ENV-010",
@@ -266,7 +290,9 @@
       "depends_on": [
         "ENV-004"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": false
     },
     {
       "id": "MODEL-001",
@@ -286,7 +312,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "MODEL-002",
@@ -304,7 +332,9 @@
         "src/model.rs"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "MODEL-003",
@@ -324,7 +354,9 @@
       "depends_on": [
         "MODEL-002"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "MODEL-004",
@@ -344,7 +376,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "MODEL-005",
@@ -364,7 +398,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "MODEL-006",
@@ -383,7 +419,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "MODEL-007",
@@ -401,7 +439,9 @@
       "depends_on": [
         "MODEL-002"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "MODEL-008",
@@ -422,7 +462,9 @@
         "src/manager.rs"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "MODEL-009",
@@ -441,7 +483,9 @@
         "src/model.rs"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "STATE-001",
@@ -460,7 +504,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "STATE-002",
@@ -479,7 +525,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "STATE-003",
@@ -497,7 +545,9 @@
         "src/model.rs"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "STATE-004",
@@ -517,7 +567,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "STATE-005",
@@ -536,7 +588,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "STATE-006",
@@ -555,7 +609,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "STATE-007",
@@ -574,7 +630,9 @@
         "src/manager.rs"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "STATE-008",
@@ -592,7 +650,9 @@
         "src/manager.rs"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "STATE-009",
@@ -612,7 +672,9 @@
         "src/main.rs"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "CLI-001",
@@ -632,7 +694,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "CLI-002",
@@ -653,7 +717,9 @@
       "depends_on": [
         "CLI-001"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "CLI-003",
@@ -671,7 +737,9 @@
         "src/main.rs"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "CLI-004",
@@ -692,7 +760,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "PAR-001",
@@ -712,7 +782,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "PAR-002",
@@ -732,7 +804,9 @@
       "depends_on": [
         "PAR-001"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "PAR-003",
@@ -750,7 +824,9 @@
       "depends_on": [
         "PAR-001"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": false
     },
     {
       "id": "NET-001",
@@ -769,7 +845,9 @@
       "depends_on": [
         "STATE-005"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": false
     },
     {
       "id": "NET-002",
@@ -788,7 +866,9 @@
       "depends_on": [
         "NET-001"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": false
     },
     {
       "id": "NET-003",
@@ -808,7 +888,9 @@
       "depends_on": [
         "MODEL-002"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": false
     },
     {
       "id": "NET-004",
@@ -827,7 +909,9 @@
       "depends_on": [
         "NET-001"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": false
     },
     {
       "id": "TEST-001",
@@ -845,7 +929,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "TEST-002",
@@ -863,7 +949,9 @@
       "depends_on": [
         "TEST-001"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "TEST-003",
@@ -883,7 +971,9 @@
         "research/standalone/METHOD-VALIDATION-FIXTURES.md"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "TEST-004",
@@ -901,7 +991,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "TEST-005",
@@ -920,7 +1012,9 @@
       "depends_on": [
         "TEST-001"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": false
     },
     {
       "id": "SEC-001",
@@ -940,7 +1034,9 @@
         "src/lib.rs"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "SEC-002",
@@ -961,7 +1057,9 @@
       "depends_on": [
         "ENV-009"
       ],
-      "notes": ""
+      "notes": "",
+      "priority": "P2",
+      "required_for_release": true
     },
     {
       "id": "DOC-001",
@@ -980,7 +1078,9 @@
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "DOC-002",
@@ -1002,7 +1102,9 @@
         "migration/progress.json"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "DOC-003",
@@ -1022,7 +1124,9 @@
         "migration/AI-WORKFLOW.md"
       ],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "DOC-004",
@@ -1045,7 +1149,9 @@
       "depends_on": [
         "DOC-002"
       ],
-      "notes": "Python stdlib script validates IDs, statuses, evidence, dependencies, task rows and summary counts. --write updates current IDs/counts; CI check step passed in Linux test job for run 41258881189."
+      "notes": "Python stdlib script validates IDs, statuses, evidence, dependencies, task rows and summary counts. --write updates current IDs/counts; CI check step passed in Linux test job for run 41258881189.",
+      "priority": "P1",
+      "required_for_release": true
     },
     {
       "id": "SCOPE-001",
@@ -1061,7 +1167,9 @@
       "acceptance": "Do not implement; current project is an authorized/offline analytics client. Preserve conceptual source inventory only.",
       "evidence": [],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P3",
+      "required_for_release": false
     },
     {
       "id": "SCOPE-002",
@@ -1078,7 +1186,9 @@
       "acceptance": "Do not implement engagement spoofing; categorize prerequisites and interpret server-shaped reports only.",
       "evidence": [],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P3",
+      "required_for_release": false
     },
     {
       "id": "SCOPE-003",
@@ -1095,7 +1205,9 @@
       "acceptance": "No bypass of account verification, publisher achievements or reward claiming; keep documentation and data types.",
       "evidence": [],
       "depends_on": [],
-      "notes": ""
+      "notes": "",
+      "priority": "P3",
+      "required_for_release": false
     },
     {
       "id": "SCOPE-004",
@@ -1110,7 +1222,1198 @@
       "acceptance": "No universal 1:1 Quest selfbot acceptance claim; authentic external actions remain outside this project.",
       "evidence": [],
       "depends_on": [],
+      "notes": "",
+      "priority": "P3",
+      "required_for_release": false
+    },
+    {
+      "id": "AUD-001",
+      "phase": "audit",
+      "title": "Verify real task-group schema variants against sanitized fixtures",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:TaskConfigV2"
+      ],
+      "rust_paths": [
+        "tests/schema_variants.rs"
+      ],
+      "acceptance": "Interpret join_operator/string/numeric and config v1/v2 using vetted sanitized fixtures; unsupported representations remain explicitly unknown.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-004"
+      ],
+      "notes": "Do not treat speculative unofficial field structures as confirmed."
+    },
+    {
+      "id": "AUD-002",
+      "phase": "audit",
+      "title": "Diff Go behavior and Rust behavior with a version-pinned contract table",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "manager.go",
+        "quest.go",
+        "client.go"
+      ],
+      "rust_paths": [
+        "migration/GO-FILE-MAP.md",
+        "migration/GAP-AUDIT.md"
+      ],
+      "acceptance": "For every Go state/filter/dispatcher method, identify exact Rust behavior, intentional differences, and expected offline fixture outputs.",
+      "evidence": [],
+      "depends_on": [
+        "INV-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "AUD-003",
+      "phase": "audit",
+      "title": "Resolve duplicate Rust project ownership",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "main.go"
+      ],
+      "rust_paths": [
+        "rust/quest-audit-cli/README.md",
+        "rust/go-quest-port/AGENTS.md"
+      ],
+      "acceptance": "Document and enforce rust/go-quest-port as the only active code path; archive or explicitly label rust/quest-audit-cli as nonshippable research to prevent agents editing it by mistake.",
+      "evidence": [],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "AUD-004",
+      "phase": "audit",
+      "title": "Audit source links, file map, and documentation consistency",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/GO-FILE-MAP.md",
+        "migration/check_progress.py"
+      ],
+      "acceptance": "Automated check verifies tracked relative markdown links, source-file mapping, and no unresolved placeholder file paths presented as implemented.",
+      "evidence": [],
+      "depends_on": [
+        "DOC-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "AUD-005",
+      "phase": "audit",
+      "title": "Prevent drift between Rust task families and data/task-types.json",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "quest.go:GetTaskName"
+      ],
+      "rust_paths": [
+        "src/manager.rs",
+        "data/task-types.json"
+      ],
+      "acceptance": "Add a deterministic test or generator comparing recognized identifiers and deprecated tags against catalog with a pinned interpretation.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-005"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "AUD-006",
+      "phase": "audit",
+      "title": "Inventory original feature claims versus actually evidenced operation",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "README.md",
+        "manager.go"
+      ],
+      "rust_paths": [
+        "migration/CAPABILITY-CONTRACT.md"
+      ],
+      "acceptance": "Matrix must distinguish source handler, precondition, server confirmation, and real-world verification; no handler or README claim may imply supported engagement.",
+      "evidence": [],
+      "depends_on": [
+        "INV-003"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "AUD-007",
+      "phase": "audit",
+      "title": "Clean literal escaped newline sequences and stale links in root documentation",
+      "status": "todo",
+      "priority": "P2",
+      "required_for_release": false,
+      "go_source": [
+        "README.md"
+      ],
+      "rust_paths": [
+        "README.md"
+      ],
+      "acceptance": "Root README headings, relative links and status statements render correctly on GitHub; targeted formatting check verifies no literal '\\n\\n' artifacts in prose.",
+      "evidence": [],
+      "depends_on": [
+        "DOC-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "AUD-008",
+      "phase": "audit",
+      "title": "Document upstream code/license provenance and version baselines",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "LICENSE",
+        "go.mod",
+        "go.sum"
+      ],
+      "rust_paths": [
+        "migration/SOURCE-BASELINE.md"
+      ],
+      "acceptance": "Record upstream Git SHA, original Go dependencies, Rust toolchain minimum, scoped license obligations, and evidence for each third-party claim.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-009"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "PARSE-001",
+      "phase": "parser",
+      "title": "Reject empty or invalid Quest objects instead of silently accepting {}",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:Quest"
+      ],
+      "rust_paths": [
+        "src/lib.rs",
+        "src/model.rs"
+      ],
+      "acceptance": "Synthetic {} and missing/blank quest ID or missing config produce a typed invalid/unknown result; never classify as normal not-enrolled without warning.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "PARSE-002",
+      "phase": "parser",
+      "title": "Define duplicate quest IDs and reproduce intentional Go map-dedup semantics",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "manager.go:NewQuestManager"
+      ],
+      "rust_paths": [
+        "src/lib.rs",
+        "src/manager.rs"
+      ],
+      "acceptance": "Multiple entries with same ID have documented deterministic conflict handling, not accidental double counting; tests cover same/different statuses.",
+      "evidence": [],
+      "depends_on": [
+        "AUD-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "PARSE-003",
+      "phase": "parser",
+      "title": "Retain excluded_quests and preview/traffic metadata in reports",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:AllQuestsResponse",
+        "types.go:QuestPartial"
+      ],
+      "rust_paths": [
+        "src/model.rs",
+        "src/lib.rs",
+        "src/main.rs"
+      ],
+      "acceptance": "Go wrapper's excluded list is not discarded, and incomplete excluded configurations are labeled partial/not evaluated; tests prove no silent loss.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "PARSE-004",
+      "phase": "parser",
+      "title": "Preserve unknown future JSON fields when required for round-trip",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": false,
+      "go_source": [
+        "types.go"
+      ],
+      "rust_paths": [
+        "src/model.rs"
+      ],
+      "acceptance": "Schema retains unknown fields or outputs explicit lossiness notices, with fixture round-trip tests for nested extension fields.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-003"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "PARSE-005",
+      "phase": "parser",
+      "title": "Bound input file bytes, nesting depth, quest count, and output size",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "main.go",
+        "types.go"
+      ],
+      "rust_paths": [
+        "src/main.rs",
+        "src/lib.rs"
+      ],
+      "acceptance": "Oversized/deep/wide synthetic documents fail cleanly with typed errors and no unbounded allocations; limits are configurable/documented.",
+      "evidence": [],
+      "depends_on": [
+        "CLI-003"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "PARSE-006",
+      "phase": "parser",
+      "title": "Validate target/progress numeric domain and overflow cases",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:TaskEntry",
+        "types.go:QuestTaskProgress"
+      ],
+      "rust_paths": [
+        "src/manager.rs",
+        "tests/"
+      ],
+      "acceptance": "Negative, zero, nonfinite/out-of-range targets and values cannot become confirmed completion; warnings/tests cover arithmetic safety.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-008"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "PARSE-007",
+      "phase": "parser",
+      "title": "Differentiate null, missing, wrong type, and invalid nested status",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:QuestUserStatus"
+      ],
+      "rust_paths": [
+        "src/model.rs",
+        "tests/"
+      ],
+      "acceptance": "For timestamps, user_status and progress, synthetic wrong-type fields lead to explicit invalid/unknown handling rather than confusing defaults.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-008"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "PARSE-008",
+      "phase": "parser",
+      "title": "Handle UTF-8, BOM, Windows paths, and malformed JSON safely",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "main.go"
+      ],
+      "rust_paths": [
+        "src/main.rs",
+        "tests/"
+      ],
+      "acceptance": "CLI tests cover valid Unicode names and paths, BOM policy, malformed UTF-8, and stable diagnostic output under Windows/Linux.",
+      "evidence": [],
+      "depends_on": [
+        "CLI-003"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "PARSE-009",
+      "phase": "parser",
+      "title": "Document strict versus tolerant parsing for historical configuration",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:TaskConfigV2"
+      ],
+      "rust_paths": [
+        "src/model.rs",
+        "tests/"
+      ],
+      "acceptance": "Tests show version fallback rules, absent task map, unexpected join-operator formats and migration precedence; no guessed fallback silently succeeds.",
+      "evidence": [],
+      "depends_on": [
+        "AUD-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "PARSE-010",
+      "phase": "parser",
+      "title": "Measure field coverage against original types.go not just top-level names",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "types.go"
+      ],
+      "rust_paths": [
+        "migration/GO-FILE-MAP.md",
+        "src/model.rs"
+      ],
+      "acceptance": "Every Go struct field has a Rust counterpart, intentional ignore, or explicit annotation in a generated/manual coverage table; compile tests for supported families.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "STATUS-010",
+      "phase": "state",
+      "title": "Validate completion/enrollment/claim timestamps instead of nonempty-string truthiness",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "quest.go"
+      ],
+      "rust_paths": [
+        "src/model.rs",
+        "src/manager.rs"
+      ],
+      "acceptance": "Whitespace and non-RFC3339 timestamps cannot establish a server-confirmed state; valid timezone offsets are supported.",
+      "evidence": [],
+      "depends_on": [
+        "STATE-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "STATUS-011",
+      "phase": "state",
+      "title": "Detect impossible ordering and contradictory status timestamps",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "quest.go",
+        "types.go"
+      ],
+      "rust_paths": [
+        "src/manager.rs"
+      ],
+      "acceptance": "Synthetic claim-before-completion, completion-before-enrollment, starts-after-expiry, and invalid clocks yield explicit inconsistent/unknown states.",
+      "evidence": [],
+      "depends_on": [
+        "STATUS-010"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "STATUS-012",
+      "phase": "state",
+      "title": "Avoid silent unexpired treatment of malformed/missing expiration dates",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "quest.go:IsExpired"
+      ],
+      "rust_paths": [
+        "src/model.rs",
+        "src/manager.rs"
+      ],
+      "acceptance": "Distinguish missing/invalid expires_at from valid future expiry and display uncertainty in filters/status; tests cover malformed dates.",
+      "evidence": [],
+      "depends_on": [
+        "STATE-008"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "STATUS-013",
+      "phase": "state",
+      "title": "Label provenance and trust for each reported milestone",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:QuestUserStatus"
+      ],
+      "rust_paths": [
+        "src/manager.rs",
+        "src/main.rs"
+      ],
+      "acceptance": "Output explicitly identifies source field, local inference, synthetic fixture versus server-shaped record, and never presents locally inferred status as authoritative.",
+      "evidence": [],
+      "depends_on": [
+        "STATE-007"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "STATUS-014",
+      "phase": "state",
+      "title": "Keep unsupported/unknown tasks distinguishable even on completed Quest records",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "manager.go:DoingQuest"
+      ],
+      "rust_paths": [
+        "src/manager.rs"
+      ],
+      "acceptance": "Mixed known/unknown and deprecated tasks retain warnings; Quest completed_at may be reported but never construed as implemented task handler support.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-005"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "STATUS-015",
+      "phase": "state",
+      "title": "Verify AND/OR groups with mixed progress, missing task statuses, and other operators",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "manager.go:DoingQuest"
+      ],
+      "rust_paths": [
+        "tests/task_groups.rs"
+      ],
+      "acceptance": "Property/table tests cover single/AND/OR, unknown operator, unknown/missing task statuses and conditional eligibility without false success.",
+      "evidence": [],
+      "depends_on": [
+        "STATE-005",
+        "AUD-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "STATUS-016",
+      "phase": "state",
+      "title": "Inject an evaluation clock and add deterministic --at option",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "quest.go:IsExpired"
+      ],
+      "rust_paths": [
+        "src/main.rs",
+        "src/manager.rs"
+      ],
+      "acceptance": "Tests/CLI can evaluate a timestamp without Utc::now nondeterminism; DST/UTC offsets and boundary-time cases are covered.",
+      "evidence": [],
+      "depends_on": [
+        "STATE-008"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "STATUS-017",
+      "phase": "state",
+      "title": "Compare Go and Rust filtering behavior for preview, blocking, starts and duplicates",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "manager.go:NewQuestManager",
+        "manager.go:FilterValid"
+      ],
+      "rust_paths": [
+        "src/manager.rs",
+        "tests/filter_parity.rs"
+      ],
+      "acceptance": "Document identical and intentionally different filter results with named fixtures; no ambiguous parity claim.",
+      "evidence": [],
+      "depends_on": [
+        "AUD-002",
+        "PARSE-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "STATUS-018",
+      "phase": "state",
+      "title": "Model claimable, claimed, and externally redeemed as separate evidence states",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "manager.go:FilterRedeemable"
+      ],
+      "rust_paths": [
+        "src/manager.rs"
+      ],
+      "acceptance": "Result format and tests differentiate Quest completion, reward claim availability/confirmation, and externally unknown redemption.",
+      "evidence": [],
+      "depends_on": [
+        "STATE-007",
+        "MODEL-009"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "UX-001",
+      "phase": "ux",
+      "title": "Support --version, --verbose, robust --help and CLI test coverage",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "main.go"
+      ],
+      "rust_paths": [
+        "src/main.rs"
+      ],
+      "acceptance": "Stable version/help output and verbose diagnostic mode that does not disclose sensitive data; tests cover invalid flags.",
+      "evidence": [],
+      "depends_on": [
+        "CLI-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "UX-002",
+      "phase": "ux",
+      "title": "Version JSON output schema and keep stdout machine-readable",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "main.go"
+      ],
+      "rust_paths": [
+        "src/main.rs",
+        "tests/cli_golden.rs"
+      ],
+      "acceptance": "--json emits exactly one documented valid JSON result on stdout with schema_version, errors on stderr and deterministic field naming; golden tests pass.",
+      "evidence": [],
+      "depends_on": [
+        "CLI-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "UX-003",
+      "phase": "ux",
+      "title": "Add optional stdin/pipeline support with bounded input",
+      "status": "todo",
+      "priority": "P2",
+      "required_for_release": false,
+      "go_source": [
+        "main.go"
+      ],
+      "rust_paths": [
+        "src/main.rs"
+      ],
+      "acceptance": "A documented '-' stdin input works with identical validation to inspect file and rejects oversized streams; no network or token collection.",
+      "evidence": [],
+      "depends_on": [
+        "PARSE-005"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "UX-004",
+      "phase": "ux",
+      "title": "Document stable exit codes for invalid input and execution errors",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "main.go"
+      ],
+      "rust_paths": [
+        "src/main.rs",
+        "src/errors.rs"
+      ],
+      "acceptance": "Typed failures have predictable nonzero exit codes; success/empty report semantics are documented and tested on both platforms.",
+      "evidence": [],
+      "depends_on": [
+        "CLI-003"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "UX-005",
+      "phase": "ux",
+      "title": "Test Windows path quoting, Unicode and terminal encoding behavior",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "main.go"
+      ],
+      "rust_paths": [
+        "src/main.rs",
+        "tests/"
+      ],
+      "acceptance": "Windows smoke tests cover spaces and non-ASCII filenames and output, including bat wrapper if added.",
+      "evidence": [],
+      "depends_on": [
+        "PARSE-008"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "UX-006",
+      "phase": "ux",
+      "title": "Keep debug logs sanitized and do not echo raw input or secrets",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "main.go"
+      ],
+      "rust_paths": [
+        "src/main.rs"
+      ],
+      "acceptance": "Tests show token-like strings inside malformed JSON/errors cannot be emitted; diagnostic truncation and escaping documented.",
+      "evidence": [],
+      "depends_on": [
+        "SEC-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "QA-001",
+      "phase": "quality",
+      "title": "Maintain test-to-requirement traceability for all release-gating tasks",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/TEST-MATRIX.md"
+      ],
+      "acceptance": "Every release-gate task has test file/case ID or a verified non-code acceptance artifact; CI checks missing test mapping.",
+      "evidence": [],
+      "depends_on": [
+        "TEST-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "QA-002",
+      "phase": "quality",
+      "title": "Property tests and fuzz harness for schema and untrusted JSON",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "types.go"
+      ],
+      "rust_paths": [
+        "tests/",
+        "fuzz/"
+      ],
+      "acceptance": "Fuzz/property tests demonstrate no panics and stable unknown/invalid classification with bounded synthetic inputs; CI smoke-level fuzz schedule specified.",
+      "evidence": [],
+      "depends_on": [
+        "PARSE-005"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "QA-003",
+      "phase": "quality",
+      "title": "Golden CLI snapshots with deterministic fixture time and text/JSON outputs",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "main.go"
+      ],
+      "rust_paths": [
+        "tests/golden/"
+      ],
+      "acceptance": "Committed expected outputs compare identically on Windows/Linux with normalized paths/timezones; fixture changes reviewed.",
+      "evidence": [],
+      "depends_on": [
+        "STATUS-016",
+        "UX-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "QA-004",
+      "phase": "quality",
+      "title": "Stress test duplicate IDs, 100k mock tasks, large values and empty lists",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "manager.go",
+        "types.go"
+      ],
+      "rust_paths": [
+        "tests/stress.rs"
+      ],
+      "acceptance": "Test resource limits, correct ordering, duplicate handling and no panic on synthetic large/empty documents.",
+      "evidence": [],
+      "depends_on": [
+        "PARSE-005",
+        "PARSE-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "QA-005",
+      "phase": "quality",
+      "title": "Negative end-to-end test ensures no Discord network, user-token, or reward submission",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "main.go",
+        "client.go"
+      ],
+      "rust_paths": [
+        "tests/no_network.rs"
+      ],
+      "acceptance": "Offline CLI works with network blocked and denies user-token operation flags; evidence proves no credential requirement.",
+      "evidence": [],
+      "depends_on": [
+        "SEC-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "QA-006",
+      "phase": "quality",
+      "title": "Reproducible CPU/RAM performance and binary-size measurements",
+      "status": "todo",
+      "priority": "P2",
+      "required_for_release": false,
+      "go_source": [
+        "main.go"
+      ],
+      "rust_paths": [
+        "benches/"
+      ],
+      "acceptance": "Benchmark setup, platform/hardware, time/memory and reproducible input sets published; no speculative improvement claims.",
+      "evidence": [],
+      "depends_on": [
+        "TEST-005"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "QA-007",
+      "phase": "quality",
+      "title": "Regression corpus for source-level failures in related Go/Python/TS projects",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "manager.go",
+        "client.go"
+      ],
+      "rust_paths": [
+        "tests/regressions/"
+      ],
+      "acceptance": "Each known false-success, infinite retry, stale status and conditional EventEmitter case has a synthetic input and expected safe diagnostic.",
+      "evidence": [],
+      "depends_on": [
+        "TEST-003"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "QA-008",
+      "phase": "quality",
+      "title": "Test tracker checker itself against malformed manifests",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/test_check_progress.py"
+      ],
+      "acceptance": "Unit tests confirm checker rejects duplicate IDs, broken deps/cycles, stale Markdown, invalid statuses and nonexistent path evidence appropriately.",
+      "evidence": [],
+      "depends_on": [
+        "OPS-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "REL-001",
+      "phase": "release",
+      "title": "Pin rust-toolchain, MSRV and target architecture policy",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "go.mod"
+      ],
+      "rust_paths": [
+        "rust-toolchain.toml"
+      ],
+      "acceptance": "rust-toolchain.toml or documented MSRV consistent with CI; linux/windows target triples and version bump policy explicit.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-005"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "REL-002",
+      "phase": "release",
+      "title": "Build and smoke test Linux and Windows artifacts for tagged commit",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        ".github/workflows/*"
+      ],
+      "rust_paths": [
+        ".github/workflows/release.yml"
+      ],
+      "acceptance": "Both platform binaries built on tag, rerun smoke tests against artifacts, record target and checksums.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-007"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "REL-003",
+      "phase": "release",
+      "title": "Publish versioned release notes, SHA256 and release assets",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "README.md"
+      ],
+      "rust_paths": [
+        ".github/workflows/release.yml"
+      ],
+      "acceptance": "A durable GitHub release (not expiring Actions artifacts only) with checksum manifest, notes, limitations and reproducible tag.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-008"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "REL-004",
+      "phase": "release",
+      "title": "Harden CI permissions, action pinning and dependency updates",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        ".github/workflows/*"
+      ],
+      "rust_paths": [
+        ".github/workflows/rust-go-quest-port.yml"
+      ],
+      "acceptance": "Set least-privilege permissions, avoid broad tokens, pin actions or document version policy, scope PR workflows and dependabot policy.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-006"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "REL-005",
+      "phase": "release",
+      "title": "Generate SBOM or dependency/license inventory for release",
+      "status": "todo",
+      "priority": "P2",
+      "required_for_release": false,
+      "go_source": [
+        "go.sum",
+        "LICENSE"
+      ],
+      "rust_paths": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "acceptance": "Catalog all transitive crates and licenses, verify upstream notice obligations, attach inventory to release.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-009",
+        "ENV-005"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "REL-006",
+      "phase": "release",
+      "title": "Check reproducible locked builds and supply-chain provenance",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "go.sum"
+      ],
+      "rust_paths": [
+        "Cargo.lock",
+        ".github/workflows/"
+      ],
+      "acceptance": "Build with --locked from clean checkout, checksum input lockfile, document signing/provenance limitation.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-005",
+        "REL-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "REL-007",
+      "phase": "release",
+      "title": "Document artifact retention and last-verified commit instead of stale EXE links",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "README.md"
+      ],
+      "rust_paths": [
+        "README.md",
+        "migration/progress.json"
+      ],
+      "acceptance": "README and tracker state which Git commit each binary represents, link stable release or note expiry; no latest-success ambiguity.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-004"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "REL-008",
+      "phase": "release",
+      "title": "Create final release readiness checklist with stop conditions",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/RELEASE-GATES.md"
+      ],
+      "acceptance": "Must-pass checklist covers tests, release source, schema conformance, policy scope, licenses, docs, reproducibility and rollback.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-008"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "OPS-001",
+      "phase": "tracking",
+      "title": "Regenerate Markdown task rows automatically from canonical JSON",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/check_progress.py"
+      ],
+      "acceptance": "Adding/removing a task ID through JSON and --write updates whole table, phase headings, counts without manual copying, preserving existing curated prose.",
+      "evidence": [],
+      "depends_on": [
+        "DOC-004"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "OPS-002",
+      "phase": "tracking",
+      "title": "Validate expanded tracker schema, dependencies, cycles, and priorities",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/check_progress.py",
+        "migration/progress.json"
+      ],
+      "acceptance": "Checker enforces required fields, unique IDs, permitted statuses/P0-P3, release_gate flags, DAG dependencies and consistent summaries.",
+      "evidence": [],
+      "depends_on": [
+        "DOC-004"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "OPS-003",
+      "phase": "tracking",
+      "title": "Evidence must identify tested commit or immutable file and not just a claim",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/progress.json",
+        "migration/AI-WORKFLOW.md"
+      ],
+      "acceptance": "Tracker records verification date, commit/run/source and CI status; checker warns on unverified or outdated 'done' reports.",
+      "evidence": [],
+      "depends_on": [
+        "OPS-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "OPS-004",
+      "phase": "tracking",
+      "title": "Summarize release-gating versus optional tasks separately",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/PROGRESS.md"
+      ],
+      "acceptance": "Dashboard computes open release blockers from task metadata; excluded and optional tasks do not distort readiness percentage.",
+      "evidence": [],
+      "depends_on": [
+        "OPS-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "OPS-005",
+      "phase": "tracking",
+      "title": "Maintain architecture decision log and unresolved assumptions",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/DECISIONS.md"
+      ],
+      "acceptance": "ADR file records exact decision/rationale/evidence for source compatibility, offline-only scope, crate choices and stage changes.",
+      "evidence": [],
+      "depends_on": [
+        "AUD-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "OPS-006",
+      "phase": "tracking",
+      "title": "Provide one copy-paste next-session AI handoff with task order",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/START-HERE.md"
+      ],
+      "acceptance": "Session entry names files, branch, actual status, top five dependencies, exact verification commands, and completion reporting format.",
+      "evidence": [],
+      "depends_on": [
+        "DOC-003"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "OPS-007",
+      "phase": "tracking",
+      "title": "Check markdown links and declared implemented paths in CI",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/check_links.py"
+      ],
+      "acceptance": "CI catches broken repo-relative links and evidence paths marked as implemented; designed to avoid false failures for proposed paths.",
+      "evidence": [],
+      "depends_on": [
+        "AUD-004"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "OPS-008",
+      "phase": "tracking",
+      "title": "PR/issue template requires task ID, tests, tracker update and residual risk",
+      "status": "todo",
+      "priority": "P2",
+      "required_for_release": false,
+      "go_source": [
+        ".github/"
+      ],
+      "rust_paths": [
+        ".github/pull_request_template.md"
+      ],
+      "acceptance": "GitHub templates prompt authors for task IDs, evidence on current commit, docs status, policy scope and pending blockers.",
+      "evidence": [],
+      "depends_on": [
+        "DOC-003"
+      ],
       "notes": ""
     }
-  ]
+  ],
+  "migration_mode": "native offline Quest analysis; excludes user-account selfbot impersonation and engagement spoofing",
+  "release_semantics": "done/partial/todo denote engineering evidence. Required_for_release gates apply only to approved offline scope; excluded tasks are not release blockers. A historical green CI run does not validate later commits."
 }
