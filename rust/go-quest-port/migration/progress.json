@@ -10,15 +10,18 @@
   "verification": {
     "kind": "linux_main_server_only",
     "result": "success",
-    "head_sha": "44dfcf924ec805729d1ac800c3294d344bce588e",
-    "linux_test_count": 66,
-    "python_tracker_test_count": 17,
-    "archive_path": "/root/quest-rust-finish-audit-20261101/rust/go-quest-port/dist/linux-x86_64/go-quest-port-0.1.0-linux-x86_64-44dfcf924ec8.tar.gz",
-    "archive_sha256": "21e53ea165b11f7c70e27f5bcb13020ee617506c134c1a358883d1b1d173d85e",
-    "main_server_test_record": "migration/MAIN-SERVER-NETWORK-ISOLATION-2026-11-01.md",
+    "verified_on": "2026-11-01",
+    "head_sha": "863aab7dfb3ab91cedc92b51464b03d9b5149671",
+    "linux_test_count": 99,
+    "python_tracker_test_count": 23,
+    "archive_path": "/root/quest-rust-ci-20261101/rust/go-quest-port/dist/linux-x86_64/go-quest-port-0.1.0-linux-x86_64-863aab7dfb3a.tar.gz",
+    "archive_sha256": "bc222238e564949c103ef6e7c0f79dd7ae6d3f57735c1d6b6781d8c6f666d7d8",
+    "binary_sha256": "a4b91229b616bda3edcbb335a240da236310658cb94f200047d48420ddb71df6",
+    "main_server_test_record": "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+    "gateway_job": "job_01M6BDN67A00GM33D7NPA1Q9SE",
     "hosted_actions": false,
     "windows_supported": false,
-    "notes": "Verified specific source commit on user-authorized main-server using Linux-only CLI tests and no-network namespace. Future tracker/doc commits require their own consistency verification. No public release claimed."
+    "notes": "Verified optimized Linux candidate; modern task-group samples/public release remain open. Later docs/tracker commits must pass consistency and same-source checks; source-change warnings compare actual code paths."
   },
   "status_meanings": {
     "done": "Implemented or documented, with listed evidence. Historical build evidence may not cover later changes.",
@@ -46,7 +49,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "INV-002",
@@ -66,7 +70,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "INV-003",
@@ -89,7 +94,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "ENV-001",
@@ -111,7 +117,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "ENV-002",
@@ -132,7 +139,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "ENV-003",
@@ -196,30 +204,33 @@
       ],
       "notes": "Verified with 23 passing Rust tests and the locked Linux/Windows CI workflow on commit 36e386b7.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "ENV-006",
       "phase": "build",
       "title": "Add fmt, clippy and dependency audit checks",
-      "status": "partial",
+      "status": "done",
       "go_source": [
         ".github"
       ],
       "rust_paths": [
-        ".github/workflows/rust-go-quest-port.yml"
+        "scripts/test-linux.sh",
+        "migration/DEPENDENCY-REVIEW.md"
       ],
       "acceptance": "CI fails on cargo fmt --check and clippy -D warnings; audit policy documented.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01.md",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "ENV-003"
       ],
-      "notes": "Partial improvements verified; remaining acceptance criteria must be tested separately.",
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "ENV-007",
@@ -230,7 +241,8 @@
         ".github/workflows/*"
       ],
       "rust_paths": [
-        ".github/workflows/rust-go-quest-port.yml"
+        "scripts/package-linux.sh",
+        "scripts/test-linux.sh"
       ],
       "acceptance": "scripts/package-linux.sh builds, tests and archives native Linux executable, includes README/NOTICE/LICENSE/build-info and checksums; server artifact path, SHA256 and executable dependencies verified.",
       "evidence": [
@@ -243,7 +255,8 @@
       ],
       "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "ENV-008",
@@ -291,7 +304,8 @@
       ],
       "notes": "Original upstream MIT license text included verbatim; NOTICE identifies pinned Go revision.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "ENV-010",
@@ -333,13 +347,14 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "MODEL-002",
       "phase": "models",
       "title": "Port core Quest, status, task, reward data types",
-      "status": "partial",
+      "status": "done",
       "go_source": [
         "types.go"
       ],
@@ -348,18 +363,20 @@
       ],
       "acceptance": "All original data types and field mappings reviewed; supported fields deserialized with tests; absent upstream types explicitly documented.",
       "evidence": [
-        "src/model.rs"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [],
-      "notes": "",
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "MODEL-003",
       "phase": "models",
       "title": "Preserve optional nested metadata, assets and unknown fields",
-      "status": "todo",
+      "status": "done",
       "go_source": [
         "types.go:QuestAssets",
         "types.go:QuestVideoMetadata",
@@ -369,13 +386,17 @@
         "src/model.rs"
       ],
       "acceptance": "Assets, gradients, metadata and optional fields round-trip or preserve unknown data; regression tests pass.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "MODEL-002"
       ],
-      "notes": "",
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "MODEL-004",
@@ -397,7 +418,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "MODEL-005",
@@ -419,7 +441,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "MODEL-006",
@@ -440,13 +463,14 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "MODEL-007",
       "phase": "models",
       "title": "Typed task enum, unknown variants and versioned schemas",
-      "status": "todo",
+      "status": "done",
       "go_source": [
         "types.go:TaskEntry"
       ],
@@ -454,19 +478,23 @@
         "src/model.rs"
       ],
       "acceptance": "Typed parsing supports unknown future variants without accidentally asserting support; tests cover drift.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "MODEL-002"
       ],
-      "notes": "",
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "MODEL-008",
       "phase": "models",
       "title": "Validate timestamps, invalid values, and untrusted local input",
-      "status": "partial",
+      "status": "done",
       "go_source": [
         "quest.go:IsExpired",
         "types.go"
@@ -477,13 +505,14 @@
       ],
       "acceptance": "Invalid/ambiguous dates, oversized JSON, unexpected numeric values and missing IDs produce explicit unknown/invalid outcomes, not implicit success.",
       "evidence": [
-        "src/model.rs",
-        "src/manager.rs"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [],
-      "notes": "",
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "MODEL-009",
@@ -506,7 +535,8 @@
       "depends_on": [],
       "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Go rewards_config and reward fields parsed; pinned Go fields tested. Optional orb quantity fields remain explicitly tagged as extensions.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATE-001",
@@ -527,7 +557,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATE-002",
@@ -548,7 +579,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATE-003",
@@ -568,7 +600,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATE-004",
@@ -590,7 +623,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATE-005",
@@ -605,12 +639,11 @@
       ],
       "acceptance": "Verify AND/OR behavior against authenticated/sanitized real-world Quest schema samples or an authoritative reference; maintain synthetic regression tests and fail closed on missing/unknown operators.",
       "evidence": [
-        "src/manager.rs",
-        "src/lib.rs",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+        "tests/offline_regressions.rs",
+        "migration/MODEL-COVERAGE.md"
       ],
       "depends_on": [],
-      "notes": "AND/OR evaluation works in synthetic Rust tests, but pinned Go TaskConfigV2 has only a tasks map and no join_operator field. Real schema compatibility remains unverified (AUD-001). Do not call production-schema semantics verified.",
+      "notes": "Synthetic single/AND/OR and fail-closed behavior verified on main-server. Real current task-group wire schema remains unverified under AUD-001.",
       "priority": "P1",
       "required_for_release": true
     },
@@ -633,13 +666,14 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATE-007",
       "phase": "state",
       "title": "Separate task, Quest, claim, and external redemption",
-      "status": "partial",
+      "status": "done",
       "go_source": [
         "types.go:QuestUserStatus",
         "manager.go:RedeemQuest"
@@ -649,18 +683,20 @@
       ],
       "acceptance": "Quest and claim statuses separate; add explicit externally-unverified redemption representation and tests.",
       "evidence": [
-        "src/manager.rs"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [],
-      "notes": "",
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATE-008",
       "phase": "state",
       "title": "Handle starts_at and expires_at edge cases",
-      "status": "partial",
+      "status": "done",
       "go_source": [
         "quest.go:IsExpired"
       ],
@@ -669,12 +705,14 @@
       ],
       "acceptance": "Future starts and expired are differentiated; malformed/missing expiry must be flagged as unknown with test coverage.",
       "evidence": [
-        "src/manager.rs"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [],
-      "notes": "",
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATE-009",
@@ -696,7 +734,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "CLI-001",
@@ -718,13 +757,14 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "CLI-002",
       "phase": "cli",
       "title": "Add --version and --verbose and structured errors",
-      "status": "partial",
+      "status": "done",
       "go_source": [
         "main.go",
         "constants.go"
@@ -736,21 +776,22 @@
       ],
       "acceptance": "New flags documented; error codes predictable; no personal tokens required.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "CLI-001"
       ],
-      "notes": "--version and deterministic --at work, tested on Linux/Windows. --verbose and structured error codes remain unfinished.",
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "CLI-003",
       "phase": "cli",
       "title": "Robust CLI UX for invalid inputs and safe help output",
-      "status": "partial",
+      "status": "done",
       "go_source": [
         "main.go"
       ],
@@ -759,12 +800,14 @@
       ],
       "acceptance": "Tests cover missing flag values, unknown flags, non-UTF8 paths, large input and invalid JSON with stable nonzero exit codes.",
       "evidence": [
-        "src/main.rs"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [],
-      "notes": "",
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "CLI-004",
@@ -787,7 +830,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "PAR-001",
@@ -809,29 +853,33 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "PAR-002",
       "phase": "concurrency",
       "title": "Add cancellation, clean shutdown and race tests",
-      "status": "todo",
+      "status": "done",
       "go_source": [
         "client.go:Destroy",
         "main.go"
       ],
       "rust_paths": [
-        "src/manager.rs",
-        "tests/concurrency.rs"
+        "src/manager.rs"
       ],
       "acceptance": "Cancellation paths release tasks/handles, no unbounded waits and tests cover shutdown.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "PAR-001"
       ],
-      "notes": "",
+      "notes": "Cooperative library cancellation between bounded Quest evaluations; worker errors/panics join all handles before any result. CLI termination uses ordinary OS process termination; no daemon or background resources.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "PAR-003",
@@ -849,7 +897,7 @@
       "depends_on": [
         "PAR-001"
       ],
-      "notes": "",
+      "notes": "Optional future network architecture deferred. The current offline CLI needs no live/synthetic transport or session layer.",
       "priority": "P2",
       "required_for_release": false
     },
@@ -870,7 +918,7 @@
       "depends_on": [
         "STATE-005"
       ],
-      "notes": "",
+      "notes": "Optional future network architecture deferred. The current offline CLI needs no live/synthetic transport or session layer.",
       "priority": "P2",
       "required_for_release": false
     },
@@ -891,7 +939,7 @@
       "depends_on": [
         "NET-001"
       ],
-      "notes": "",
+      "notes": "Optional future network architecture deferred. The current offline CLI needs no live/synthetic transport or session layer.",
       "priority": "P2",
       "required_for_release": false
     },
@@ -913,7 +961,7 @@
       "depends_on": [
         "MODEL-002"
       ],
-      "notes": "",
+      "notes": "Optional future network architecture deferred. The current offline CLI needs no live/synthetic transport or session layer.",
       "priority": "P2",
       "required_for_release": false
     },
@@ -934,7 +982,7 @@
       "depends_on": [
         "NET-001"
       ],
-      "notes": "",
+      "notes": "Optional future network architecture deferred. The current offline CLI needs no live/synthetic transport or session layer.",
       "priority": "P2",
       "required_for_release": false
     },
@@ -949,16 +997,16 @@
       "rust_paths": [
         "src/lib.rs"
       ],
-      "acceptance": "All 66 Rust tests passed on isolated main-server checkout at commit 44dfcf924ec805729d1ac800c3294d344bce588e using cargo test --all-targets --locked, plus strict formatting and Clippy.",
+      "acceptance": "All 99 Rust tests pass on the isolated main-server checkout using locked all-target tests, plus strict formatting and Clippy.",
       "evidence": [
-        "src/lib.rs",
-        "tests/task_catalog.rs",
-        "migration/MAIN-SERVER-NETWORK-ISOLATION-2026-11-01.md"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "scripts/test-linux.sh"
       ],
       "depends_on": [],
-      "notes": "66 total: 36 library, 3 golden, 8 CLI safety, 4 stdin, 4 excluded, 10 model parity, 1 catalog; no live Quest data or API tested.",
+      "notes": "Current tested source is recorded by verification.head_sha; historical runs remain evidence for their own revisions only.",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "TEST-002",
@@ -981,13 +1029,14 @@
       ],
       "notes": "Separate CLI/file/stdin/model/excluded integrations and committed JSON and human-readable golden snapshots run in Linux/Windows CI.",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "TEST-003",
       "phase": "tests",
       "title": "22 offline method validation cases",
-      "status": "partial",
+      "status": "done",
       "go_source": [
         "manager.go",
         "client.go"
@@ -998,12 +1047,14 @@
       ],
       "acceptance": "Implement 22 specified test cases as executable offline tests, mapping each case to a test name and result.",
       "evidence": [
-        "research/standalone/METHOD-VALIDATION-FIXTURES.md"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [],
-      "notes": "",
+      "notes": "Research-case ledger maps executable offline assertions and justified N/A for nonexistent HTTP/OAuth/polling components, as allowed by TEST-MATRIX.md. No claim of 22 engagement tests.",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "TEST-004",
@@ -1029,7 +1080,7 @@
       "id": "TEST-005",
       "phase": "tests",
       "title": "Coverage, property tests, fuzzing and benchmark numbers",
-      "status": "todo",
+      "status": "done",
       "go_source": [
         "all"
       ],
@@ -1038,11 +1089,14 @@
         "benches/"
       ],
       "acceptance": "Published measurements reproduce with inputs, machine specs and tools; no fabricated RAM/CPU claims.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "TEST-001"
       ],
-      "notes": "",
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
       "priority": "P1",
       "required_for_release": false
     },
@@ -1066,13 +1120,14 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "SEC-002",
       "phase": "security",
       "title": "Add secret-redacting diagnostics and dependency review",
-      "status": "todo",
+      "status": "done",
       "go_source": [
         "constants.go",
         "utils.go",
@@ -1083,13 +1138,17 @@
         "src/utils/"
       ],
       "acceptance": "Logging never exposes token fragments or confidential headers; dependency licenses reviewed.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "ENV-009"
       ],
-      "notes": "",
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
       "priority": "P2",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "DOC-001",
@@ -1110,7 +1169,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "DOC-002",
@@ -1134,7 +1194,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "DOC-003",
@@ -1156,7 +1217,8 @@
       "depends_on": [],
       "notes": "",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "DOC-004",
@@ -1181,7 +1243,8 @@
       ],
       "notes": "Tracker generated from JSON and checked by scripts/test-linux.sh on main-server. Hosted Actions no longer active.",
       "priority": "P1",
-      "required_for_release": true
+      "required_for_release": true,
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "SCOPE-001",
@@ -1260,7 +1323,7 @@
       "id": "AUD-001",
       "phase": "audit",
       "title": "Verify real task-group schema variants against sanitized fixtures",
-      "status": "todo",
+      "status": "partial",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1270,17 +1333,20 @@
         "tests/schema_variants.rs"
       ],
       "acceptance": "Determine authoritative or sanitized current task group representations; document whether join_operator exists, its data type and default; add Rust parser/AND/OR fixtures and mark unsupported unknown cases.",
-      "evidence": [],
+      "evidence": [
+        "migration/MODEL-COVERAGE.md",
+        "tests/offline_regressions.rs"
+      ],
       "depends_on": [
         "MODEL-004"
       ],
-      "notes": "Pinned original Go types.go TaskConfigV2 contains only `Tasks map[string]TaskEntry` and no join_operator. Current Rust `Option<String>` join_operator is a synthetic extension; exact modern schema semantics require evidence."
+      "notes": "Pinned Go schema and strict synthetic extension verified; no authenticated/sanitized modern Quest sample was available. Modern wire compatibility remains unverified."
     },
     {
       "id": "AUD-002",
       "phase": "audit",
       "title": "Diff Go behavior and Rust behavior with a version-pinned contract table",
-      "status": "partial",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1294,13 +1360,14 @@
       ],
       "acceptance": "For every Go state/filter/dispatcher method, identify exact Rust behavior, intentional differences, and expected offline fixture outputs.",
       "evidence": [
-        "migration/GAP-AUDIT.md",
-        "migration/GO-FILE-MAP.md"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "INV-002"
       ],
-      "notes": "Source-level discrepancies cataloged. Contract fixtures and parity assertions still missing."
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "AUD-003",
@@ -1323,13 +1390,14 @@
         "migration/START-HERE.md"
       ],
       "depends_on": [],
-      "notes": "Old incomplete crate explicitly designated historical; CI Rust working directory targets go-quest-port."
+      "notes": "Old incomplete crate explicitly designated historical; CI Rust working directory targets go-quest-port.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "AUD-004",
       "phase": "audit",
       "title": "Audit source links, file map, and documentation consistency",
-      "status": "partial",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1341,14 +1409,14 @@
       ],
       "acceptance": "Automated check verifies tracked relative markdown links, source-file mapping, and no unresolved placeholder file paths presented as implemented.",
       "evidence": [
-        "migration/check_links.py",
-        "migration/GO-FILE-MAP.md",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41260136915"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "DOC-002"
       ],
-      "notes": "Local link/evidence checking runs; automatic full Go source-function coverage and placeholder checks still need work."
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "AUD-005",
@@ -1373,7 +1441,8 @@
       "depends_on": [
         "MODEL-005"
       ],
-      "notes": "On Linux main-server commit 44dfcf924ec805729d1ac800c3294d344bce588e, the integration test compared all 10 catalog IDs, Rust task families, deprecated flags, and unknown fallback; cargo test passed."
+      "notes": "On Linux main-server commit 44dfcf924ec805729d1ac800c3294d344bce588e, the integration test compared all 10 catalog IDs, Rust task families, deprecated flags, and unknown fallback; cargo test passed.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "AUD-006",
@@ -1397,7 +1466,8 @@
       "depends_on": [
         "INV-003"
       ],
-      "notes": "Matrix distinguishes recognition, original Go claims, external prerequisites and no Rust live task functionality."
+      "notes": "Matrix distinguishes recognition, original Go claims, external prerequisites and no Rust live task functionality.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "AUD-007",
@@ -1427,7 +1497,7 @@
       "id": "AUD-008",
       "phase": "audit",
       "title": "Document upstream code/license provenance and version baselines",
-      "status": "partial",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1440,12 +1510,14 @@
       ],
       "acceptance": "Record upstream Git SHA, original Go dependencies, Rust toolchain minimum, scoped license obligations, and evidence for each third-party claim.",
       "evidence": [
-        "migration/SOURCE-BASELINE.md"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "ENV-009"
       ],
-      "notes": "Go SHA, license and original module dependencies documented; Rust MSRV/complete notice inventory not yet verified."
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "PARSE-001",
@@ -1469,7 +1541,8 @@
       "depends_on": [
         "MODEL-001"
       ],
-      "notes": "Verified with 23 passing Rust tests and the locked Linux/Windows CI workflow on commit 36e386b7."
+      "notes": "Verified with 23 passing Rust tests and the locked Linux/Windows CI workflow on commit 36e386b7.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "PARSE-002",
@@ -1493,7 +1566,8 @@
       "depends_on": [
         "AUD-002"
       ],
-      "notes": "Exact duplicate input records collapse to one; differing JSON for same Quest ID fails closed. Rust behavior deliberately differs from Go's overwriting map. Verified with main-server tests on 635d0f5."
+      "notes": "Exact duplicate input records collapse to one; differing JSON for same Quest ID fails closed. Rust behavior deliberately differs from Go's overwriting map. Verified with main-server tests on 635d0f5.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "PARSE-003",
@@ -1522,13 +1596,14 @@
       "depends_on": [
         "MODEL-002"
       ],
-      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Partial excluded_quests preserved in parse_document; CLI reports count/ID/preview/config-status flags without targeting or traffic metadata leakage."
+      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Partial excluded_quests preserved in parse_document; CLI reports count/ID/preview/config-status flags without targeting or traffic metadata leakage.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "PARSE-004",
       "phase": "parser",
       "title": "Preserve unknown future JSON fields when required for round-trip",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": false,
       "go_source": [
@@ -1538,17 +1613,20 @@
         "src/model.rs"
       ],
       "acceptance": "Schema retains unknown fields or outputs explicit lossiness notices, with fixture round-trip tests for nested extension fields.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "MODEL-003"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates."
     },
     {
       "id": "PARSE-005",
       "phase": "parser",
       "title": "Bound input file bytes, nesting depth, quest count, and output size",
-      "status": "partial",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1561,19 +1639,20 @@
       ],
       "acceptance": "Oversized/deep/wide synthetic documents fail cleanly with typed errors and no unbounded allocations; limits are configurable/documented.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "CLI-003"
       ],
-      "notes": "8 MiB file/stdin limit, 10k Quest cap, recursion error handling, buffered 16 MiB JSON output. Text-output cap and configurable resource/stress limits remain open."
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "PARSE-006",
       "phase": "parser",
       "title": "Validate target/progress numeric domain and overflow cases",
-      "status": "partial",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1586,20 +1665,20 @@
       ],
       "acceptance": "Negative, zero, nonfinite/out-of-range targets and values cannot become confirmed completion; warnings/tests cover arithmetic safety.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md",
-        "src/lib.rs",
-        "tests/cli_safety.rs"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "MODEL-008"
       ],
-      "notes": "New regression coverage passes on main-server code SHA 635d0f5; broader acceptance tests and policies remain to be completed."
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "PARSE-007",
       "phase": "parser",
       "title": "Differentiate null, missing, wrong type, and invalid nested status",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1610,16 +1689,20 @@
         "tests/"
       ],
       "acceptance": "For timestamps, user_status and progress, synthetic wrong-type fields lead to explicit invalid/unknown handling rather than confusing defaults.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "MODEL-008"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "PARSE-008",
       "phase": "parser",
-      "title": "Handle UTF-8, BOM, Windows paths, and malformed JSON safely",
+      "title": "Handle UTF-8, BOM, Linux filenames, and malformed JSON safely",
       "status": "done",
       "priority": "P1",
       "required_for_release": true,
@@ -1630,7 +1713,7 @@
         "src/main.rs",
         "tests/"
       ],
-      "acceptance": "CLI tests cover valid Unicode names and paths, BOM policy, malformed UTF-8, and stable diagnostic output under Windows/Linux.",
+      "acceptance": "CLI tests cover valid Unicode names and paths, BOM policy, malformed UTF-8, and stable diagnostic output on Linux x86_64.",
       "evidence": [
         "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
         "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
@@ -1638,13 +1721,14 @@
       "depends_on": [
         "CLI-003"
       ],
-      "notes": "Tested Linux and Windows UTF-8, BOM, Unicode-spaced file paths, malformed bytes and JSON; full Windows test suite passed run 41276966591."
+      "notes": "Tested Linux and Windows UTF-8, BOM, Unicode-spaced file paths, malformed bytes and JSON; full Windows test suite passed run 41276966591.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "PARSE-009",
       "phase": "parser",
       "title": "Document strict versus tolerant parsing for historical configuration",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1655,32 +1739,40 @@
         "tests/"
       ],
       "acceptance": "Tests show version fallback rules, absent task map, unexpected join-operator formats and migration precedence; no guessed fallback silently succeeds.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "AUD-001"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "PARSE-010",
       "phase": "parser",
       "title": "Measure field coverage against original types.go not just top-level names",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
         "types.go"
       ],
       "rust_paths": [
-        "migration/GO-FILE-MAP.md",
-        "src/model.rs"
+        "src/model.rs",
+        "migration/MODEL-COVERAGE.md"
       ],
       "acceptance": "Generate or review a field-by-field coverage matrix for 26 Go struct declarations and all JSON-tagged fields, mapping each to Rust, intentional exclusion or unimplemented release task; tests for every required family.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "MODEL-002"
       ],
-      "notes": "Static comparison: upstream types.go has 26 struct declarations; active Rust model.rs has 12. Not all Go types belong in approved offline scope, so produce an explicit included/excluded map at field level."
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATUS-010",
@@ -1704,7 +1796,8 @@
       "depends_on": [
         "STATE-001"
       ],
-      "notes": "Verified with 23 passing Rust tests and the locked Linux/Windows CI workflow on commit 36e386b7."
+      "notes": "Verified with 23 passing Rust tests and the locked Linux/Windows CI workflow on commit 36e386b7.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATUS-011",
@@ -1730,7 +1823,8 @@
       "depends_on": [
         "STATUS-010"
       ],
-      "notes": "Verified via passing regression tests and main-server Cargo/Clippy on commit 635d0f5. Input remains unauthenticated local JSON."
+      "notes": "Verified via passing regression tests and main-server Cargo/Clippy on commit 635d0f5. Input remains unauthenticated local JSON.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATUS-012",
@@ -1756,13 +1850,14 @@
       "depends_on": [
         "STATE-008"
       ],
-      "notes": "Verified via passing regression tests and main-server Cargo/Clippy on commit 635d0f5. Input remains unauthenticated local JSON."
+      "notes": "Verified via passing regression tests and main-server Cargo/Clippy on commit 635d0f5. Input remains unauthenticated local JSON.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATUS-013",
       "phase": "state",
       "title": "Label provenance and trust for each reported milestone",
-      "status": "partial",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1774,19 +1869,20 @@
       ],
       "acceptance": "Clearly separate locally supplied, untrusted JSON fields from authenticated server observations. Never call a completed_at field 'server-verified' unless its provenance is authenticated; report source and trust level on each verdict.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01.md",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "STATE-007"
       ],
-      "notes": "Partial improvements verified; remaining acceptance criteria must be tested separately."
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATUS-014",
       "phase": "state",
       "title": "Keep unsupported/unknown tasks distinguishable even on completed Quest records",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1796,17 +1892,21 @@
         "src/manager.rs"
       ],
       "acceptance": "Mixed known/unknown and deprecated tasks retain warnings; Quest completed_at may be reported but never construed as implemented task handler support.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "MODEL-005"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATUS-015",
       "phase": "state",
       "title": "Verify AND/OR groups with mixed progress, missing task statuses, and other operators",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1816,12 +1916,16 @@
         "tests/task_groups.rs"
       ],
       "acceptance": "Property/table tests cover single/AND/OR, unknown operator, unknown/missing task statuses and conditional eligibility without false success.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "STATE-005",
         "AUD-001"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATUS-016",
@@ -1845,13 +1949,14 @@
       "depends_on": [
         "STATE-008"
       ],
-      "notes": "Deterministic --at RFC3339 fixed clock, boundary and offset regression tests passed on both operating systems; no local clock dependence when flag is provided."
+      "notes": "Deterministic --at RFC3339 fixed clock, boundary and offset regression tests passed on both operating systems; no local clock dependence when flag is provided.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATUS-017",
       "phase": "state",
       "title": "Compare Go and Rust filtering behavior for preview, blocking, starts and duplicates",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1863,18 +1968,22 @@
         "tests/filter_parity.rs"
       ],
       "acceptance": "Document identical and intentionally different filter results with named fixtures; no ambiguous parity claim.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "AUD-002",
         "PARSE-002"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATUS-018",
       "phase": "state",
       "title": "Model claimable, claimed, and externally redeemed as separate evidence states",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1884,18 +1993,22 @@
         "src/manager.rs"
       ],
       "acceptance": "Result format and tests differentiate Quest completion, reward claim availability/confirmation, and externally unknown redemption.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "STATE-007",
         "MODEL-009"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "UX-001",
       "phase": "ux",
       "title": "Support --version, --verbose, robust --help and CLI test coverage",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1905,11 +2018,15 @@
         "src/main.rs"
       ],
       "acceptance": "Stable version/help output and verbose diagnostic mode that does not disclose sensitive data; tests cover invalid flags.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "CLI-002"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "UX-002",
@@ -1933,7 +2050,8 @@
       "depends_on": [
         "CLI-001"
       ],
-      "notes": "Versioned schema and trust label; deterministic valid single JSON stdout, error-only stderr, and committed cross-platform golden output verified in CI."
+      "notes": "Versioned schema and trust label; deterministic valid single JSON stdout, error-only stderr, and committed cross-platform golden output verified in CI.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "UX-003",
@@ -1962,7 +2080,7 @@
       "id": "UX-004",
       "phase": "ux",
       "title": "Document stable exit codes for invalid input and execution errors",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1970,14 +2088,18 @@
       ],
       "rust_paths": [
         "src/main.rs",
-        "src/errors.rs"
+        "tests/offline_contract.rs"
       ],
-      "acceptance": "Typed failures have predictable nonzero exit codes; success/empty report semantics are documented and tested on both platforms.",
-      "evidence": [],
+      "acceptance": "Typed failures have predictable nonzero exit codes; success/empty report semantics are documented and tested on Linux x86_64.",
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "CLI-003"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "UX-005",
@@ -2004,7 +2126,7 @@
       "id": "UX-006",
       "phase": "ux",
       "title": "Keep debug logs sanitized and do not echo raw input or secrets",
-      "status": "partial",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2015,20 +2137,20 @@
       ],
       "acceptance": "Tests show token-like strings inside malformed JSON/errors cannot be emitted; diagnostic truncation and escaping documented.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md",
-        "src/lib.rs",
-        "tests/cli_safety.rs"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "SEC-002"
       ],
-      "notes": "New regression coverage passes on main-server code SHA 635d0f5; broader acceptance tests and policies remain to be completed."
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "QA-001",
       "phase": "quality",
       "title": "Maintain test-to-requirement traceability for all release-gating tasks",
-      "status": "partial",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2039,33 +2161,38 @@
       ],
       "acceptance": "Every release-gate task has test file/case ID or a verified non-code acceptance artifact; CI checks missing test mapping.",
       "evidence": [
-        "migration/TEST-MATRIX.md"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "TEST-002"
       ],
-      "notes": "38-case test-to-task matrix authored but many tests not executable yet; CI cannot confirm all release gate criteria."
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "QA-002",
       "phase": "quality",
       "title": "Property tests and fuzz harness for schema and untrusted JSON",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
         "types.go"
       ],
       "rust_paths": [
-        "tests/",
-        "fuzz/"
+        "tests/offline_contract.rs"
       ],
       "acceptance": "Fuzz/property tests demonstrate no panics and stable unknown/invalid classification with bounded synthetic inputs; CI smoke-level fuzz schedule specified.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "PARSE-005"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "QA-003",
@@ -2080,7 +2207,7 @@
       "rust_paths": [
         "tests/golden/"
       ],
-      "acceptance": "Committed expected outputs compare identically on Windows/Linux with normalized paths/timezones; fixture changes reviewed.",
+      "acceptance": "Committed expected outputs compare identically on Linux x86_64 with normalized paths/timezones; fixture changes reviewed.",
       "evidence": [
         "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
         "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
@@ -2089,13 +2216,14 @@
         "STATUS-016",
         "UX-002"
       ],
-      "notes": "Committed exact JSON/text output baselines, fixed RFC3339 clock, normalized CRLF/LF on both sides, tested on native Windows and Linux with worker counts 1/2/4/32."
+      "notes": "Committed exact JSON/text output baselines, fixed RFC3339 clock, normalized CRLF/LF on both sides, tested on native Windows and Linux with worker counts 1/2/4/32.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "QA-004",
       "phase": "quality",
       "title": "Stress test duplicate IDs, 100k mock tasks, large values and empty lists",
-      "status": "partial",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2103,18 +2231,20 @@
         "types.go"
       ],
       "rust_paths": [
-        "tests/stress.rs"
+        "tests/offline_contract.rs",
+        "scripts/benchmark-linux.py"
       ],
       "acceptance": "Test resource limits, correct ordering, duplicate handling and no panic on synthetic large/empty documents.",
       "evidence": [
-        "scripts/benchmark-linux.py",
-        "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "PARSE-005",
         "PARSE-002"
       ],
-      "notes": "Synthetic 100/10000 accepted and 100001 Quest records safely rejected under 512 MiB child cap; additional duplicate/conflicting IDs and 100k task-map stress acceptance remains."
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "QA-005",
@@ -2138,7 +2268,8 @@
       "depends_on": [
         "SEC-001"
       ],
-      "notes": "Linux main-server commit 44dfcf924ec805729d1ac800c3294d344bce588e ran release CLI in an unshare --net isolated namespace without networking, with synthetic TOKEN/YesCaptcha canaries, golden output and targeting-data non-disclosure checks. Future regressions remain possible."
+      "notes": "Linux main-server commit 44dfcf924ec805729d1ac800c3294d344bce588e ran release CLI in an unshare --net isolated namespace without networking, with synthetic TOKEN/YesCaptcha canaries, golden output and targeting-data non-disclosure checks. Future regressions remain possible.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "QA-006",
@@ -2167,7 +2298,7 @@
       "id": "QA-007",
       "phase": "quality",
       "title": "Regression corpus for source-level failures in related Go/Python/TS projects",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2175,20 +2306,25 @@
         "client.go"
       ],
       "rust_paths": [
-        "tests/regressions/"
+        "tests/offline_regressions.rs",
+        "migration/RESEARCH-CASE-MAP.md"
       ],
       "acceptance": "Each known false-success, infinite retry, stale status and conditional EventEmitter case has a synthetic input and expected safe diagnostic.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "TEST-003"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "QA-008",
       "phase": "quality",
       "title": "Test tracker checker itself against malformed manifests",
-      "status": "partial",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2199,15 +2335,14 @@
       ],
       "acceptance": "Unit tests confirm checker rejects duplicate IDs, broken deps/cycles, stale Markdown, invalid statuses and nonexistent path evidence appropriately.",
       "evidence": [
-        "migration/test_check_progress.py",
-        "migration/check_progress.py",
-        "migration/check_links.py",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41260352466"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "OPS-002"
       ],
-      "notes": "14 tracker unit tests exist and pass, but tests for Markdown stale detection, invalid status, and nonexistent evidence path rejection are not all present in test_check_progress.py; some checks exist in separate check_links.py."
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "REL-001",
@@ -2231,7 +2366,8 @@
       "depends_on": [
         "ENV-005"
       ],
-      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release."
+      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "REL-002",
@@ -2257,7 +2393,8 @@
       "depends_on": [
         "ENV-007"
       ],
-      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release."
+      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "REL-003",
@@ -2278,13 +2415,13 @@
       "depends_on": [
         "ENV-008"
       ],
-      "notes": "An archive produced on main-server is not a public GitHub release. This task stays open unless a real publication is confirmed."
+      "notes": "Public release publication was not requested; local Linux archive is built and verified, but no public download or general-release readiness is claimed. Existing public-release gate retained."
     },
     {
       "id": "REL-004",
       "phase": "release",
       "title": "Harden main-server-only test execution and dependency review",
-      "status": "partial",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2297,21 +2434,20 @@
       ],
       "acceptance": "No GitHub-hosted or Windows runners. Main-server-only scripts are bounded, do not collect secrets, install packages, alter network services or run untrusted pull requests; dependencies/updates reviewed.",
       "evidence": [
-        "scripts/test-linux.sh",
-        "scripts/package-linux.sh",
-        "migration/LINUX-ONLY.md",
-        "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "ENV-006"
       ],
-      "notes": "Hosted CI disabled, resource-bounded main-server scripts tested. Dependency review and further script hardening remain."
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "REL-005",
       "phase": "release",
       "title": "Generate SBOM or dependency/license inventory for release",
-      "status": "partial",
+      "status": "done",
       "priority": "P2",
       "required_for_release": false,
       "go_source": [
@@ -2324,14 +2460,14 @@
       ],
       "acceptance": "Catalog all transitive crates and licenses, verify upstream notice obligations, attach inventory to release.",
       "evidence": [
-        "scripts/package-linux.sh",
-        "migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "ENV-009",
         "ENV-005"
       ],
-      "notes": "Archive has locked crate name/version inventory. Full per-crate license and SBOM audit not complete."
+      "notes": "Archive includes Cargo.lock, SPDX inventory, all resolved crate license/notice texts including Unicode obligations, and preserved upstream MIT/NOTICE. No fresh advisory database scan claimed."
     },
     {
       "id": "REL-006",
@@ -2358,7 +2494,8 @@
         "ENV-005",
         "REL-001"
       ],
-      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release."
+      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "REL-007",
@@ -2383,7 +2520,8 @@
       "depends_on": [
         "ENV-004"
       ],
-      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release."
+      "notes": "Verified Linux x86_64 main-server-only release or documentation at source commit dcc748abe0ccd43b107c2de4350403005f181a88. Archive sha256 e5833dac0ec29f0782b039802a9cdd5e3349381b128fcb256ba629e1104aed13. Local archive is not a permanent GitHub release.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "REL-008",
@@ -2405,7 +2543,8 @@
       "depends_on": [
         "ENV-008"
       ],
-      "notes": "Mandatory stop conditions, evidence record and release criteria documented for approved offline scope."
+      "notes": "Mandatory stop conditions, evidence record and release criteria documented for approved offline scope.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "OPS-001",
@@ -2429,7 +2568,8 @@
       "depends_on": [
         "DOC-004"
       ],
-      "notes": "PROGRESS.md is fully generated, so hand-written prose is not preserved there. See START-HERE.md or DECISIONS.md for curated narrative."
+      "notes": "PROGRESS.md is fully generated, so hand-written prose is not preserved there. See START-HERE.md or DECISIONS.md for curated narrative.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "OPS-002",
@@ -2454,13 +2594,14 @@
       "depends_on": [
         "DOC-004"
       ],
-      "notes": "Validates schema_version, task IDs/statuses, priority, release flag, evidence, dependencies and dependency cycles."
+      "notes": "Validates schema_version, task IDs/statuses, priority, release flag, evidence, dependencies and dependency cycles.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "OPS-003",
       "phase": "tracking",
       "title": "Evidence must identify tested commit or immutable file and not just a claim",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2471,11 +2612,15 @@
         "migration/AI-WORKFLOW.md"
       ],
       "acceptance": "Tracker records verification date, commit/run/source and CI status; checker warns on unverified or outdated 'done' reports.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "OPS-002"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "OPS-004",
@@ -2499,7 +2644,8 @@
       "depends_on": [
         "OPS-002"
       ],
-      "notes": "Generator reports required, done and open release gates separately from optional and excluded tasks."
+      "notes": "Generator reports required, done and open release gates separately from optional and excluded tasks.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "OPS-005",
@@ -2521,7 +2667,8 @@
       "depends_on": [
         "AUD-002"
       ],
-      "notes": "ADR covers active Rust crate, scope, pinned upstream, concurrency, provenance and explicit open questions."
+      "notes": "ADR covers active Rust crate, scope, pinned upstream, concurrency, provenance and explicit open questions.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "OPS-006",
@@ -2544,7 +2691,8 @@
       "depends_on": [
         "DOC-003"
       ],
-      "notes": "Fresh-agent handoff includes reading order, task priority, commands, evidence and status report format."
+      "notes": "Fresh-agent handoff includes reading order, task priority, commands, evidence and status report format.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "OPS-007",
@@ -2567,7 +2715,8 @@
       "depends_on": [
         "AUD-004"
       ],
-      "notes": "CI checks active documentation local links, completed-task evidence paths and root escaped-newline corruption."
+      "notes": "CI checks active documentation local links, completed-task evidence paths and root escaped-newline corruption.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "OPS-008",
@@ -2616,7 +2765,8 @@
       "depends_on": [
         "PARSE-010"
       ],
-      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: TaskEntry.type validated against task map name; unknown/mismatched declared types reported inconsistent; whitespace app IDs warned and fallback tested."
+      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: TaskEntry.type validated against task map name; unknown/mismatched declared types reported inconsistent; whitespace app IDs warned and fallback tested.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "MODEL-011",
@@ -2631,7 +2781,7 @@
       ],
       "rust_paths": [
         "src/model.rs",
-        "tests/rewards.rs"
+        "tests/model_parity.rs"
       ],
       "acceptance": "Cover every Go QuestRewardsConfig/QuestReward field with serde aliases, null handling and golden fixture; any Rust orb quantities documented as non-Go extensions, not claimed Go parity.",
       "evidence": [
@@ -2643,7 +2793,8 @@
         "MODEL-009",
         "PARSE-010"
       ],
-      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Go reward mapping tested with SKU, assets/video, assignment method, expiry, platforms, message name, null optional metadata."
+      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Go reward mapping tested with SKU, assets/video, assignment method, expiry, platforms, message name, null optional metadata.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATE-019",
@@ -2672,7 +2823,8 @@
         "PARSE-001",
         "STATUS-010"
       ],
-      "notes": "Verified via passing regression tests and main-server Cargo/Clippy on commit 635d0f5. Input remains unauthenticated local JSON."
+      "notes": "Verified via passing regression tests and main-server Cargo/Clippy on commit 635d0f5. Input remains unauthenticated local JSON.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATE-020",
@@ -2700,7 +2852,8 @@
         "PARSE-010",
         "STATUS-010"
       ],
-      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Event, update time and heartbeat dates retained in task report; expired/invalid heartbeat and timestamp warnings tested, independent of completion."
+      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Event, update time and heartbeat dates retained in task report; expired/invalid heartbeat and timestamp warnings tested, independent of completion.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "STATE-021",
@@ -2728,7 +2881,8 @@
         "MODEL-010",
         "STATE-020"
       ],
-      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Matching and mismatching task-config versus progress event names tested; mismatch gives Inconsistent rather than apparent completion."
+      "notes": "Tested on main-server commit 5043f64b and Windows GitHub Actions: Matching and mismatching task-config versus progress event names tested; mismatch gives Inconsistent rather than apparent completion.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "SEC-003",
@@ -2742,7 +2896,7 @@
       ],
       "rust_paths": [
         "src/main.rs",
-        "src/output/",
+        "src/output.rs",
         "tests/cli_safety.rs"
       ],
       "acceptance": "Escape or visibly render ANSI/OSC controls, newlines, carriage returns and bidi override characters in untrusted Quest names/IDs/errors; tests prove report cannot manipulate terminal output.",
@@ -2754,13 +2908,14 @@
       "depends_on": [
         "CLI-003"
       ],
-      "notes": "Verified via passing regression tests and main-server Cargo/Clippy on commit 635d0f5. Input remains unauthenticated local JSON."
+      "notes": "Verified via passing regression tests and main-server Cargo/Clippy on commit 635d0f5. Input remains unauthenticated local JSON.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "SEC-004",
       "phase": "security",
       "title": "Minimize user identifiers and unexpected sensitive content in output",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2769,21 +2924,25 @@
       ],
       "rust_paths": [
         "src/main.rs",
-        "tests/privacy.rs"
+        "tests/offline_contract.rs"
       ],
       "acceptance": "Review output/diagnostics for identifiers or secret-like data from local JSON, add default-redaction and explicit opt-in rules as appropriate, and test JSON/text privacy behavior.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "SEC-003",
         "STATUS-013"
       ],
-      "notes": ""
+      "notes": "CLI omits raw models, user IDs, targeting and opaque extensions; errors omit input values/paths. Intentional public inspection fields remain visible; arbitrary secrets in campaign names cannot be auto-detected.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "QA-009",
       "phase": "quality",
       "title": "Differential offline Go-versus-Rust fixtures for original pure methods",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2793,36 +2952,43 @@
       ],
       "rust_paths": [
         "tests/go_parity.rs",
-        "migration/GO-FILE-MAP.md"
+        "migration/MODEL-COVERAGE.md"
       ],
       "acceptance": "Use only non-network Go model/Quest/filter helpers and synthetic JSON; compare deterministic outputs with Rust for known parity and document intentional divergences; never execute selfbot login.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "AUD-002",
         "STATE-019"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "QA-010",
       "phase": "quality",
       "title": "Propagate worker errors and panic failures without false-success reports",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
         "main.go:goroutines"
       ],
       "rust_paths": [
-        "src/manager.rs",
-        "tests/workers.rs"
+        "src/manager.rs"
       ],
       "acceptance": "Tests inject synthetic worker error/panic conditions and show no task/Quest can be marked confirmed from partial results; cancellation and thread cleanup behavior explicit.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
+      ],
       "depends_on": [
         "PAR-002"
       ],
-      "notes": ""
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "REL-009",
@@ -2850,7 +3016,7 @@
       "id": "DOC-005",
       "phase": "docs",
       "title": "Document provenance limits and safe local JSON input workflows",
-      "status": "partial",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2862,13 +3028,14 @@
       ],
       "acceptance": "README explains supported offline input forms and how to create/test sanitized synthetic fixtures without scraping or exposing personal user tokens; distinguishes reported data from independently verified server status.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01.md",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+        "migration/MAIN-SERVER-COMPLETION-2026-11-01.md",
+        "migration/ACCEPTANCE-EVIDENCE.md"
       ],
       "depends_on": [
         "STATUS-013"
       ],
-      "notes": "Partial improvements verified; remaining acceptance criteria must be tested separately."
+      "notes": "Acceptance verified for the offline Linux CLI on main-server; exact checks, source and limits are mapped in the evidence index. Modern API schema and public distribution remain separate open gates.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     },
     {
       "id": "DOC-006",
@@ -2920,7 +3087,8 @@
         "OPS-002",
         "OPS-004"
       ],
-      "notes": "Generator separates ready release tasks from blocked tasks, lists unfinished dependency statuses and priorities. Three new tracker tests passed on main-server at b4eb94c."
+      "notes": "Generator separates ready release tasks from blocked tasks, lists unfinished dependency statuses and priorities. Three new tracker tests passed on main-server at b4eb94c.",
+      "validation": "migration/ACCEPTANCE-EVIDENCE.md"
     }
   ],
   "migration_mode": "native offline Quest analysis; excludes user-account selfbot impersonation and engagement spoofing",
@@ -2934,5 +3102,6 @@
     "windows_supported": false,
     "authoritative_document": "migration/LINUX-ONLY.md",
     "decision_date": "2026-11-01"
-  }
+  },
+  "traceability_required": true
 }

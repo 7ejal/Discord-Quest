@@ -11,15 +11,15 @@ Project: [rust/go-quest-port](../) · Source: [pinned upstream Go](https://githu
 
 | Status | Count | Interpretation |
 |---|---:|---|
-| DONE | 69 | Acceptance evidence recorded; check verification commit |
-| PARTIAL | 22 | Some implementation exists but acceptance incomplete |
-| TODO | 29 | Work not yet demonstrated |
+| DONE | 111 | Acceptance evidence recorded; check verification commit |
+| PARTIAL | 2 | Some implementation exists but acceptance incomplete |
+| TODO | 7 | Work not yet demonstrated |
 | EXCLUDED | 7 | Deliberately outside approved scope |
 | **TOTAL** | **127** | Inventory snapshot, not a completion percentage |
 
 ## Release-gating status (approved offline scope only)
 
-**103 required tasks · 42 open release gates · 61 done release gates.**
+**103 required tasks · 3 open release gates · 100 done release gates.**
 Optional and excluded tasks do not block release. See [release criteria](RELEASE-GATES.md). A green historical CI run does not verify future commits.
 
 ## Ready to start (all dependencies DONE)
@@ -27,46 +27,13 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 | ID | Priority | Work | Dependencies |
 |---|---|---|---|
 | `AUD-001` | P0 | Verify real task-group schema variants against sanitized fixtures | `MODEL-004` |
-| `AUD-002` | P0 | Diff Go behavior and Rust behavior with a version-pinned contract table | `INV-002` |
-| `OPS-003` | P0 | Evidence must identify tested commit or immutable file and not just a claim | `OPS-002` |
-| `QA-001` | P0 | Maintain test-to-requirement traceability for all release-gating tasks | `TEST-002` |
-| `AUD-004` | P1 | Audit source links, file map, and documentation consistency | `DOC-002` |
-| `AUD-008` | P1 | Document upstream code/license provenance and version baselines | `ENV-009` |
-| `QA-008` | P1 | Test tracker checker itself against malformed manifests | `OPS-002` |
 | `STATE-005` | P1 | Correctly evaluate AND/OR task groups | — |
-| `STATUS-014` | P1 | Keep unsupported/unknown tasks distinguishable even on completed Quest records | `MODEL-005` |
-| `TEST-003` | P1 | 22 offline method validation cases | — |
-| `CLI-002` | P2 | Add --version and --verbose and structured errors | `CLI-001` |
-| `CLI-003` | P2 | Robust CLI UX for invalid inputs and safe help output | — |
-| `ENV-006` | P2 | Add fmt, clippy and dependency audit checks | `ENV-003` |
-| `MODEL-002` | P2 | Port core Quest, status, task, reward data types | — |
-| `MODEL-008` | P2 | Validate timestamps, invalid values, and untrusted local input | — |
-| `PAR-002` | P2 | Add cancellation, clean shutdown and race tests | `PAR-001` |
-| `SEC-002` | P2 | Add secret-redacting diagnostics and dependency review | `ENV-009` |
-| `STATE-007` | P2 | Separate task, Quest, claim, and external redemption | — |
 
 ## Blocked release gates (prerequisites not DONE)
 
 | ID | Priority | Work | Unfinished dependencies (status/priority) |
 |---|---|---|---|
-| `DOC-005` | P0 | Document provenance limits and safe local JSON input workflows | `STATUS-013` PARTIAL/P0 |
-| `PARSE-005` | P0 | Bound input file bytes, nesting depth, quest count, and output size | `CLI-003` PARTIAL/P2 |
-| `PARSE-006` | P0 | Validate target/progress numeric domain and overflow cases | `MODEL-008` PARTIAL/P2 |
-| `STATUS-013` | P0 | Label provenance and trust for each reported milestone | `STATE-007` PARTIAL/P2 |
-| `STATUS-015` | P0 | Verify AND/OR groups with mixed progress, missing task statuses, and other operators | `STATE-005` PARTIAL/P1, `AUD-001` TODO/P0 |
-| `UX-006` | P0 | Keep debug logs sanitized and do not echo raw input or secrets | `SEC-002` TODO/P2 |
-| `PARSE-007` | P1 | Differentiate null, missing, wrong type, and invalid nested status | `MODEL-008` PARTIAL/P2 |
-| `PARSE-009` | P1 | Document strict versus tolerant parsing for historical configuration | `AUD-001` TODO/P0 |
-| `PARSE-010` | P1 | Measure field coverage against original types.go not just top-level names | `MODEL-002` PARTIAL/P2 |
-| `QA-002` | P1 | Property tests and fuzz harness for schema and untrusted JSON | `PARSE-005` PARTIAL/P0 |
-| `QA-004` | P1 | Stress test duplicate IDs, 100k mock tasks, large values and empty lists | `PARSE-005` PARTIAL/P0 |
-| `QA-007` | P1 | Regression corpus for source-level failures in related Go/Python/TS projects | `TEST-003` PARTIAL/P1 |
-| `QA-009` | P1 | Differential offline Go-versus-Rust fixtures for original pure methods | `AUD-002` PARTIAL/P0 |
-| `QA-010` | P1 | Propagate worker errors and panic failures without false-success reports | `PAR-002` TODO/P2 |
 | `REL-003` | P1 | Publish versioned Linux x86_64 release with checksum | `ENV-008` TODO/P2 |
-| `REL-004` | P1 | Harden main-server-only test execution and dependency review | `ENV-006` PARTIAL/P2 |
-| `SEC-004` | P1 | Minimize user identifiers and unexpected sensitive content in output | `STATUS-013` PARTIAL/P0 |
-| `STATUS-017` | P1 | Compare Go and Rust filtering behavior for preview, blocking, starts and duplicates | `AUD-002` PARTIAL/P0 |
 
 ## Detailed task inventory
 
@@ -84,13 +51,13 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
-| `AUD-001` | TODO | P0 | Required | Verify real task-group schema variants against sanitized fixtures | Determine authoritative or sanitized current task group representations; document whether join_operator exists, its data type and default; add Rust parser/AND/OR fixtures and mark unsupported unknown cases. | `MODEL-004` | — |
-| `AUD-002` | PARTIAL | P0 | Required | Diff Go behavior and Rust behavior with a version-pinned contract table | For every Go state/filter/dispatcher method, identify exact Rust behavior, intentional differences, and expected offline fixture outputs. | `INV-002` | `migration/GAP-AUDIT.md` |
+| `AUD-001` | PARTIAL | P0 | Required | Verify real task-group schema variants against sanitized fixtures | Determine authoritative or sanitized current task group representations; document whether join_operator exists, its data type and default; add Rust parser/AND/OR fixtures and mark unsupported unknown cases. | `MODEL-004` | `migration/MODEL-COVERAGE.md` |
+| `AUD-002` | DONE | P0 | Required | Diff Go behavior and Rust behavior with a version-pinned contract table | For every Go state/filter/dispatcher method, identify exact Rust behavior, intentional differences, and expected offline fixture outputs. | `INV-002` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `AUD-003` | DONE | P0 | Required | Resolve duplicate Rust project ownership | Document and enforce rust/go-quest-port as the only active code path; archive or explicitly label rust/quest-audit-cli as nonshippable research to prevent agents editing it by mistake. | — | `rust/quest-audit-cli/README.md` |
 | `AUD-006` | DONE | P0 | Required | Inventory original feature claims versus actually evidenced operation | Matrix must distinguish source handler, precondition, server confirmation, and real-world verification; no handler or README claim may imply supported engagement. | `INV-003` | `migration/CAPABILITY-CONTRACT.md` |
-| `AUD-004` | PARTIAL | P1 | Required | Audit source links, file map, and documentation consistency | Automated check verifies tracked relative markdown links, source-file mapping, and no unresolved placeholder file paths presented as implemented. | `DOC-002` | `migration/check_links.py` |
+| `AUD-004` | DONE | P1 | Required | Audit source links, file map, and documentation consistency | Automated check verifies tracked relative markdown links, source-file mapping, and no unresolved placeholder file paths presented as implemented. | `DOC-002` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `AUD-005` | DONE | P1 | Required | Prevent drift between Rust task families and data/task-types.json | Add a deterministic test or generator comparing recognized identifiers and deprecated tags against catalog with a pinned interpretation. | `MODEL-005` | `tests/task_catalog.rs` |
-| `AUD-008` | PARTIAL | P1 | Required | Document upstream code/license provenance and version baselines | Record upstream Git SHA, original Go dependencies, Rust toolchain minimum, scoped license obligations, and evidence for each third-party claim. | `ENV-009` | `migration/SOURCE-BASELINE.md` |
+| `AUD-008` | DONE | P1 | Required | Document upstream code/license provenance and version baselines | Record upstream Git SHA, original Go dependencies, Rust toolchain minimum, scoped license obligations, and evidence for each third-party claim. | `ENV-009` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `AUD-007` | DONE | P2 | Optional/excluded | Clean literal escaped newline sequences and stale links in root documentation | Root README headings, relative links and status statements render correctly on GitHub; targeted formatting check verifies no literal '\n\n' artifacts in prose. | `DOC-001` | `README.md` |
 
 ### Build
@@ -102,7 +69,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `ENV-003` | DONE | P1 | Optional/excluded | Linux CI tests and smoke test passed | Linux CI run 41256646888 completed successfully: cargo test and demo JSON. | — | [source](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888) |
 | `ENV-004` | DONE | P1 | Optional/excluded | Historical Windows EXE CI verification (retired platform) | Windows CI run 41256646888 compiled and smoke tested EXE and uploaded artifact 13063362600. | — | [source](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888) |
 | `ENV-005` | DONE | P2 | Required | Commit Cargo.lock for reproducible builds | Cargo.lock committed and CI uses --locked; updates deliberately reviewed. | `ENV-001` | `migration/MAIN-SERVER-CI-2026-11-01.md` |
-| `ENV-006` | PARTIAL | P2 | Required | Add fmt, clippy and dependency audit checks | CI fails on cargo fmt --check and clippy -D warnings; audit policy documented. | `ENV-003` | `migration/MAIN-SERVER-CI-2026-11-01.md` |
+| `ENV-006` | DONE | P2 | Required | Add fmt, clippy and dependency audit checks | CI fails on cargo fmt --check and clippy -D warnings; audit policy documented. | `ENV-003` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `ENV-007` | DONE | P2 | Required | Produce verified Linux x86_64 release candidate on main-server | scripts/package-linux.sh builds, tests and archives native Linux executable, includes README/NOTICE/LICENSE/build-info and checksums; server artifact path, SHA256 and executable dependencies verified. | `ENV-003` | `scripts/package-linux.sh` |
 | `ENV-008` | TODO | P2 | Optional/excluded | Optional tagged Linux release publication and checksums | If explicitly publishing, attach the main-server-tested Linux archive and matching SHA256 to a versioned public GitHub release. Do not invent asset URLs or claim a local file is public. | `ENV-004`, `ENV-007` | — |
 | `ENV-009` | DONE | P2 | Required | Preserve original MIT licensing and attribution | Retain MIT license with original yeweroooo copyright in Linux archives; NOTICE identifies pinned original Go source and redistribution limitations. | `INV-001` | `LICENSE` |
@@ -118,10 +85,10 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `MODEL-005` | DONE | P1 | Required | Recognize ten documented current/historical task IDs | All named categories are classified; deprecated type flagged and unknown untrusted. | — | `src/manager.rs` |
 | `MODEL-006` | DONE | P1 | Required | Parse task-specific application IDs | Uses per-task applications first, top-level only as fallback; unit test passes. | — | `src/manager.rs` |
 | `MODEL-011` | DONE | P1 | Required | Correct reward wire models without inventing source fields | Cover every Go QuestRewardsConfig/QuestReward field with serde aliases, null handling and golden fixture; any Rust orb quantities documented as non-Go extensions, not claimed Go parity. | `MODEL-009`, `PARSE-010` | `migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md` |
-| `MODEL-002` | PARTIAL | P2 | Required | Port core Quest, status, task, reward data types | All original data types and field mappings reviewed; supported fields deserialized with tests; absent upstream types explicitly documented. | — | `src/model.rs` |
-| `MODEL-003` | TODO | P2 | Required | Preserve optional nested metadata, assets and unknown fields | Assets, gradients, metadata and optional fields round-trip or preserve unknown data; regression tests pass. | `MODEL-002` | — |
-| `MODEL-007` | TODO | P2 | Required | Typed task enum, unknown variants and versioned schemas | Typed parsing supports unknown future variants without accidentally asserting support; tests cover drift. | `MODEL-002` | — |
-| `MODEL-008` | PARTIAL | P2 | Required | Validate timestamps, invalid values, and untrusted local input | Invalid/ambiguous dates, oversized JSON, unexpected numeric values and missing IDs produce explicit unknown/invalid outcomes, not implicit success. | — | `src/model.rs` |
+| `MODEL-002` | DONE | P2 | Required | Port core Quest, status, task, reward data types | All original data types and field mappings reviewed; supported fields deserialized with tests; absent upstream types explicitly documented. | — | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `MODEL-003` | DONE | P2 | Required | Preserve optional nested metadata, assets and unknown fields | Assets, gradients, metadata and optional fields round-trip or preserve unknown data; regression tests pass. | `MODEL-002` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `MODEL-007` | DONE | P2 | Required | Typed task enum, unknown variants and versioned schemas | Typed parsing supports unknown future variants without accidentally asserting support; tests cover drift. | `MODEL-002` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `MODEL-008` | DONE | P2 | Required | Validate timestamps, invalid values, and untrusted local input | Invalid/ambiguous dates, oversized JSON, unexpected numeric values and missing IDs produce explicit unknown/invalid outcomes, not implicit success. | — | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `MODEL-009` | DONE | P2 | Required | Full read-only reward metadata support | Map Go QuestRewardsConfig and QuestReward field-by-field (assignment_method, rewards_expire_at, platforms, sku_id, asset, asset_video, messages); handle extra Rust fields as separately sourced extensions or remove them. | — | `migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md` |
 
 ### Parser
@@ -130,14 +97,14 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 |---|---|---|---|---|---|---|---|
 | `PARSE-001` | DONE | P0 | Required | Reject empty or invalid Quest objects instead of silently accepting {} | Synthetic {} and missing/blank quest ID or missing config produce a typed invalid/unknown result; never classify as normal not-enrolled without warning. | `MODEL-001` | `migration/MAIN-SERVER-CI-2026-11-01.md` |
 | `PARSE-002` | DONE | P0 | Required | Define duplicate quest IDs and reproduce intentional Go map-dedup semantics | Multiple entries with same ID have documented deterministic conflict handling, not accidental double counting; tests cover same/different statuses. | `AUD-002` | `migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md` |
-| `PARSE-005` | PARTIAL | P0 | Required | Bound input file bytes, nesting depth, quest count, and output size | Oversized/deep/wide synthetic documents fail cleanly with typed errors and no unbounded allocations; limits are configurable/documented. | `CLI-003` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
-| `PARSE-006` | PARTIAL | P0 | Required | Validate target/progress numeric domain and overflow cases | Negative, zero, nonfinite/out-of-range targets and values cannot become confirmed completion; warnings/tests cover arithmetic safety. | `MODEL-008` | `migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md` |
+| `PARSE-005` | DONE | P0 | Required | Bound input file bytes, nesting depth, quest count, and output size | Oversized/deep/wide synthetic documents fail cleanly with typed errors and no unbounded allocations; limits are configurable/documented. | `CLI-003` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `PARSE-006` | DONE | P0 | Required | Validate target/progress numeric domain and overflow cases | Negative, zero, nonfinite/out-of-range targets and values cannot become confirmed completion; warnings/tests cover arithmetic safety. | `MODEL-008` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `PARSE-003` | DONE | P1 | Required | Retain excluded_quests and preview/traffic metadata in reports | Go wrapper's excluded list is not discarded, and incomplete excluded configurations are labeled partial/not evaluated; tests prove no silent loss. | `MODEL-002` | `migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md` |
-| `PARSE-004` | TODO | P1 | Optional/excluded | Preserve unknown future JSON fields when required for round-trip | Schema retains unknown fields or outputs explicit lossiness notices, with fixture round-trip tests for nested extension fields. | `MODEL-003` | — |
-| `PARSE-007` | TODO | P1 | Required | Differentiate null, missing, wrong type, and invalid nested status | For timestamps, user_status and progress, synthetic wrong-type fields lead to explicit invalid/unknown handling rather than confusing defaults. | `MODEL-008` | — |
-| `PARSE-008` | DONE | P1 | Required | Handle UTF-8, BOM, Windows paths, and malformed JSON safely | CLI tests cover valid Unicode names and paths, BOM policy, malformed UTF-8, and stable diagnostic output under Windows/Linux. | `CLI-003` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
-| `PARSE-009` | TODO | P1 | Required | Document strict versus tolerant parsing for historical configuration | Tests show version fallback rules, absent task map, unexpected join-operator formats and migration precedence; no guessed fallback silently succeeds. | `AUD-001` | — |
-| `PARSE-010` | TODO | P1 | Required | Measure field coverage against original types.go not just top-level names | Generate or review a field-by-field coverage matrix for 26 Go struct declarations and all JSON-tagged fields, mapping each to Rust, intentional exclusion or unimplemented release task; tests for every required family. | `MODEL-002` | — |
+| `PARSE-004` | DONE | P1 | Optional/excluded | Preserve unknown future JSON fields when required for round-trip | Schema retains unknown fields or outputs explicit lossiness notices, with fixture round-trip tests for nested extension fields. | `MODEL-003` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `PARSE-007` | DONE | P1 | Required | Differentiate null, missing, wrong type, and invalid nested status | For timestamps, user_status and progress, synthetic wrong-type fields lead to explicit invalid/unknown handling rather than confusing defaults. | `MODEL-008` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `PARSE-008` | DONE | P1 | Required | Handle UTF-8, BOM, Linux filenames, and malformed JSON safely | CLI tests cover valid Unicode names and paths, BOM policy, malformed UTF-8, and stable diagnostic output on Linux x86_64. | `CLI-003` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
+| `PARSE-009` | DONE | P1 | Required | Document strict versus tolerant parsing for historical configuration | Tests show version fallback rules, absent task map, unexpected join-operator formats and migration precedence; no guessed fallback silently succeeds. | `AUD-001` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `PARSE-010` | DONE | P1 | Required | Measure field coverage against original types.go not just top-level names | Generate or review a field-by-field coverage matrix for 26 Go struct declarations and all JSON-tagged fields, mapping each to Rust, intentional exclusion or unimplemented release task; tests for every required family. | `MODEL-002` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 
 ### State
 
@@ -147,23 +114,23 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `STATUS-010` | DONE | P0 | Required | Validate completion/enrollment/claim timestamps instead of nonempty-string truthiness | Validate RFC3339 completion/enrollment/claim timestamps AND per-task progress.completed_at (including timezone offsets); whitespace or malformed strings cannot yield confirmed status. | `STATE-001` | `migration/MAIN-SERVER-CI-2026-11-01.md` |
 | `STATUS-011` | DONE | P0 | Required | Detect impossible ordering and contradictory status timestamps | Synthetic claim-before-completion, completion-before-enrollment, starts-after-expiry, and invalid clocks yield explicit inconsistent/unknown states. | `STATUS-010` | `migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md` |
 | `STATUS-012` | DONE | P0 | Required | Avoid silent unexpired treatment of malformed/missing expiration dates | Distinguish missing/invalid expires_at from valid future expiry and display uncertainty in filters/status; tests cover malformed dates. | `STATE-008` | `migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md` |
-| `STATUS-013` | PARTIAL | P0 | Required | Label provenance and trust for each reported milestone | Clearly separate locally supplied, untrusted JSON fields from authenticated server observations. Never call a completed_at field 'server-verified' unless its provenance is authenticated; report source and trust level on each verdict. | `STATE-007` | `migration/MAIN-SERVER-CI-2026-11-01.md` |
-| `STATUS-015` | TODO | P0 | Required | Verify AND/OR groups with mixed progress, missing task statuses, and other operators | Property/table tests cover single/AND/OR, unknown operator, unknown/missing task statuses and conditional eligibility without false success. | `STATE-005`, `AUD-001` | — |
+| `STATUS-013` | DONE | P0 | Required | Label provenance and trust for each reported milestone | Clearly separate locally supplied, untrusted JSON fields from authenticated server observations. Never call a completed_at field 'server-verified' unless its provenance is authenticated; report source and trust level on each verdict. | `STATE-007` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `STATUS-015` | DONE | P0 | Required | Verify AND/OR groups with mixed progress, missing task statuses, and other operators | Property/table tests cover single/AND/OR, unknown operator, unknown/missing task statuses and conditional eligibility without false success. | `STATE-005`, `AUD-001` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `STATE-001` | DONE | P1 | Required | Port IsExpired/IsEnrolled/IsCompleted/HasClaimedRewards | Methods derive status from server-shaped timestamps and expiry; tests pass. | — | `src/model.rs` |
 | `STATE-002` | DONE | P1 | Required | Preserve original GetTaskName as compatibility-only heuristic | Original first-match precedence is represented but never determines entire Quest completion. | — | `src/model.rs` |
 | `STATE-003` | DONE | P1 | Required | Handle Android video-only classification | Recognizes mobile-only video task when desktop video is absent. | — | `src/model.rs` |
 | `STATE-004` | DONE | P1 | Required | Port FilterValid/FilterRedeemable semantics | Filters noncompleted/nonexpired and completed/unclaimed, respectively; tests pass. | — | `src/manager.rs` |
-| `STATE-005` | PARTIAL | P1 | Required | Correctly evaluate AND/OR task groups | Verify AND/OR behavior against authenticated/sanitized real-world Quest schema samples or an authoritative reference; maintain synthetic regression tests and fail closed on missing/unknown operators. | — | `src/manager.rs` |
+| `STATE-005` | PARTIAL | P1 | Required | Correctly evaluate AND/OR task groups | Verify AND/OR behavior against authenticated/sanitized real-world Quest schema samples or an authoritative reference; maintain synthetic regression tests and fail closed on missing/unknown operators. | — | `tests/offline_regressions.rs` |
 | `STATE-006` | DONE | P1 | Required | Do not turn numeric progress into completion | Progress >= target without completed_at is flagged, not reported as Quest completed; tests pass. | — | `src/manager.rs` |
 | `STATE-009` | DONE | P1 | Required | Account enrollment-block marker remains diagnostic | Blocked-until input retained and displayed; no false claim of enrollment. | — | `src/main.rs` |
 | `STATE-020` | DONE | P1 | Required | Retain and interpret task progress freshness metadata | Parse QuestTaskProgress.updated_at and optional heartbeat last_beat_at/expires_at, and report stale/unknown observation time separately from success; do not fake heartbeats. | `PARSE-010`, `STATUS-010` | `migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md` |
 | `STATE-021` | DONE | P1 | Required | Validate task and progress event name consistency | Parse TaskEntry.type/event_name and QuestTaskProgress.event_name; classify mismatched task reports as unverified/inconsistent, with synthetic tests. | `MODEL-010`, `STATE-020` | `migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md` |
-| `STATUS-014` | TODO | P1 | Required | Keep unsupported/unknown tasks distinguishable even on completed Quest records | Mixed known/unknown and deprecated tasks retain warnings; Quest completed_at may be reported but never construed as implemented task handler support. | `MODEL-005` | — |
+| `STATUS-014` | DONE | P1 | Required | Keep unsupported/unknown tasks distinguishable even on completed Quest records | Mixed known/unknown and deprecated tasks retain warnings; Quest completed_at may be reported but never construed as implemented task handler support. | `MODEL-005` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `STATUS-016` | DONE | P1 | Required | Inject an evaluation clock and add deterministic --at option | Tests/CLI can evaluate a timestamp without Utc::now nondeterminism; DST/UTC offsets and boundary-time cases are covered. | `STATE-008` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
-| `STATUS-017` | TODO | P1 | Required | Compare Go and Rust filtering behavior for preview, blocking, starts and duplicates | Document identical and intentionally different filter results with named fixtures; no ambiguous parity claim. | `AUD-002`, `PARSE-002` | — |
-| `STATUS-018` | TODO | P1 | Required | Model claimable, claimed, and externally redeemed as separate evidence states | Result format and tests differentiate Quest completion, reward claim availability/confirmation, and externally unknown redemption. | `STATE-007`, `MODEL-009` | — |
-| `STATE-007` | PARTIAL | P2 | Required | Separate task, Quest, claim, and external redemption | Quest and claim statuses separate; add explicit externally-unverified redemption representation and tests. | — | `src/manager.rs` |
-| `STATE-008` | PARTIAL | P2 | Required | Handle starts_at and expires_at edge cases | Future starts and expired are differentiated; malformed/missing expiry must be flagged as unknown with test coverage. | — | `src/manager.rs` |
+| `STATUS-017` | DONE | P1 | Required | Compare Go and Rust filtering behavior for preview, blocking, starts and duplicates | Document identical and intentionally different filter results with named fixtures; no ambiguous parity claim. | `AUD-002`, `PARSE-002` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `STATUS-018` | DONE | P1 | Required | Model claimable, claimed, and externally redeemed as separate evidence states | Result format and tests differentiate Quest completion, reward claim availability/confirmation, and externally unknown redemption. | `STATE-007`, `MODEL-009` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `STATE-007` | DONE | P2 | Required | Separate task, Quest, claim, and external redemption | Quest and claim statuses separate; add explicit externally-unverified redemption representation and tests. | — | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `STATE-008` | DONE | P2 | Required | Handle starts_at and expires_at edge cases | Future starts and expired are differentiated; malformed/missing expiry must be flagged as unknown with test coverage. | — | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 
 ### Cli
 
@@ -171,17 +138,17 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 |---|---|---|---|---|---|---|---|
 | `CLI-001` | DONE | P1 | Required | demo/inspect, JSON and --workers options | Demo and file inspection work with machine-readable output; options present and smoke-tested. | — | `src/main.rs` |
 | `CLI-004` | DONE | P1 | Required | Bundle synthetic example and input/output documentation | Synthetic examples and command usage documented; demo smoke-tested. | — | `examples/sample-quests.json` |
-| `CLI-002` | PARTIAL | P2 | Required | Add --version and --verbose and structured errors | New flags documented; error codes predictable; no personal tokens required. | `CLI-001` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
-| `CLI-003` | PARTIAL | P2 | Required | Robust CLI UX for invalid inputs and safe help output | Tests cover missing flag values, unknown flags, non-UTF8 paths, large input and invalid JSON with stable nonzero exit codes. | — | `src/main.rs` |
+| `CLI-002` | DONE | P2 | Required | Add --version and --verbose and structured errors | New flags documented; error codes predictable; no personal tokens required. | `CLI-001` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `CLI-003` | DONE | P2 | Required | Robust CLI UX for invalid inputs and safe help output | Tests cover missing flag values, unknown flags, non-UTF8 paths, large input and invalid JSON with stable nonzero exit codes. | — | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 
 ### Ux
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
 | `UX-002` | DONE | P0 | Required | Version JSON output schema and keep stdout machine-readable | --json emits exactly one documented valid JSON result on stdout with schema_version, errors on stderr and deterministic field naming; golden tests pass. | `CLI-001` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
-| `UX-006` | PARTIAL | P0 | Required | Keep debug logs sanitized and do not echo raw input or secrets | Tests show token-like strings inside malformed JSON/errors cannot be emitted; diagnostic truncation and escaping documented. | `SEC-002` | `migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md` |
-| `UX-001` | TODO | P1 | Required | Support --version, --verbose, robust --help and CLI test coverage | Stable version/help output and verbose diagnostic mode that does not disclose sensitive data; tests cover invalid flags. | `CLI-002` | — |
-| `UX-004` | TODO | P1 | Required | Document stable exit codes for invalid input and execution errors | Typed failures have predictable nonzero exit codes; success/empty report semantics are documented and tested on both platforms. | `CLI-003` | — |
+| `UX-006` | DONE | P0 | Required | Keep debug logs sanitized and do not echo raw input or secrets | Tests show token-like strings inside malformed JSON/errors cannot be emitted; diagnostic truncation and escaping documented. | `SEC-002` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `UX-001` | DONE | P1 | Required | Support --version, --verbose, robust --help and CLI test coverage | Stable version/help output and verbose diagnostic mode that does not disclose sensitive data; tests cover invalid flags. | `CLI-002` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `UX-004` | DONE | P1 | Required | Document stable exit codes for invalid input and execution errors | Typed failures have predictable nonzero exit codes; success/empty report semantics are documented and tested on Linux x86_64. | `CLI-003` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `UX-005` | EXCLUDED | P1 | Optional/excluded | Test Windows path quoting, Unicode and terminal encoding behavior | Windows smoke tests cover spaces and non-ASCII filenames and output, including bat wrapper if added. | `PARSE-008` | — |
 | `UX-003` | DONE | P2 | Optional/excluded | Add optional stdin/pipeline support with bounded input | A documented '-' stdin input works with identical validation to inspect file and rejects oversized streams; no network or token collection. | `PARSE-005` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
 
@@ -190,7 +157,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
 | `PAR-001` | DONE | P1 | Required | Bounded parallel assessment in Rust | Analysis worker count bounded 1..32 and output preserves source order; unit test passes. | — | `src/manager.rs` |
-| `PAR-002` | TODO | P2 | Required | Add cancellation, clean shutdown and race tests | Cancellation paths release tasks/handles, no unbounded waits and tests cover shutdown. | `PAR-001` | — |
+| `PAR-002` | DONE | P2 | Required | Add cancellation, clean shutdown and race tests | Cancellation paths release tasks/handles, no unbounded waits and tests cover shutdown. | `PAR-001` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `PAR-003` | TODO | P2 | Optional/excluded | Async runtime only if justified by supported I/O | If authorized network I/O is added, compare Tokio vs existing threads and document lifecycle; do not add for decoration. | `PAR-001` | — |
 
 ### Network
@@ -206,25 +173,25 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
-| `TEST-001` | DONE | P1 | Required | Native Rust offline CLI synthetic regression suite: 66 passing tests | All 66 Rust tests passed on isolated main-server checkout at commit 44dfcf924ec805729d1ac800c3294d344bce588e using cargo test --all-targets --locked, plus strict formatting and Clippy. | — | `src/lib.rs` |
+| `TEST-001` | DONE | P1 | Required | Native Rust offline CLI synthetic regression suite: 66 passing tests | All 99 Rust tests pass on the isolated main-server checkout using locked all-target tests, plus strict formatting and Clippy. | — | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `TEST-002` | DONE | P1 | Required | Separate integration tests and golden JSON snapshots | Integration and golden tests verify CLI JSON output, operator logic, timestamp problems and fixtures. | `TEST-001` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
-| `TEST-003` | PARTIAL | P1 | Required | 22 offline method validation cases | Implement 22 specified test cases as executable offline tests, mapping each case to a test name and result. | — | `research/standalone/METHOD-VALIDATION-FIXTURES.md` |
+| `TEST-003` | DONE | P1 | Required | 22 offline method validation cases | Implement 22 specified test cases as executable offline tests, mapping each case to a test name and result. | — | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `TEST-004` | DONE | P1 | Optional/excluded | Cross-platform Linux/Windows build and smoke tests verified on historical commit | A recorded earlier CI run built and smoke-tested the Rust project on both Linux and Windows. Reproducible locked builds and tagged-current-commit release verification remain REL-006 and REL-002. | — | [source](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888) |
-| `TEST-005` | TODO | P1 | Optional/excluded | Coverage, property tests, fuzzing and benchmark numbers | Published measurements reproduce with inputs, machine specs and tools; no fabricated RAM/CPU claims. | `TEST-001` | — |
+| `TEST-005` | DONE | P1 | Optional/excluded | Coverage, property tests, fuzzing and benchmark numbers | Published measurements reproduce with inputs, machine specs and tools; no fabricated RAM/CPU claims. | `TEST-001` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 
 ### Quality
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
-| `QA-001` | PARTIAL | P0 | Required | Maintain test-to-requirement traceability for all release-gating tasks | Every release-gate task has test file/case ID or a verified non-code acceptance artifact; CI checks missing test mapping. | `TEST-002` | `migration/TEST-MATRIX.md` |
-| `QA-003` | DONE | P0 | Required | Golden CLI snapshots with deterministic fixture time and text/JSON outputs | Committed expected outputs compare identically on Windows/Linux with normalized paths/timezones; fixture changes reviewed. | `STATUS-016`, `UX-002` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
+| `QA-001` | DONE | P0 | Required | Maintain test-to-requirement traceability for all release-gating tasks | Every release-gate task has test file/case ID or a verified non-code acceptance artifact; CI checks missing test mapping. | `TEST-002` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `QA-003` | DONE | P0 | Required | Golden CLI snapshots with deterministic fixture time and text/JSON outputs | Committed expected outputs compare identically on Linux x86_64 with normalized paths/timezones; fixture changes reviewed. | `STATUS-016`, `UX-002` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
 | `QA-005` | DONE | P0 | Required | Negative end-to-end test ensures no Discord network, user-token, or reward submission | Offline CLI works with network blocked and denies user-token operation flags; evidence proves no credential requirement. | `SEC-001` | `scripts/test-linux.sh` |
-| `QA-002` | TODO | P1 | Required | Property tests and fuzz harness for schema and untrusted JSON | Fuzz/property tests demonstrate no panics and stable unknown/invalid classification with bounded synthetic inputs; CI smoke-level fuzz schedule specified. | `PARSE-005` | — |
-| `QA-004` | PARTIAL | P1 | Required | Stress test duplicate IDs, 100k mock tasks, large values and empty lists | Test resource limits, correct ordering, duplicate handling and no panic on synthetic large/empty documents. | `PARSE-005`, `PARSE-002` | `scripts/benchmark-linux.py` |
-| `QA-007` | TODO | P1 | Required | Regression corpus for source-level failures in related Go/Python/TS projects | Each known false-success, infinite retry, stale status and conditional EventEmitter case has a synthetic input and expected safe diagnostic. | `TEST-003` | — |
-| `QA-008` | PARTIAL | P1 | Required | Test tracker checker itself against malformed manifests | Unit tests confirm checker rejects duplicate IDs, broken deps/cycles, stale Markdown, invalid statuses and nonexistent path evidence appropriately. | `OPS-002` | `migration/test_check_progress.py` |
-| `QA-009` | TODO | P1 | Required | Differential offline Go-versus-Rust fixtures for original pure methods | Use only non-network Go model/Quest/filter helpers and synthetic JSON; compare deterministic outputs with Rust for known parity and document intentional divergences; never execute selfbot login. | `AUD-002`, `STATE-019` | — |
-| `QA-010` | TODO | P1 | Required | Propagate worker errors and panic failures without false-success reports | Tests inject synthetic worker error/panic conditions and show no task/Quest can be marked confirmed from partial results; cancellation and thread cleanup behavior explicit. | `PAR-002` | — |
+| `QA-002` | DONE | P1 | Required | Property tests and fuzz harness for schema and untrusted JSON | Fuzz/property tests demonstrate no panics and stable unknown/invalid classification with bounded synthetic inputs; CI smoke-level fuzz schedule specified. | `PARSE-005` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `QA-004` | DONE | P1 | Required | Stress test duplicate IDs, 100k mock tasks, large values and empty lists | Test resource limits, correct ordering, duplicate handling and no panic on synthetic large/empty documents. | `PARSE-005`, `PARSE-002` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `QA-007` | DONE | P1 | Required | Regression corpus for source-level failures in related Go/Python/TS projects | Each known false-success, infinite retry, stale status and conditional EventEmitter case has a synthetic input and expected safe diagnostic. | `TEST-003` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `QA-008` | DONE | P1 | Required | Test tracker checker itself against malformed manifests | Unit tests confirm checker rejects duplicate IDs, broken deps/cycles, stale Markdown, invalid statuses and nonexistent path evidence appropriately. | `OPS-002` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `QA-009` | DONE | P1 | Required | Differential offline Go-versus-Rust fixtures for original pure methods | Use only non-network Go model/Quest/filter helpers and synthetic JSON; compare deterministic outputs with Rust for known parity and document intentional divergences; never execute selfbot login. | `AUD-002`, `STATE-019` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `QA-010` | DONE | P1 | Required | Propagate worker errors and panic failures without false-success reports | Tests inject synthetic worker error/panic conditions and show no task/Quest can be marked confirmed from partial results; cancellation and thread cleanup behavior explicit. | `PAR-002` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `QA-006` | DONE | P2 | Optional/excluded | Reproducible CPU/RAM performance and binary-size measurements | Benchmark setup, platform/hardware, time/memory and reproducible input sets published; no speculative improvement claims. | `TEST-005` | `scripts/benchmark-linux.py` |
 
 ### Security
@@ -233,8 +200,8 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 |---|---|---|---|---|---|---|---|
 | `SEC-003` | DONE | P0 | Required | Sanitize terminal control sequences and Unicode formatting attacks | Escape or visibly render ANSI/OSC controls, newlines, carriage returns and bidi override characters in untrusted Quest names/IDs/errors; tests prove report cannot manipulate terminal output. | `CLI-003` | `migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md` |
 | `SEC-001` | DONE | P1 | Required | No personal Discord user-token use in current offline app | Current Rust code has no personal-token login or Discord network API calls. | — | `src/main.rs` |
-| `SEC-004` | TODO | P1 | Required | Minimize user identifiers and unexpected sensitive content in output | Review output/diagnostics for identifiers or secret-like data from local JSON, add default-redaction and explicit opt-in rules as appropriate, and test JSON/text privacy behavior. | `SEC-003`, `STATUS-013` | — |
-| `SEC-002` | TODO | P2 | Required | Add secret-redacting diagnostics and dependency review | Logging never exposes token fragments or confidential headers; dependency licenses reviewed. | `ENV-009` | — |
+| `SEC-004` | DONE | P1 | Required | Minimize user identifiers and unexpected sensitive content in output | Review output/diagnostics for identifiers or secret-like data from local JSON, add default-redaction and explicit opt-in rules as appropriate, and test JSON/text privacy behavior. | `SEC-003`, `STATUS-013` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
+| `SEC-002` | DONE | P2 | Required | Add secret-redacting diagnostics and dependency review | Logging never exposes token fragments or confidential headers; dependency licenses reviewed. | `ENV-009` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 
 ### Release
 
@@ -245,10 +212,10 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `REL-008` | DONE | P0 | Required | Create final release readiness checklist with stop conditions | Must-pass checklist covers tests, release source, schema conformance, policy scope, licenses, docs, reproducibility and rollback. | `ENV-008` | `migration/RELEASE-GATES.md` |
 | `REL-001` | DONE | P1 | Required | Pin Linux x86_64 Rust toolchain and document supported target | rust-toolchain.toml pins compiler 1.98.1, server test script refuses silent toolchain installations and checks x86_64 Linux; verify running correctly on main-server. | `ENV-005` | `rust-toolchain.toml` |
 | `REL-003` | TODO | P1 | Required | Publish versioned Linux x86_64 release with checksum | An actual downloadable Linux archive and checksum are available at a verified public release URL, source SHA matches verified main-server test, provenance and limitations documented. | `ENV-008` | — |
-| `REL-004` | PARTIAL | P1 | Required | Harden main-server-only test execution and dependency review | No GitHub-hosted or Windows runners. Main-server-only scripts are bounded, do not collect secrets, install packages, alter network services or run untrusted pull requests; dependencies/updates reviewed. | `ENV-006` | `scripts/test-linux.sh` |
+| `REL-004` | DONE | P1 | Required | Harden main-server-only test execution and dependency review | No GitHub-hosted or Windows runners. Main-server-only scripts are bounded, do not collect secrets, install packages, alter network services or run untrusted pull requests; dependencies/updates reviewed. | `ENV-006` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `REL-006` | DONE | P1 | Required | Verify locked Linux source build, build-info and artifact hashes | Exact Rust version/source SHA/Cargo.lock recorded; main-server --locked build succeeds; archive and embedded file SHA256SUMS verified after extraction. | `ENV-005`, `REL-001` | `scripts/package-linux.sh` |
 | `REL-009` | EXCLUDED | P1 | Optional/excluded | Verify native Windows EXE dependencies on a clean target machine | CI and documentation verify binary launches on a fresh supported Windows runner without installed Go/Node/Python/Discord; identify required DLL/runtime dependencies and target architecture rather than assuming fully static. | `REL-002` | — |
-| `REL-005` | PARTIAL | P2 | Optional/excluded | Generate SBOM or dependency/license inventory for release | Catalog all transitive crates and licenses, verify upstream notice obligations, attach inventory to release. | `ENV-009`, `ENV-005` | `scripts/package-linux.sh` |
+| `REL-005` | DONE | P2 | Optional/excluded | Generate SBOM or dependency/license inventory for release | Catalog all transitive crates and licenses, verify upstream notice obligations, attach inventory to release. | `ENV-009`, `ENV-005` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 
 ### Tracking
 
@@ -256,7 +223,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 |---|---|---|---|---|---|---|---|
 | `OPS-001` | DONE | P0 | Required | Regenerate Markdown task rows automatically from canonical JSON | When a task is added, changed, or removed in progress.json, --write deterministically regenerates all task rows, headings, summaries, and release gates; --check fails mismatches; curated notes belong in separate non-generated documents. | `DOC-004` | `migration/check_progress.py` |
 | `OPS-002` | DONE | P0 | Required | Validate expanded tracker schema, dependencies, cycles, and priorities | Checker enforces required fields, unique IDs, permitted statuses/P0-P3, release_gate flags, DAG dependencies and consistent summaries. | `DOC-004` | `migration/check_progress.py` |
-| `OPS-003` | TODO | P0 | Required | Evidence must identify tested commit or immutable file and not just a claim | Tracker records verification date, commit/run/source and CI status; checker warns on unverified or outdated 'done' reports. | `OPS-002` | — |
+| `OPS-003` | DONE | P0 | Required | Evidence must identify tested commit or immutable file and not just a claim | Tracker records verification date, commit/run/source and CI status; checker warns on unverified or outdated 'done' reports. | `OPS-002` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `OPS-004` | DONE | P0 | Required | Summarize release-gating versus optional tasks separately | Dashboard computes open release blockers from task metadata; excluded and optional tasks do not distort readiness percentage. | `OPS-002` | `migration/check_progress.py` |
 | `OPS-006` | DONE | P0 | Required | Provide one copy-paste next-session AI handoff with task order | Session entry names files, branch, actual status, top five dependencies, exact verification commands, and completion reporting format. | `DOC-003` | `migration/START-HERE.md` |
 | `OPS-009` | DONE | P0 | Required | Generate a dependency-aware, actually-startable next-task queue | Dashboard distinguishes P0 tasks whose dependencies are DONE from tasks blocked by PARTIAL/TODO prerequisites, lists blocker IDs/status/priority, and tests update the ready queue automatically after manifest changes. | `OPS-002`, `OPS-004` | `migration/check_progress.py` |
@@ -268,7 +235,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
-| `DOC-005` | PARTIAL | P0 | Required | Document provenance limits and safe local JSON input workflows | README explains supported offline input forms and how to create/test sanitized synthetic fixtures without scraping or exposing personal user tokens; distinguishes reported data from independently verified server status. | `STATUS-013` | `migration/MAIN-SERVER-CI-2026-11-01.md` |
+| `DOC-005` | DONE | P0 | Required | Document provenance limits and safe local JSON input workflows | README explains supported offline input forms and how to create/test sanitized synthetic fixtures without scraping or exposing personal user tokens; distinguishes reported data from independently verified server status. | `STATUS-013` | `migration/MAIN-SERVER-COMPLETION-2026-11-01.md` |
 | `DOC-001` | DONE | P1 | Required | Project README documents offline scope and Windows EXE | README explains commands, no live completion, passing prior CI and artifact link. | — | `README.md` |
 | `DOC-002` | DONE | P1 | Required | Publish master 1:1 migration spec, file map, tracker | Docs contain exact scoped goals and all Go source files; machine tracker has statuses, acceptance and evidence. | — | `migration/SPEC.md` |
 | `DOC-003` | DONE | P1 | Required | AI agent updating protocol | Agent guidance requires rechecking CI, modifying tracker with code changes, and no false completion claims. | — | `AGENTS.md` |
