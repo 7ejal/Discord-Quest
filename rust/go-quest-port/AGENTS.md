@@ -1,5 +1,7 @@
 # Instructions for AI agents working in rust/go-quest-port
 
+**Linux-only override:** [migration/LINUX-ONLY.md](migration/LINUX-ONLY.md). Never build Windows or run GitHub-hosted CI. Only `main-server` is the test environment.
+
 **Start with [migration/START-HERE.md](migration/START-HERE.md) and the [final pre-code audit](migration/PRE-CODE-REVIEW-2026-11-01.md).** The code-aware [GAP-AUDIT.md](migration/GAP-AUDIT.md), [TEST-MATRIX.md](migration/TEST-MATRIX.md), [DECISIONS.md](migration/DECISIONS.md), and [RELEASE-GATES.md](migration/RELEASE-GATES.md) are mandatory. This is the **only active Rust CLI**, not the sibling `rust/quest-audit-cli`.
 
 **Before editing code or claiming completion, read in this order:**
