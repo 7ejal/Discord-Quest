@@ -58,15 +58,31 @@ On Linux/macOS: `cargo run --release --locked -- demo`.
 
 ```text
 go-quest-port demo [--json] [--workers N] [--at RFC3339]
-go-quest-port inspect <local-quests.json> [--json] [--workers N] [--at RFC3339]
+go-quest-port inspect <local-quests.json|-> [--json] [--workers N] [--at RFC3339]
 ```
 
 - `demo`: uses bundled **fictional synthetic** Quests. No outside access.
-- `inspect`: reads an existing local JSON file (maximum **8 MiB** and **10,000 Quest objects**). It does **not** fetch or authenticate live account data.
-- `--json`: machine-readable report with `schema_version: 1`, `input_trust: "unverified_local_json"` and an `evaluated_at` UTC timestamp.
+- `inspect`: reads an existing local JSON file, or `inspect -` reads piped UTF-8 JSON from standard input. Documents are limited to **8 MiB** and **10,000 Quest objects**; invalid or excessively nested JSON is rejected. A leading UTF-8 BOM is accepted. It does **not** fetch or authenticate live account data.
+- `--json`: machine-readable report with `schema_version: 1`, `input_trust: "unverified_local_json"` and an `evaluated_at` UTC timestamp. JSON reports have a **16 MiB** output limit and are completely buffered before stdout; errors go to stderr without leaking partial JSON.
 - `--workers N`: between 1 and 32 analysis threads (default 4).
 - `--at YYYY-MM-DDTHH:MM:SSZ`: evaluate campaign eligibility at a supplied RFC3339 instant, including timezone offsets. Otherwise the current clock is used.
 - `--version` (or `-V`): display the native executable version.
+
+## Terminal pipeline examples
+
+From a Linux shell:
+
+```bash
+cat examples/sample-quests.json | ./target/release/go-quest-port inspect - --json --at 2026-11-01T12:00:00Z
+```
+
+From PowerShell (Windows):
+
+```powershell
+Get-Content -Raw .\examples\sample-quests.json | .\target\release\go-quest-port.exe inspect - --json --at 2026-11-01T12:00:00Z
+```
+
+Both pipelines use **only local or piped JSON**, not a Discord account. For repeatable reports, supply `--at`. See the committed [golden JSON and text fixtures](tests/golden/) and [CLI snapshot tests](tests/cli_golden.rs).
 
 ## Original Go → Rust mapping
 
