@@ -1,5 +1,7 @@
 # AI coding agent workflow — maintain task progress truthfully
 
+**Latest pre-code audit:** [PRE-CODE-REVIEW-2026-11-01.md](PRE-CODE-REVIEW-2026-11-01.md). It identifies corrected `done` claims and new P0 tasks; consult it before coding.
+
 **Start first:** [START-HERE.md](START-HERE.md) · [GAP-AUDIT.md](GAP-AUDIT.md) · [RELEASE-GATES.md](RELEASE-GATES.md) · [TEST-MATRIX.md](TEST-MATRIX.md).
 
 **Canonical task list:** [progress.json](progress.json)  
