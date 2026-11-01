@@ -1,0 +1,1112 @@
+{
+  "schema_version": 1,
+  "project": "7ejal/Discord-Quest",
+  "component": "rust/go-quest-port",
+  "recorded_on": "2026-11-01",
+  "baseline_upstream": {
+    "repo": "yeweroooo/Discord-Quest-Auto-Completion-Selfbot",
+    "commit": "352d7f457c9511bc9e7c9b940a71012bfb47572e"
+  },
+  "verification": {
+    "kind": "historical_ci",
+    "run_id": 41256646888,
+    "result": "success",
+    "linux_test_count": 15,
+    "windows_binary_artifact_id": 13063362600,
+    "note": "Verified on an earlier code commit; later documentation commits are not automatically covered."
+  },
+  "status_meanings": {
+    "done": "Implemented or documented, with listed evidence. Historical build evidence may not cover later changes.",
+    "partial": "Some code exists, but acceptance conditions are not yet met.",
+    "todo": "No completed implementation/evidence meeting acceptance.",
+    "excluded": "Intentionally not part of authorized offline application. Never count as unfinished work."
+  },
+  "tasks": [
+    {
+      "id": "INV-001",
+      "phase": "inventory",
+      "title": "Pin original Go source revision",
+      "status": "done",
+      "go_source": [
+        "README.md",
+        "main.go"
+      ],
+      "rust_paths": [
+        "migration/SPEC.md"
+      ],
+      "acceptance": "All migration references pin upstream commit 352d7f457c9511bc9e7c9b940a71012bfb47572e.",
+      "evidence": [
+        "https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "INV-002",
+      "phase": "inventory",
+      "title": "Map every original Go root file",
+      "status": "done",
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/GO-FILE-MAP.md"
+      ],
+      "acceptance": "Each of 16 root entries has an explicit destination, partial flag, or excluded decision.",
+      "evidence": [
+        "https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "INV-003",
+      "phase": "inventory",
+      "title": "Document original Go handler assumptions and known failures",
+      "status": "done",
+      "go_source": [
+        "manager.go",
+        "quest.go",
+        "client.go"
+      ],
+      "rust_paths": [
+        "research/standalone/GO.md",
+        "research/standalone/METHODS-DEEP-DIVE-2026-11-01.md"
+      ],
+      "acceptance": "Source-pinned report describes first-match task selection, false positives, unbounded waits, and claim default.",
+      "evidence": [
+        "https://github.com/7ejal/Discord-Quest/blob/main/research/standalone/GO.md"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "ENV-001",
+      "phase": "build",
+      "title": "Rust Cargo package exists",
+      "status": "done",
+      "go_source": [
+        "go.mod",
+        "go.sum"
+      ],
+      "rust_paths": [
+        "Cargo.toml"
+      ],
+      "acceptance": "Cargo metadata defines a native Rust binary using serde/serde_json/chrono.",
+      "evidence": [
+        "Cargo.toml",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "ENV-002",
+      "phase": "build",
+      "title": "Native CLI entry point exists",
+      "status": "done",
+      "go_source": [
+        "main.go"
+      ],
+      "rust_paths": [
+        "src/main.rs"
+      ],
+      "acceptance": "A main entry point accepts demo/inspect and executes the offline analysis path.",
+      "evidence": [
+        "src/main.rs",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "ENV-003",
+      "phase": "build",
+      "title": "Linux CI tests and smoke test passed",
+      "status": "done",
+      "go_source": [
+        ".github/workflows/*"
+      ],
+      "rust_paths": [
+        ".github/workflows/rust-go-quest-port.yml"
+      ],
+      "acceptance": "Linux CI run 41256646888 completed successfully: cargo test and demo JSON.",
+      "evidence": [
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "ENV-004",
+      "phase": "build",
+      "title": "Windows EXE build, smoke test and artifact passed",
+      "status": "done",
+      "go_source": [
+        ".github/workflows/*"
+      ],
+      "rust_paths": [
+        ".github/workflows/rust-go-quest-port.yml"
+      ],
+      "acceptance": "Windows CI run 41256646888 compiled and smoke tested EXE and uploaded artifact 13063362600.",
+      "evidence": [
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888/artifacts/13063362600"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "ENV-005",
+      "phase": "build",
+      "title": "Commit Cargo.lock for reproducible builds",
+      "status": "todo",
+      "go_source": [
+        "go.sum"
+      ],
+      "rust_paths": [
+        "Cargo.lock"
+      ],
+      "acceptance": "Cargo.lock committed and CI uses --locked; updates deliberately reviewed.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "ENV-006",
+      "phase": "build",
+      "title": "Add fmt, clippy and dependency audit checks",
+      "status": "todo",
+      "go_source": [
+        ".github"
+      ],
+      "rust_paths": [
+        ".github/workflows/rust-go-quest-port.yml"
+      ],
+      "acceptance": "CI fails on cargo fmt --check and clippy -D warnings; audit policy documented.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-003"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "ENV-007",
+      "phase": "build",
+      "title": "Publish Linux executable artifact",
+      "status": "todo",
+      "go_source": [
+        ".github/workflows/*"
+      ],
+      "rust_paths": [
+        ".github/workflows/rust-go-quest-port.yml"
+      ],
+      "acceptance": "Linux release output uploaded and verified by CI.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-003"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "ENV-008",
+      "phase": "build",
+      "title": "Automated tagged releases and checksums",
+      "status": "todo",
+      "go_source": [
+        ".github/workflows/*"
+      ],
+      "rust_paths": [
+        ".github/workflows/"
+      ],
+      "acceptance": "Tagged release uploads signed or checksum-verified Windows/Linux artifacts with release notes.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-004",
+        "ENV-007"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "ENV-009",
+      "phase": "build",
+      "title": "Confirm upstream license compatibility and attribution",
+      "status": "todo",
+      "go_source": [
+        "LICENSE",
+        "README.md"
+      ],
+      "rust_paths": [
+        "LICENSE",
+        "NOTICE",
+        "README.md"
+      ],
+      "acceptance": "Verify actual Go upstream license terms, preserve notices and document any copied code; no ungrounded relicensing.",
+      "evidence": [],
+      "depends_on": [
+        "INV-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "ENV-010",
+      "phase": "build",
+      "title": "Create optional Windows .bat launcher",
+      "status": "todo",
+      "go_source": [
+        "README.md"
+      ],
+      "rust_paths": [
+        "scripts/run-windows.bat"
+      ],
+      "acceptance": "Launcher invokes verified local exe with safely quoted args, without adding capabilities.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-004"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "MODEL-001",
+      "phase": "models",
+      "title": "Parse Quest object, array, and wrapped collection",
+      "status": "done",
+      "go_source": [
+        "types.go:AllQuestsResponse",
+        "types.go:Quest"
+      ],
+      "rust_paths": [
+        "src/lib.rs"
+      ],
+      "acceptance": "All three JSON input shapes parse; invalid root types are rejected.",
+      "evidence": [
+        "src/lib.rs",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "MODEL-002",
+      "phase": "models",
+      "title": "Port core Quest, status, task, reward data types",
+      "status": "partial",
+      "go_source": [
+        "types.go"
+      ],
+      "rust_paths": [
+        "src/model.rs"
+      ],
+      "acceptance": "All original data types and field mappings reviewed; supported fields deserialized with tests; absent upstream types explicitly documented.",
+      "evidence": [
+        "src/model.rs"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "MODEL-003",
+      "phase": "models",
+      "title": "Preserve optional nested metadata, assets and unknown fields",
+      "status": "todo",
+      "go_source": [
+        "types.go:QuestAssets",
+        "types.go:QuestVideoMetadata",
+        "types.go:QuestCosponsorMeta"
+      ],
+      "rust_paths": [
+        "src/model.rs"
+      ],
+      "acceptance": "Assets, gradients, metadata and optional fields round-trip or preserve unknown data; regression tests pass.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "MODEL-004",
+      "phase": "models",
+      "title": "Read v2 and legacy task_config",
+      "status": "done",
+      "go_source": [
+        "types.go:TaskConfigV2"
+      ],
+      "rust_paths": [
+        "src/model.rs",
+        "src/lib.rs"
+      ],
+      "acceptance": "Both schema variants are accepted in tests without panic.",
+      "evidence": [
+        "src/model.rs",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "MODEL-005",
+      "phase": "models",
+      "title": "Recognize ten documented current/historical task IDs",
+      "status": "done",
+      "go_source": [
+        "quest.go:GetTaskName",
+        "manager.go:DoingQuest"
+      ],
+      "rust_paths": [
+        "src/manager.rs"
+      ],
+      "acceptance": "All named categories are classified; deprecated type flagged and unknown untrusted.",
+      "evidence": [
+        "src/manager.rs",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "MODEL-006",
+      "phase": "models",
+      "title": "Parse task-specific application IDs",
+      "status": "done",
+      "go_source": [
+        "types.go:TaskEntry"
+      ],
+      "rust_paths": [
+        "src/manager.rs"
+      ],
+      "acceptance": "Uses per-task applications first, top-level only as fallback; unit test passes.",
+      "evidence": [
+        "src/manager.rs",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "MODEL-007",
+      "phase": "models",
+      "title": "Typed task enum, unknown variants and versioned schemas",
+      "status": "todo",
+      "go_source": [
+        "types.go:TaskEntry"
+      ],
+      "rust_paths": [
+        "src/model.rs"
+      ],
+      "acceptance": "Typed parsing supports unknown future variants without accidentally asserting support; tests cover drift.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "MODEL-008",
+      "phase": "models",
+      "title": "Validate timestamps, invalid values, and untrusted local input",
+      "status": "partial",
+      "go_source": [
+        "quest.go:IsExpired",
+        "types.go"
+      ],
+      "rust_paths": [
+        "src/model.rs",
+        "src/manager.rs"
+      ],
+      "acceptance": "Invalid/ambiguous dates, oversized JSON, unexpected numeric values and missing IDs produce explicit unknown/invalid outcomes, not implicit success.",
+      "evidence": [
+        "src/model.rs",
+        "src/manager.rs"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "MODEL-009",
+      "phase": "models",
+      "title": "Full read-only reward metadata support",
+      "status": "partial",
+      "go_source": [
+        "types.go:QuestReward",
+        "types.go:QuestRewardsConfig"
+      ],
+      "rust_paths": [
+        "src/model.rs"
+      ],
+      "acceptance": "Reward types, amounts, expiry and all expected fields parsed without equating claimed to redeemed.",
+      "evidence": [
+        "src/model.rs"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "STATE-001",
+      "phase": "state",
+      "title": "Port IsExpired/IsEnrolled/IsCompleted/HasClaimedRewards",
+      "status": "done",
+      "go_source": [
+        "quest.go"
+      ],
+      "rust_paths": [
+        "src/model.rs"
+      ],
+      "acceptance": "Methods derive status from server-shaped timestamps and expiry; tests pass.",
+      "evidence": [
+        "src/model.rs",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "STATE-002",
+      "phase": "state",
+      "title": "Preserve original GetTaskName as compatibility-only heuristic",
+      "status": "done",
+      "go_source": [
+        "quest.go:GetTaskName"
+      ],
+      "rust_paths": [
+        "src/model.rs"
+      ],
+      "acceptance": "Original first-match precedence is represented but never determines entire Quest completion.",
+      "evidence": [
+        "src/model.rs",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "STATE-003",
+      "phase": "state",
+      "title": "Handle Android video-only classification",
+      "status": "done",
+      "go_source": [
+        "quest.go:IsAndroidQuest"
+      ],
+      "rust_paths": [
+        "src/model.rs"
+      ],
+      "acceptance": "Recognizes mobile-only video task when desktop video is absent.",
+      "evidence": [
+        "src/model.rs"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "STATE-004",
+      "phase": "state",
+      "title": "Port FilterValid/FilterRedeemable semantics",
+      "status": "done",
+      "go_source": [
+        "manager.go:FilterValid",
+        "manager.go:FilterRedeemable"
+      ],
+      "rust_paths": [
+        "src/manager.rs"
+      ],
+      "acceptance": "Filters noncompleted/nonexpired and completed/unclaimed, respectively; tests pass.",
+      "evidence": [
+        "src/manager.rs",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "STATE-005",
+      "phase": "state",
+      "title": "Correctly evaluate AND/OR task groups",
+      "status": "done",
+      "go_source": [
+        "manager.go:DoingQuest"
+      ],
+      "rust_paths": [
+        "src/manager.rs"
+      ],
+      "acceptance": "AND requires all task timestamps; OR requires one; unknown compound operators are unsupported; tests pass.",
+      "evidence": [
+        "src/manager.rs",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "STATE-006",
+      "phase": "state",
+      "title": "Do not turn numeric progress into completion",
+      "status": "done",
+      "go_source": [
+        "manager.go:doingWatchVideoQuest"
+      ],
+      "rust_paths": [
+        "src/manager.rs"
+      ],
+      "acceptance": "Progress >= target without completed_at is flagged, not reported as Quest completed; tests pass.",
+      "evidence": [
+        "src/manager.rs",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "STATE-007",
+      "phase": "state",
+      "title": "Separate task, Quest, claim, and external redemption",
+      "status": "partial",
+      "go_source": [
+        "types.go:QuestUserStatus",
+        "manager.go:RedeemQuest"
+      ],
+      "rust_paths": [
+        "src/manager.rs"
+      ],
+      "acceptance": "Quest and claim statuses separate; add explicit externally-unverified redemption representation and tests.",
+      "evidence": [
+        "src/manager.rs"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "STATE-008",
+      "phase": "state",
+      "title": "Handle starts_at and expires_at edge cases",
+      "status": "partial",
+      "go_source": [
+        "quest.go:IsExpired"
+      ],
+      "rust_paths": [
+        "src/manager.rs"
+      ],
+      "acceptance": "Future starts and expired are differentiated; malformed/missing expiry must be flagged as unknown with test coverage.",
+      "evidence": [
+        "src/manager.rs"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "STATE-009",
+      "phase": "state",
+      "title": "Account enrollment-block marker remains diagnostic",
+      "status": "done",
+      "go_source": [
+        "types.go:AllQuestsResponse",
+        "manager.go:NewQuestManager"
+      ],
+      "rust_paths": [
+        "src/model.rs",
+        "src/main.rs"
+      ],
+      "acceptance": "Blocked-until input retained and displayed; no false claim of enrollment.",
+      "evidence": [
+        "src/main.rs"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "CLI-001",
+      "phase": "cli",
+      "title": "demo/inspect, JSON and --workers options",
+      "status": "done",
+      "go_source": [
+        "main.go"
+      ],
+      "rust_paths": [
+        "src/main.rs",
+        "examples/sample-quests.json"
+      ],
+      "acceptance": "Demo and file inspection work with machine-readable output; options present and smoke-tested.",
+      "evidence": [
+        "src/main.rs",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "CLI-002",
+      "phase": "cli",
+      "title": "Add --version and --verbose and structured errors",
+      "status": "todo",
+      "go_source": [
+        "main.go",
+        "constants.go"
+      ],
+      "rust_paths": [
+        "src/main.rs",
+        "src/errors.rs",
+        "src/config.rs"
+      ],
+      "acceptance": "New flags documented; error codes predictable; no personal tokens required.",
+      "evidence": [],
+      "depends_on": [
+        "CLI-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "CLI-003",
+      "phase": "cli",
+      "title": "Robust CLI UX for invalid inputs and safe help output",
+      "status": "partial",
+      "go_source": [
+        "main.go"
+      ],
+      "rust_paths": [
+        "src/main.rs"
+      ],
+      "acceptance": "Tests cover missing flag values, unknown flags, non-UTF8 paths, large input and invalid JSON with stable nonzero exit codes.",
+      "evidence": [
+        "src/main.rs"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "CLI-004",
+      "phase": "cli",
+      "title": "Bundle synthetic example and input/output documentation",
+      "status": "done",
+      "go_source": [
+        "README.md"
+      ],
+      "rust_paths": [
+        "examples/sample-quests.json",
+        "README.md"
+      ],
+      "acceptance": "Synthetic examples and command usage documented; demo smoke-tested.",
+      "evidence": [
+        "examples/sample-quests.json",
+        "README.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "PAR-001",
+      "phase": "concurrency",
+      "title": "Bounded parallel assessment in Rust",
+      "status": "done",
+      "go_source": [
+        "main.go:goroutines",
+        "main.go:WaitGroup"
+      ],
+      "rust_paths": [
+        "src/manager.rs"
+      ],
+      "acceptance": "Analysis worker count bounded 1..32 and output preserves source order; unit test passes.",
+      "evidence": [
+        "src/manager.rs",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "PAR-002",
+      "phase": "concurrency",
+      "title": "Add cancellation, clean shutdown and race tests",
+      "status": "todo",
+      "go_source": [
+        "client.go:Destroy",
+        "main.go"
+      ],
+      "rust_paths": [
+        "src/manager.rs",
+        "tests/concurrency.rs"
+      ],
+      "acceptance": "Cancellation paths release tasks/handles, no unbounded waits and tests cover shutdown.",
+      "evidence": [],
+      "depends_on": [
+        "PAR-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "PAR-003",
+      "phase": "concurrency",
+      "title": "Async runtime only if justified by supported I/O",
+      "status": "todo",
+      "go_source": [
+        "client.go"
+      ],
+      "rust_paths": [
+        "src/client/"
+      ],
+      "acceptance": "If authorized network I/O is added, compare Tokio vs existing threads and document lifecycle; do not add for decoration.",
+      "evidence": [],
+      "depends_on": [
+        "PAR-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "NET-001",
+      "phase": "network",
+      "title": "Provide credential-free HTTP fixture/mock adapter",
+      "status": "todo",
+      "go_source": [
+        "client.go:Request",
+        "client.go:FetchQuests"
+      ],
+      "rust_paths": [
+        "src/client/http.rs"
+      ],
+      "acceptance": "Fake in-memory responses drive analysis under tests, with no live Discord requests.",
+      "evidence": [],
+      "depends_on": [
+        "STATE-005"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "NET-002",
+      "phase": "network",
+      "title": "Bounded retries, timeouts, rate-limit and cancellation under mocks",
+      "status": "todo",
+      "go_source": [
+        "client.go:Request"
+      ],
+      "rust_paths": [
+        "src/client/http.rs",
+        "tests/errors.rs"
+      ],
+      "acceptance": "Synthetic transport tests prove finite retries, deadlines, controlled 429/5xx and explicit error propagation.",
+      "evidence": [],
+      "depends_on": [
+        "NET-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "NET-003",
+      "phase": "network",
+      "title": "Document real Gateway protocol and local trace parser",
+      "status": "todo",
+      "go_source": [
+        "client.go:readLoop",
+        "types.go:GatewayPayload"
+      ],
+      "rust_paths": [
+        "src/models/gateway.rs",
+        "src/client/gateway.rs"
+      ],
+      "acceptance": "Offline parsing of saved/synthetic Gateway frames and heartbeat lifecycle; no user-token Identify.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "NET-004",
+      "phase": "network",
+      "title": "Officially authorized application integrations only",
+      "status": "todo",
+      "go_source": [
+        "client.go",
+        "constants.go"
+      ],
+      "rust_paths": [
+        "src/client/"
+      ],
+      "acceptance": "If any live service integration is proposed, document supported authorization scopes and review against platform terms before building.",
+      "evidence": [],
+      "depends_on": [
+        "NET-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "TEST-001",
+      "phase": "tests",
+      "title": "Fifteen synthetic Rust unit tests passing",
+      "status": "done",
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "src/lib.rs"
+      ],
+      "acceptance": "15 unit tests passed in GitHub Actions run 41256646888.",
+      "evidence": [
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "TEST-002",
+      "phase": "tests",
+      "title": "Separate integration tests and golden JSON snapshots",
+      "status": "todo",
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "tests/"
+      ],
+      "acceptance": "Integration and golden tests verify CLI JSON output, operator logic, timestamp problems and fixtures.",
+      "evidence": [],
+      "depends_on": [
+        "TEST-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "TEST-003",
+      "phase": "tests",
+      "title": "22 offline method validation cases",
+      "status": "partial",
+      "go_source": [
+        "manager.go",
+        "client.go"
+      ],
+      "rust_paths": [
+        "tests/",
+        "research/standalone/METHOD-VALIDATION-FIXTURES.md"
+      ],
+      "acceptance": "Implement 22 specified test cases as executable offline tests, mapping each case to a test name and result.",
+      "evidence": [
+        "research/standalone/METHOD-VALIDATION-FIXTURES.md"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "TEST-004",
+      "phase": "tests",
+      "title": "Reproducible compile and artifact checks on both platforms",
+      "status": "done",
+      "go_source": [
+        ".github/workflows/"
+      ],
+      "rust_paths": [
+        ".github/workflows/rust-go-quest-port.yml"
+      ],
+      "acceptance": "Earlier CI run 41256646888 passed Linux and Windows jobs; note later commits require their own CI.",
+      "evidence": [
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "TEST-005",
+      "phase": "tests",
+      "title": "Coverage, property tests, fuzzing and benchmark numbers",
+      "status": "todo",
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "tests/",
+        "benches/"
+      ],
+      "acceptance": "Published measurements reproduce with inputs, machine specs and tools; no fabricated RAM/CPU claims.",
+      "evidence": [],
+      "depends_on": [
+        "TEST-001"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "SEC-001",
+      "phase": "security",
+      "title": "No personal Discord user-token use in current offline app",
+      "status": "done",
+      "go_source": [
+        "client.go:NewDiscordClient",
+        "main.go:TOKEN"
+      ],
+      "rust_paths": [
+        "src/"
+      ],
+      "acceptance": "Current Rust code has no personal-token login or Discord network API calls.",
+      "evidence": [
+        "src/main.rs",
+        "src/lib.rs"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "SEC-002",
+      "phase": "security",
+      "title": "Add secret-redacting diagnostics and dependency review",
+      "status": "todo",
+      "go_source": [
+        "constants.go",
+        "utils.go",
+        "captcha.go"
+      ],
+      "rust_paths": [
+        "src/errors.rs",
+        "src/utils/"
+      ],
+      "acceptance": "Logging never exposes token fragments or confidential headers; dependency licenses reviewed.",
+      "evidence": [],
+      "depends_on": [
+        "ENV-009"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "DOC-001",
+      "phase": "docs",
+      "title": "Project README documents offline scope and Windows EXE",
+      "status": "done",
+      "go_source": [
+        "README.md"
+      ],
+      "rust_paths": [
+        "README.md"
+      ],
+      "acceptance": "README explains commands, no live completion, passing prior CI and artifact link.",
+      "evidence": [
+        "README.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "DOC-002",
+      "phase": "docs",
+      "title": "Publish master 1:1 migration spec, file map, tracker",
+      "status": "done",
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/SPEC.md",
+        "migration/GO-FILE-MAP.md",
+        "migration/PROGRESS.md",
+        "migration/progress.json"
+      ],
+      "acceptance": "Docs contain exact scoped goals and all Go source files; machine tracker has statuses, acceptance and evidence.",
+      "evidence": [
+        "migration/SPEC.md",
+        "migration/progress.json"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "DOC-003",
+      "phase": "docs",
+      "title": "AI agent updating protocol",
+      "status": "done",
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "AGENTS.md",
+        "migration/AI-WORKFLOW.md"
+      ],
+      "acceptance": "Agent guidance requires rechecking CI, modifying tracker with code changes, and no false completion claims.",
+      "evidence": [
+        "AGENTS.md",
+        "migration/AI-WORKFLOW.md"
+      ],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "DOC-004",
+      "phase": "docs",
+      "title": "Keep progress manifest and Markdown view synchronized",
+      "status": "todo",
+      "go_source": [
+        "all"
+      ],
+      "rust_paths": [
+        "migration/check_progress.py",
+        "migration/PROGRESS.md"
+      ],
+      "acceptance": "A local checker or generator validates IDs/statuses/dependencies and summary counts; CI runs it.",
+      "evidence": [],
+      "depends_on": [
+        "DOC-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "SCOPE-001",
+      "phase": "excluded",
+      "title": "Personal-account token selfbot and client impersonation",
+      "status": "excluded",
+      "go_source": [
+        "client.go:sendIdentify",
+        "constants.go:Properties",
+        "main.go:TOKEN"
+      ],
+      "rust_paths": [],
+      "acceptance": "Do not implement; current project is an authorized/offline analytics client. Preserve conceptual source inventory only.",
+      "evidence": [],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "SCOPE-002",
+      "phase": "excluded",
+      "title": "Fabricated video/game/stream/activity progress",
+      "status": "excluded",
+      "go_source": [
+        "manager.go:doingWatchVideoQuest",
+        "manager.go:doingPlayOnPlatformQuest",
+        "manager.go:doingStreamOnDesktopQuest",
+        "manager.go:doingPlayActivityQuest"
+      ],
+      "rust_paths": [],
+      "acceptance": "Do not implement engagement spoofing; categorize prerequisites and interpret server-shaped reports only.",
+      "evidence": [],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "SCOPE-003",
+      "phase": "excluded",
+      "title": "Achievement OAuth reward simulation and challenge solving",
+      "status": "excluded",
+      "go_source": [
+        "manager.go:doingAchievementInActivityQuest",
+        "manager.go:RedeemQuest",
+        "captcha.go",
+        "utils.go:AuthorizeDiscordSays"
+      ],
+      "rust_paths": [],
+      "acceptance": "No bypass of account verification, publisher achievements or reward claiming; keep documentation and data types.",
+      "evidence": [],
+      "depends_on": [],
+      "notes": ""
+    },
+    {
+      "id": "SCOPE-004",
+      "phase": "excluded",
+      "title": "Live Quest reward-completion and all-games guarantees",
+      "status": "excluded",
+      "go_source": [
+        "README.md",
+        "manager.go"
+      ],
+      "rust_paths": [],
+      "acceptance": "No universal 1:1 Quest selfbot acceptance claim; authentic external actions remain outside this project.",
+      "evidence": [],
+      "depends_on": [],
+      "notes": ""
+    }
+  ]
+}
