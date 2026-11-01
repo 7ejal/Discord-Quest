@@ -23,6 +23,8 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Check migration tracker
         run: python3 migration/check_progress.py --check
+      - name: Unit test the tracker generator
+        run: python3 migration/test_check_progress.py
       - name: Test library and CLI
         run: cargo test --all-targets
       - name: Smoke test the CLI
