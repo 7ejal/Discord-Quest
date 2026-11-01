@@ -97,6 +97,10 @@ task/event labels and freshness fields remain visible inspection data. Do not
 put secrets in those fields. Terminal controls are escaped in human output;
 JSON preserves report strings for machine processing.
 
+## Requested live HTTP / Go parity work (not implemented)
+
+The user requested Go-style raw `Authorization` header account access and live Quest inspection. This is tracked under [GO-LIVE-HTTP-REQUEST.md](migration/GO-LIVE-HTTP-REQUEST.md) and separate pending `AUD-009`, `SEC-005`, `NET-005`–`NET-009`, `QA-011`, `AUD-010` tasks. **The current executable still has no HTTP or account login command.** Current offline test results do not verify real Discord account or Quest functionality. Supported authorization and service rules must be checked before any live integration; do not send, commit or print personal tokens.
+
 ## Verification and remaining gates
 
 [Continuation release evidence](migration/MAIN-SERVER-COMPLETION-2026-11-01.md)
