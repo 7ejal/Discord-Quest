@@ -1,0 +1,17 @@
+Input data: unverified local JSON (not authenticated server status).
+Evaluated at (UTC): 2026-11-01T12:00:00+00:00
+Analyzed 3 Quest record(s); Go-style eligible: 1; claimable: 1.
+
+Example AND Campaign (synthetic-1)
+  status: InProgress; operator: and
+  PLAY_ON_DESKTOP                 0/300    confirmed=false family=desktop_game
+  WATCH_VIDEO                    60/60     confirmed=true family=video
+
+Example OR Campaign (synthetic-2)
+  status: QuestConfirmedUnclaimed; operator: or
+  WATCH_VIDEO                    90/90     confirmed=true family=video
+  WATCH_VIDEO_ON_MOBILE           0/90     confirmed=false family=video
+
+Example Claimed Reward (synthetic-3)
+  status: RewardClaimed; operator: single
+  PLAY_ACTIVITY                 120/120    confirmed=true family=embedded_activity
