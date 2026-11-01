@@ -1,6 +1,6 @@
 # Go Discord Quest project → Rust port (offline, read-only)
 
-**Status:** **Built and tested successfully in GitHub Actions on November 1, 2026.** The Linux job passed **23 Rust unit tests**, strict formatting and Clippy checks, plus a CLI smoke test. The Windows job compiled `go-quest-port.exe`, passed a Windows CLI smoke test, and uploaded its executable artifact. [Successful CI run](https://github.com/7ejal/Discord-Quest/actions/runs/41270140534).
+**Status:** **Built and tested successfully in GitHub Actions on November 1, 2026.** The Linux job passed **35 Rust tests (32 unit + 3 native CLI integration)**, strict formatting and Clippy checks, plus a CLI smoke test. The Windows job compiled `go-quest-port.exe`, passed a Windows CLI smoke test, and uploaded its executable artifact. [Successful CI run](https://github.com/7ejal/Discord-Quest/actions/runs/41271698563).
 
 **Upstream:** [yeweroooo/Discord-Quest-Auto-Completion-Selfbot](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot), commit [352d7f457c9511bc9e7c9b940a71012bfb47572e](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e).
 
@@ -30,6 +30,9 @@ AI coding agents should follow [AGENTS.md](AGENTS.md) and [migration/AI-WORKFLOW
 - Distinguish **local numeric goal**, **reported task completed**, **reported Quest completed**, and **reported reward claimed**. All supplied JSON is **unverified local input**, not authenticated server evidence.
 - Print a readable status report or JSON output.
 - Bounded parallel evaluation using Rust scoped threads, preserving original Quest order.
+- Reject conflicting duplicate Quest IDs, collapse identical duplicates, and flag contradictory timestamps or Quest IDs.
+- Fail closed on missing or invalid expiration and reject invalid numeric goals or reported progress.
+- Escape ANSI controls, CR/LF and bidirectional formatting sequences when printing untrusted local names, IDs and errors.
 - Synthetic fixtures and unit tests that target the specific false-success problems in the Go and Python projects.
 - **No network calls or credentials**.
 
@@ -45,7 +48,7 @@ cargo run --release --locked -- inspect .\examples\sample-quests.json --json
 cargo build --release --locked
 ```
 
-The built executable is in `target\release\go-quest-port.exe` on Windows. **[Download the verified Windows EXE artifact from GitHub Actions](https://github.com/7ejal/Discord-Quest/actions/runs/41270140534/artifacts/13068464279)** (GitHub sign-in may be required; artifacts may expire). You can create a `.bat` wrapper to launch that executable; `.bat` is only a launcher.
+The built executable is in `target\release\go-quest-port.exe` on Windows. **[Download the verified Windows EXE artifact from GitHub Actions](https://github.com/7ejal/Discord-Quest/actions/runs/41271698563/artifacts/13069786429)** (GitHub sign-in may be required; artifacts may expire). You can create a `.bat` wrapper to launch that executable; `.bat` is only a launcher.
 
 On Linux/macOS: `cargo run --release --locked -- demo`.
 
@@ -97,7 +100,7 @@ rust/go-quest-port/
 ├── README.md
 ├── examples/sample-quests.json
 └── src/
-    ├── lib.rs          # Parser and 23 unit tests
+    ├── lib.rs          # Parser and 32 unit tests
     ├── main.rs         # CLI entry point
     ├── manager.rs      # QuestManager, task group evaluation, parallel analysis
     └── model.rs        # Typed Go-compatible JSON models
@@ -106,13 +109,13 @@ rust/go-quest-port/
 ## Testing/verification status
 
 - Source file presence verified in the GitHub repository.
-- **23 unit tests passed** using invented offline JSON (Linux GitHub Actions).
+- **35 tests passed** (32 unit and 3 CLI integration) on Linux, with only synthetic local JSON.
 - **Linux CLI smoke test passed.**
-- **Windows EXE release build and CLI smoke test passed**, with [artifact uploaded](https://github.com/7ejal/Discord-Quest/actions/runs/41270140534/artifacts/13068464279).
-- [Full successful workflow](https://github.com/7ejal/Discord-Quest/actions/runs/41270140534).
+- **Windows EXE release build and CLI smoke test passed**, with [artifact uploaded](https://github.com/7ejal/Discord-Quest/actions/runs/41271698563/artifacts/13069786429).
+- [Full successful workflow](https://github.com/7ejal/Discord-Quest/actions/runs/41271698563).
 - No Rust CPU/RAM performance measurements have been taken.
 - No Discord Quest has been executed, and no universal Quest completion claim is made.
 
-**Main-server validation:** [source-pinned Linux build and test record](migration/MAIN-SERVER-CI-2026-11-01.md), including `cargo fmt --check`, `cargo clippy --locked -D warnings`, 23 tests and JSON verification. These checks do not validate operational selfbot behavior.
+**Main-server validation:** [source-pinned second hardening batch](migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md), including `cargo fmt --check`, `cargo clippy --locked -D warnings`, 35 Rust tests and JSON verification. These checks do not validate operational selfbot behavior.
 
 For research and evidence: [detailed Go audit](../../audits/GO-YEWEROOOO.md) and [method comparison](../../research/standalone/METHODS-DEEP-DIVE-2026-11-01.md).
