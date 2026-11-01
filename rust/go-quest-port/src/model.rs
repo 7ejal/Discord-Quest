@@ -2,6 +2,7 @@
 //! Only local JSON parsing. No personal account authentication or network calls.
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+use serde_json::Value;
 use std::collections::BTreeMap;
 
 #[derive(Debug, Clone, Default, Deserialize)]
@@ -18,6 +19,19 @@ pub struct AllQuestsResponse {
 pub struct QuestPartial {
     #[serde(default)]
     pub id: String,
+    #[serde(default)]
+    pub config: Option<QuestConfig>,
+    #[serde(default)]
+    pub user_status: Option<QuestUserStatus>,
+    #[serde(default)]
+    pub targeted_content: Option<Value>,
+    #[serde(default)]
+    pub preview: bool,
+    /// Potentially sensitive targeting metadata; never echo it in CLI reports.
+    #[serde(default)]
+    pub traffic_metadata_raw: Option<String>,
+    #[serde(default)]
+    pub traffic_metadata_sealed: Option<String>,
 }
 
 #[derive(Debug, Clone, Default, Deserialize)]
