@@ -63,7 +63,10 @@ fn exact_go_reward_fields_remain_available() {
     assert_eq!(item.sku_id.as_deref(), Some("synthetic-sku"));
     assert_eq!(item.asset.as_deref(), Some("image.png"));
     assert_eq!(item.asset_video.as_deref(), Some("preview.mp4"));
-    assert_eq!(item.messages.as_ref().unwrap().name_with_article, "a Test reward");
+    assert_eq!(
+        item.messages.as_ref().unwrap().name_with_article,
+        "a Test reward"
+    );
 }
 
 #[test]
@@ -184,8 +187,14 @@ fn blank_application_ids_are_skipped_and_reported() {
     input["config"]["task_config_v2"]["tasks"]["WATCH_VIDEO"]["applications"] =
         json!([{"id":" "},{"id":"task-specific-application"}]);
     let result = assess_quest(&decode(input), &time());
-    assert_eq!(result.tasks[0].application_id.as_deref(), Some("task-specific-application"));
-    assert!(result.warnings.iter().any(|w| w.contains("blank application ID")));
+    assert_eq!(
+        result.tasks[0].application_id.as_deref(),
+        Some("task-specific-application")
+    );
+    assert!(result
+        .warnings
+        .iter()
+        .any(|w| w.contains("blank application ID")));
 }
 
 #[test]
@@ -195,6 +204,12 @@ fn blank_task_application_ids_fall_back_to_nonblank_campaign_id() {
     input["config"]["task_config_v2"]["tasks"]["WATCH_VIDEO"]["applications"] =
         json!([{"id":"   "}]);
     let result = assess_quest(&decode(input), &time());
-    assert_eq!(result.tasks[0].application_id.as_deref(), Some("campaign-application"));
-    assert!(result.warnings.iter().any(|w| w.contains("blank application ID")));
+    assert_eq!(
+        result.tasks[0].application_id.as_deref(),
+        Some("campaign-application")
+    );
+    assert!(result
+        .warnings
+        .iter()
+        .any(|w| w.contains("blank application ID")));
 }
