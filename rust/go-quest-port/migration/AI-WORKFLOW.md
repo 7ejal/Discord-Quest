@@ -1,5 +1,7 @@
 # AI coding agent workflow — maintain task progress truthfully
 
+**Start first:** [START-HERE.md](START-HERE.md) · [GAP-AUDIT.md](GAP-AUDIT.md) · [RELEASE-GATES.md](RELEASE-GATES.md) · [TEST-MATRIX.md](TEST-MATRIX.md).
+
 **Canonical task list:** [progress.json](progress.json)  
 **Human view:** [PROGRESS.md](PROGRESS.md)  
 **Specification:** [SPEC.md](SPEC.md)  
@@ -63,8 +65,8 @@ python3 migration/check_progress.py --check
 ## Repository update protocol
 
 1. Edit **[progress.json](progress.json)** first (machine source of truth).
-2. Run `python3 migration/check_progress.py --write` to sync existing task status cells and summary counts in [PROGRESS.md](PROGRESS.md).
-3. Run `python3 migration/check_progress.py --check`. Fix any stale/missing IDs. If adding a new ID, add a corresponding Markdown row and acceptance criteria.
+2. Run `python3 migration/check_progress.py --write` to **fully regenerate** [PROGRESS.md](PROGRESS.md) (all rows, counts, priorities, gates). Never edit the generated Markdown by hand.
+3. Run `python3 migration/check_progress.py --check`; the generator automatically adds every new valid JSON task ID to Markdown. Supply acceptance, dependencies, priority, release gate and evidence in JSON.
 4. Update [GO-FILE-MAP.md](GO-FILE-MAP.md) whenever a Go function or Rust file has changed status/location.
 5. Update [SPEC.md](SPEC.md) if architecture or scope legitimately changes.
 6. Update [../README.md](../README.md) with the new verified behavior. Keep the root README link to the tracker.
