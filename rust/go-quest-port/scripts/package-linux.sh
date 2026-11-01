@@ -21,6 +21,16 @@ trap 'rm -rf -- "$tmp"' EXIT
 mkdir -p "$tmp/$name"
 install -m 0755 target/release/go-quest-port "$tmp/$name/go-quest-port"
 cp README.md LICENSE NOTICE "$tmp/$name/"
+python3 - "$project_dir/Cargo.lock" > "$tmp/$name/LOCKED-DEPENDENCIES.txt" <<'PY'
+import pathlib, sys, tomllib
+lock = tomllib.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
+packages = sorted(lock["package"], key=lambda p: (p["name"], p["version"]))
+print("Locked Cargo dependency inventory (names and versions only)")
+print("Individual third-party license review is a separate release task.")
+for package in packages:
+    print(package["name"], package["version"])
+PY
+
 cat > "$tmp/$name/BUILD-INFO.txt" <<EOF
 OS: Linux
 Architecture: x86_64
@@ -28,17 +38,25 @@ Package version: $version
 Git commit: $(git rev-parse HEAD)
 Compiler: $(rustc --version)
 Cargo: $(cargo --version)
+Cargo.lock SHA256: $(sha256sum Cargo.lock | cut -d' ' -f1)
 Verification: scripts/test-linux.sh passed on this machine
 Source trust: unverified local JSON; not a Discord selfbot
 EOF
 
-(cd "$tmp/$name" && sha256sum go-quest-port README.md LICENSE NOTICE BUILD-INFO.txt > SHA256SUMS)
+(cd "$tmp/$name" && sha256sum go-quest-port README.md LICENSE NOTICE BUILD-INFO.txt LOCKED-DEPENDENCIES.txt > SHA256SUMS)
 archive="$target_dir/$name.tar.gz"
 tar -C "$tmp" -czf "$archive" "$name"
 sha256sum "$archive" > "$archive.sha256"
 tar -tzf "$archive" >/dev/null
+# Validate the unpacked bytes, not just the staging directory.
+verify_dir="$(mktemp -d)"
+trap 'rm -rf -- "$tmp" "$verify_dir"' EXIT
+tar -xzf "$archive" -C "$verify_dir"
+(cd "$verify_dir/$name" && sha256sum --check --status SHA256SUMS)
+"$verify_dir/$name/go-quest-port" demo --json --at 2026-11-01T12:00:00Z > "$tmp/release-demo.json"
+cmp -s "$tmp/release-demo.json" tests/golden/demo.json
 
-"$tmp/$name/go-quest-port" --version
+"$verify_dir/$name/go-quest-port" --version
 echo "Linux archive: $archive"
 echo "SHA256:"
 cat "$archive.sha256"
