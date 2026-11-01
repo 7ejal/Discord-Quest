@@ -22,7 +22,7 @@ This repository documents Discord Quest task types, observable progress models, 
 
 **[New: deeper method-by-method research (November 2026)](research/standalone/METHODS-DEEP-DIVE-2026-11-01.md)** compares HTTP vs Gateway, video/game/activity/stream/achievement tracking, exact source-level errors, and which *engineering method* is strongest for a standalone CLI. Includes [22 offline test fixtures](research/standalone/METHOD-VALIDATION-FIXTURES.md) and corrects an earlier overstatement of SUDIN completion verification.\n\n## Go-to-Rust port (native Windows CLI)
 
-The [Rust Go-project port](rust/go-quest-port/README.md) implements local Quest JSON parsing, Go-style Quest filtering, typed data models, AND/OR task-group checks, bounded concurrent analysis and 15 synthetic unit tests. The [Windows build and test workflow](../../actions/workflows/rust-go-quest-port.yml) produces a downloadable EXE artifact when CI succeeds.
+The [Rust Go-project port](rust/go-quest-port/README.md) implements local Quest JSON parsing, Go-style Quest filtering, typed data models, AND/OR task-group checks, bounded concurrent analysis and **15 passing unit tests**. **[Windows EXE download](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888/artifacts/13063362600)** — verified successful [Linux and Windows CI run](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888).
 
 **Scope:** This is an offline analysis CLI, not a functional Discord selfbot or simulated reward-completion tool. It requires no Discord installation or personal Discord token.
 
