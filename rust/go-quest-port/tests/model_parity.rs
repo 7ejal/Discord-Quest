@@ -63,7 +63,7 @@ fn exact_go_reward_fields_remain_available() {
     assert_eq!(item.sku_id.as_deref(), Some("synthetic-sku"));
     assert_eq!(item.asset.as_deref(), Some("image.png"));
     assert_eq!(item.asset_video.as_deref(), Some("preview.mp4"));
-    assert_eq!(item.messages.name_with_article, "a Test reward");
+    assert_eq!(item.messages.as_ref().unwrap().name_with_article, "a Test reward");
 }
 
 #[test]
@@ -160,4 +160,41 @@ fn invalid_progress_time_is_reported() {
         .warnings
         .iter()
         .any(|w| w.contains("invalid heartbeat.last_beat_at")));
+}
+
+#[test]
+fn null_optional_reward_metadata_is_safe() {
+    let mut input = record();
+    input["config"]["rewards_config"]["rewards"][0]["asset"] = Value::Null;
+    input["config"]["rewards_config"]["rewards"][0]["asset_video"] = Value::Null;
+    input["config"]["rewards_config"]["rewards"][0]["messages"] = Value::Null;
+    input["config"]["rewards_config"]["rewards_expire_at"] = Value::Null;
+    let quest = decode(input);
+    let item = &quest.config.rewards_config.rewards[0];
+    assert!(item.asset.is_none());
+    assert!(item.asset_video.is_none());
+    assert!(item.messages.is_none());
+    assert!(quest.config.rewards_config.rewards_expire_at.is_none());
+}
+
+#[test]
+fn blank_application_ids_are_skipped_and_reported() {
+    let mut input = record();
+    input["config"]["application"]["id"] = json!("global-application");
+    input["config"]["task_config_v2"]["tasks"]["WATCH_VIDEO"]["applications"] =
+        json!([{"id":" "},{"id":"task-specific-application"}]);
+    let result = assess_quest(&decode(input), &time());
+    assert_eq!(result.tasks[0].application_id.as_deref(), Some("task-specific-application"));
+    assert!(result.warnings.iter().any(|w| w.contains("blank application ID")));
+}
+
+#[test]
+fn blank_task_application_ids_fall_back_to_nonblank_campaign_id() {
+    let mut input = record();
+    input["config"]["application"]["id"] = json!("campaign-application");
+    input["config"]["task_config_v2"]["tasks"]["WATCH_VIDEO"]["applications"] =
+        json!([{"id":"   "}]);
+    let result = assess_quest(&decode(input), &time());
+    assert_eq!(result.tasks[0].application_id.as_deref(), Some("campaign-application"));
+    assert!(result.warnings.iter().any(|w| w.contains("blank application ID")));
 }
