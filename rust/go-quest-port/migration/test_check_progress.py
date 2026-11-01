@@ -5,7 +5,7 @@ from __future__ import annotations
 import copy
 import unittest
 
-from check_progress import render, validate_tracker
+from check_progress import dependency_queues, render, validate_tracker
 
 
 def task(task_id: str, *, status: str = "todo", deps: list[str] | None = None) -> dict:
@@ -88,6 +88,27 @@ class TrackerTests(unittest.TestCase):
     def test_wrong_schema_version_fails(self) -> None:
         self.data["schema_version"] = 1
         self.assertTrue(any("schema_version must be 2" in e for e in validate_tracker(self.data)))
+
+    def test_ready_queue_contains_only_unblocked_tasks(self) -> None:
+        ready, blocked = dependency_queues(self.data["tasks"])
+        self.assertEqual([t["id"] for t in ready], ["MODEL-102"])
+        self.assertEqual(blocked, [])
+        self.assertIn("## Ready to start", render(self.data))
+
+    def test_queue_marks_unfinished_prerequisites_as_blockers(self) -> None:
+        self.data["tasks"][0]["status"] = "partial"
+        ready, blocked = dependency_queues(self.data["tasks"])
+        self.assertEqual([t["id"] for t in ready], ["MODEL-101"])
+        self.assertEqual([t["id"] for t, _ in blocked], ["MODEL-102"])
+        self.assertIn("MODEL-101", blocked[0][1][0]["id"])
+        self.assertIn("MODEL-101` PARTIAL/P0", render(self.data))
+
+    def test_ready_queue_orders_high_priority_first(self) -> None:
+        low = task("MODEL-103")
+        low["priority"] = "P2"
+        self.data["tasks"].append(low)
+        ready, _ = dependency_queues(self.data["tasks"])
+        self.assertEqual([t["id"] for t in ready], ["MODEL-102", "MODEL-103"])
 
     def test_render_is_deterministic(self) -> None:
         self.assertEqual(render(copy.deepcopy(self.data)), render(self.data))
