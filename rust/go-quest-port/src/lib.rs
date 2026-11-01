@@ -76,13 +76,17 @@ fn parse_excluded(values: Vec<Value>) -> Result<Vec<QuestPartial>, String> {
             .ok_or_else(|| format!("Excluded Quest at index {index} must be an object"))?;
         let id = object.get("id").and_then(Value::as_str).unwrap_or("");
         if id.trim().is_empty() {
-            return Err(format!("Excluded Quest at index {index} must have a non-empty id"));
+            return Err(format!(
+                "Excluded Quest at index {index} must have a non-empty id"
+            ));
         }
         let partial: QuestPartial = serde_json::from_value(value.clone())
             .map_err(|error| format!("Excluded Quest at index {index}: invalid field: {error}"))?;
         if let Some(previous) = seen.get(&partial.id) {
             if previous != &value {
-                return Err(format!("Conflicting excluded records for ID at index {index}"));
+                return Err(format!(
+                    "Conflicting excluded records for ID at index {index}"
+                ));
             }
             continue;
         }
