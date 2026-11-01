@@ -102,8 +102,11 @@ pub fn parse_document(input: &str) -> Result<ParsedDocument, String> {
     if input.len() > MAX_JSON_BYTES {
         return Err(format!("JSON exceeds {}-byte input limit", MAX_JSON_BYTES));
     }
+    // A UTF-8 BOM is common in Windows-edited local JSON fixtures.
+    // Accept it only at the very start of the document.
+    let normalized = input.strip_prefix('\u{feff}').unwrap_or(input);
     let document: Value =
-        serde_json::from_str(input).map_err(|error| format!("Invalid JSON: {error}"))?;
+        serde_json::from_str(normalized).map_err(|error| format!("Invalid JSON: {error}"))?;
     match document {
         Value::Array(records) => Ok(ParsedDocument {
             quests: parse_quest_list(records)?,
@@ -288,6 +291,18 @@ mod tests {
         assert!(parse_quests(&input)
             .unwrap_err()
             .contains("Too many Quests"));
+    }
+
+    #[test]
+    fn leading_utf8_bom_is_accepted() {
+        let (records, _) = parse_quests("\u{feff}{\"id\":\"bom-1\",\"config\":{}}").unwrap();
+        assert_eq!(records[0].id, "bom-1");
+    }
+
+    #[test]
+    fn excessive_json_nesting_is_rejected_without_panicking() {
+        let deep = format!("{}0{}", "[".repeat(140), "]".repeat(140));
+        assert!(parse_quests(&deep).is_err());
     }
 
     #[test]
