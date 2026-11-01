@@ -4,13 +4,17 @@
 
 ## Mandatory final audit gate
 
-**[Pre-code review (126 source-backed tasks)](PRE-CODE-REVIEW-2026-11-01.md)** supersedes the old assumption that 114 tasks are exhaustive. The audit downgraded `STATE-005` and `QA-008` to partial and added model parity, untrusted-data provenance, terminal escaping, native runtime and differential verification tasks. Never start by assuming a Go `join_operator` field exists; the pinned Go TaskConfigV2 has no such field. If code changed after this audit, repeat the source check.
+**[Pre-code review (127 source-backed tasks)](PRE-CODE-REVIEW-2026-11-01.md)** supersedes the old assumption that 114 tasks are exhaustive. The audit downgraded `STATE-005` and `QA-008` to partial and added model parity, untrusted-data provenance, terminal escaping, native runtime and differential verification tasks. Never start by assuming a Go `join_operator` field exists; the pinned Go TaskConfigV2 has no such field. If code changed after this audit, repeat the source check.
 
 ## Mission
 
 Complete the **supported native Rust offline Quest inspection** application under `rust/go-quest-port`. Do not create another sibling crate. Do not build an operational personal-account selfbot, synthetic rewarded engagement, CAPTCHA bypass, or automatic reward claims. **No Discord installation or personal token is needed for the supported CLI.**
 
 **Source Go reference:** [`yeweroooo/Discord-Quest-Auto-Completion-Selfbot` pinned commit `352d7f457c9511bc9e7c9b940a71012bfb47572e`](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e). Compare code to pinned revision, do not silently trust newest HEAD.
+
+## Dependency-ready tasks (snapshot only)
+
+At the current tracker snapshot, the P0 release tasks whose dependencies are already marked DONE are: `AUD-001`, `AUD-002`, `PARSE-001`, `STATUS-010`, `UX-002`, `QA-005`, `REL-007`, `OPS-003`, `OPS-009`. Other P0 tasks may be **blocked** by unfinished P1/P2 prerequisites. The list will become stale after code changes; choose from the canonical JSON dependency graph, not from this static list. `OPS-009` will make this queue automatic.
 
 ## Every session, follow this order
 
