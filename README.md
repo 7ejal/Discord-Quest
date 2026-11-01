@@ -43,9 +43,9 @@ The Rust migration has a **[live progress checklist](rust/go-quest-port/migratio
 
 GitHub CI now checks that the canonical tracker and Markdown progress table stay synchronized. The project remains an **offline native status analyzer**, not a reward-spoofing selfbot.
 
-## Go-to-Rust port (native Windows CLI)
+## Native Rust CLI — Linux only
 
-The [Rust Go-project port](rust/go-quest-port/README.md) implements local Quest JSON parsing, Go-style Quest filtering, typed data models, AND/OR task-group checks, bounded concurrent analysis and **15 passing unit tests**. **[Windows EXE download](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888/artifacts/13063362600)** — verified successful [Linux and Windows CI run](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888).
+The [Rust Go-project port](rust/go-quest-port/README.md) is now a **Linux x86_64 CLI-only** local JSON inspector. All builds and checks run on the connected **main-server** via [the Linux-only workflow](rust/go-quest-port/migration/LINUX-ONLY.md). Windows builds and GitHub-hosted CI were retired. The current [progress tracker](rust/go-quest-port/migration/PROGRESS.md) distinguishes verified tasks from remaining work. A Linux archive produced on the server is not automatically a public GitHub release.
 
 **Scope:** This is an offline analysis CLI, not a functional Discord selfbot or simulated reward-completion tool. It requires no Discord installation or personal Discord token.
 
