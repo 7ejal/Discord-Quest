@@ -1,7 +1,10 @@
 //! Unknown future Quest tasks must remain clearly unsupported even when a
 //! local JSON file claims the overall Quest is completed or reward claimed.
 use chrono::{DateTime, Utc};
-use go_quest_port::{manager::{assess_quest, Verdict}, model::Quest};
+use go_quest_port::{
+    manager::{assess_quest, Verdict},
+    model::Quest,
+};
 use serde_json::{json, Value};
 
 fn at() -> DateTime<Utc> {
@@ -37,7 +40,10 @@ fn unsupported_task_does_not_become_known_from_claimed_quest_record() {
     assert_eq!(result.verdict, Verdict::RewardClaimed);
     assert_eq!(result.tasks.len(), 1);
     assert_eq!(result.tasks[0].family, "unknown");
-    assert!(result.warnings.iter().any(|warning| warning.contains("unrecognized task type")));
+    assert!(result
+        .warnings
+        .iter()
+        .any(|warning| warning.contains("unrecognized task type")));
 }
 
 #[test]
