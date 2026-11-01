@@ -9,13 +9,14 @@
   },
   "verification": {
     "kind": "source_scoped_ci",
-    "run_id": 41275135541,
+    "run_id": 41276966591,
     "result": "success",
-    "head_sha": "5043f64b141b03917a14976c109c9e60a6562903",
-    "linux_test_count": 52,
-    "windows_binary_artifact_id": null,
-    "main_server_test_record": "migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md",
-    "note": "Future docs/tracker commits need matching CI; no operational Discord task completion tested."
+    "head_sha": "d0edd8301cc49b9aa5da5153e50e443384ceaf35",
+    "linux_test_count": 65,
+    "windows_test_count": 65,
+    "windows_binary_artifact_id": 13071611929,
+    "main_server_test_record": "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
+    "note": "GitHub Actions validated code commit. Later tracker/docs commits require their own CI. No operational selfbot completion tested."
   },
   "status_meanings": {
     "done": "Implemented or documented, with listed evidence. Historical build evidence may not cover later changes.",
@@ -713,7 +714,7 @@
       "id": "CLI-002",
       "phase": "cli",
       "title": "Add --version and --verbose and structured errors",
-      "status": "todo",
+      "status": "partial",
       "go_source": [
         "main.go",
         "constants.go"
@@ -724,11 +725,14 @@
         "src/config.rs"
       ],
       "acceptance": "New flags documented; error codes predictable; no personal tokens required.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
+      ],
       "depends_on": [
         "CLI-001"
       ],
-      "notes": "",
+      "notes": "--version and deterministic --at work, tested on Linux/Windows. --verbose and structured error codes remain unfinished.",
       "priority": "P2",
       "required_for_release": true
     },
@@ -927,7 +931,7 @@
     {
       "id": "TEST-001",
       "phase": "tests",
-      "title": "Native Rust offline CLI regression suite: 52 passing tests",
+      "title": "Native Rust offline CLI regression suite: 65 passing tests",
       "status": "done",
       "go_source": [
         "all"
@@ -935,13 +939,13 @@
       "rust_paths": [
         "src/lib.rs"
       ],
-      "acceptance": "All 52 Rust tests pass under locked Cargo on the isolated main-server checkout at commit 5043f64b141b03917a14976c109c9e60a6562903, with matching successful Linux/Windows GitHub Actions run 41275135541.",
+      "acceptance": "65 Rust tests passed on Linux main-server and native Windows CI at Git commit d0edd8301cc49b9aa5da5153e50e443384ceaf35; test coverage is synthetic/offline, not live Discord or complete Go selfbot parity.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41275135541"
+        "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
       ],
       "depends_on": [],
-      "notes": "32 library + 6 CLI + 4 excluded Quest + 10 model parity synthetic tests; no live Discord activity.",
+      "notes": "36 library + 3 golden + 8 CLI safety + 4 stdin + 4 excluded + 10 model parity, current commit scoped.",
       "priority": "P1",
       "required_for_release": true
     },
@@ -949,7 +953,7 @@
       "id": "TEST-002",
       "phase": "tests",
       "title": "Separate integration tests and golden JSON snapshots",
-      "status": "partial",
+      "status": "done",
       "go_source": [
         "all"
       ],
@@ -958,14 +962,13 @@
       ],
       "acceptance": "Integration and golden tests verify CLI JSON output, operator logic, timestamp problems and fixtures.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md",
-        "src/lib.rs",
-        "tests/cli_safety.rs"
+        "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
       ],
       "depends_on": [
         "TEST-001"
       ],
-      "notes": "New regression coverage passes on main-server code SHA 635d0f5; broader acceptance tests and policies remain to be completed.",
+      "notes": "Separate CLI/file/stdin/model/excluded integrations and committed JSON and human-readable golden snapshots run in Linux/Windows CI.",
       "priority": "P1",
       "required_for_release": true
     },
@@ -1543,13 +1546,13 @@
       ],
       "acceptance": "Oversized/deep/wide synthetic documents fail cleanly with typed errors and no unbounded allocations; limits are configurable/documented.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01.md",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+        "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
       ],
       "depends_on": [
         "CLI-003"
       ],
-      "notes": "Partial improvements verified; remaining acceptance criteria must be tested separately."
+      "notes": "8 MiB file/stdin limit, 10k Quest cap, recursion error handling, buffered 16 MiB JSON output. Text-output cap and configurable resource/stress limits remain open."
     },
     {
       "id": "PARSE-006",
@@ -1602,7 +1605,7 @@
       "id": "PARSE-008",
       "phase": "parser",
       "title": "Handle UTF-8, BOM, Windows paths, and malformed JSON safely",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1613,11 +1616,14 @@
         "tests/"
       ],
       "acceptance": "CLI tests cover valid Unicode names and paths, BOM policy, malformed UTF-8, and stable diagnostic output under Windows/Linux.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
+      ],
       "depends_on": [
         "CLI-003"
       ],
-      "notes": ""
+      "notes": "Tested Linux and Windows UTF-8, BOM, Unicode-spaced file paths, malformed bytes and JSON; full Windows test suite passed run 41276966591."
     },
     {
       "id": "PARSE-009",
@@ -1806,7 +1812,7 @@
       "id": "STATUS-016",
       "phase": "state",
       "title": "Inject an evaluation clock and add deterministic --at option",
-      "status": "todo",
+      "status": "done",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -1817,11 +1823,14 @@
         "src/manager.rs"
       ],
       "acceptance": "Tests/CLI can evaluate a timestamp without Utc::now nondeterminism; DST/UTC offsets and boundary-time cases are covered.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
+      ],
       "depends_on": [
         "STATE-008"
       ],
-      "notes": ""
+      "notes": "Deterministic --at RFC3339 fixed clock, boundary and offset regression tests passed on both operating systems; no local clock dependence when flag is provided."
     },
     {
       "id": "STATUS-017",
@@ -1891,7 +1900,7 @@
       "id": "UX-002",
       "phase": "ux",
       "title": "Version JSON output schema and keep stdout machine-readable",
-      "status": "partial",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1903,19 +1912,19 @@
       ],
       "acceptance": "--json emits exactly one documented valid JSON result on stdout with schema_version, errors on stderr and deterministic field naming; golden tests pass.",
       "evidence": [
-        "migration/MAIN-SERVER-CI-2026-11-01.md",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+        "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
       ],
       "depends_on": [
         "CLI-001"
       ],
-      "notes": "Partial improvements verified; remaining acceptance criteria must be tested separately."
+      "notes": "Versioned schema and trust label; deterministic valid single JSON stdout, error-only stderr, and committed cross-platform golden output verified in CI."
     },
     {
       "id": "UX-003",
       "phase": "ux",
       "title": "Add optional stdin/pipeline support with bounded input",
-      "status": "todo",
+      "status": "done",
       "priority": "P2",
       "required_for_release": false,
       "go_source": [
@@ -1925,11 +1934,14 @@
         "src/main.rs"
       ],
       "acceptance": "A documented '-' stdin input works with identical validation to inspect file and rejects oversized streams; no network or token collection.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
+      ],
       "depends_on": [
         "PARSE-005"
       ],
-      "notes": ""
+      "notes": "inspect - reads bounded stdin, same 8 MiB validation, no tokens/network. Malformed, non-UTF8 and oversized stdin verified in Linux and Windows CI."
     },
     {
       "id": "UX-004",
@@ -2044,7 +2056,7 @@
       "id": "QA-003",
       "phase": "quality",
       "title": "Golden CLI snapshots with deterministic fixture time and text/JSON outputs",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -2054,12 +2066,15 @@
         "tests/golden/"
       ],
       "acceptance": "Committed expected outputs compare identically on Windows/Linux with normalized paths/timezones; fixture changes reviewed.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41276966591"
+      ],
       "depends_on": [
         "STATUS-016",
         "UX-002"
       ],
-      "notes": ""
+      "notes": "Committed exact JSON/text output baselines, fixed RFC3339 clock, normalized CRLF/LF on both sides, tested on native Windows and Linux with worker counts 1/2/4/32."
     },
     {
       "id": "QA-004",
