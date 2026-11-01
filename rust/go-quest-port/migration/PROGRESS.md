@@ -11,15 +11,15 @@ Project: [rust/go-quest-port](../) · Source: [pinned upstream Go](https://githu
 
 | Status | Count | Interpretation |
 |---|---:|---|
-| DONE | 40 | Acceptance evidence recorded; check verification commit |
-| PARTIAL | 11 | Some implementation exists but acceptance incomplete |
-| TODO | 59 | Work not yet demonstrated |
+| DONE | 38 | Acceptance evidence recorded; check verification commit |
+| PARTIAL | 13 | Some implementation exists but acceptance incomplete |
+| TODO | 71 | Work not yet demonstrated |
 | EXCLUDED | 4 | Deliberately outside approved scope |
-| **TOTAL** | **114** | Inventory snapshot, not a completion percentage |
+| **TOTAL** | **126** | Inventory snapshot, not a completion percentage |
 
 ## Release-gating status (approved offline scope only)
 
-**96 required tasks · 58 open release gates · 38 done release gates.**
+**107 required tasks · 71 open release gates · 36 done release gates.**
 Optional and excluded tasks do not block release. See [release criteria](RELEASE-GATES.md). A green historical CI run does not verify future commits.
 
 ## Next uncompleted high-priority release gates
@@ -28,6 +28,8 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 |---|---|---|---|
 | `AUD-001` | P0 | Verify real task-group schema variants against sanitized fixtures | `MODEL-004` |
 | `AUD-002` | P0 | Diff Go behavior and Rust behavior with a version-pinned contract table | `INV-002` |
+| `DOC-005` | P0 | Document provenance limits and safe local JSON input workflows | `STATUS-013` |
+| `MODEL-010` | P0 | Check TaskEntry.type against task-map key and supported task family | `PARSE-010` |
 | `OPS-003` | P0 | Evidence must identify tested commit or immutable file and not just a claim | `OPS-002` |
 | `PARSE-001` | P0 | Reject empty or invalid Quest objects instead of silently accepting {} | `MODEL-001` |
 | `PARSE-002` | P0 | Define duplicate quest IDs and reproduce intentional Go map-dedup semantics | `AUD-002` |
@@ -38,12 +40,10 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 | `QA-005` | P0 | Negative end-to-end test ensures no Discord network, user-token, or reward submission | `SEC-001` |
 | `REL-002` | P0 | Build and smoke test Linux and Windows artifacts for tagged commit | `ENV-007` |
 | `REL-007` | P0 | Document artifact retention and last-verified commit instead of stale EXE links | `ENV-004` |
+| `SEC-003` | P0 | Sanitize terminal control sequences and Unicode formatting attacks | `CLI-003` |
+| `STATE-019` | P0 | Validate Quest ID consistency across wrapper, config and user status | `PARSE-001`, `STATUS-010` |
 | `STATUS-010` | P0 | Validate completion/enrollment/claim timestamps instead of nonempty-string truthiness | `STATE-001` |
 | `STATUS-011` | P0 | Detect impossible ordering and contradictory status timestamps | `STATUS-010` |
-| `STATUS-012` | P0 | Avoid silent unexpired treatment of malformed/missing expiration dates | `STATE-008` |
-| `STATUS-013` | P0 | Label provenance and trust for each reported milestone | `STATE-007` |
-| `STATUS-015` | P0 | Verify AND/OR groups with mixed progress, missing task statuses, and other operators | `STATE-005`, `AUD-001` |
-| `UX-002` | P0 | Version JSON output schema and keep stdout machine-readable | `CLI-001` |
 
 ## Detailed task inventory
 
@@ -61,7 +61,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
-| `AUD-001` | TODO | P0 | Required | Verify real task-group schema variants against sanitized fixtures | Interpret join_operator/string/numeric and config v1/v2 using vetted sanitized fixtures; unsupported representations remain explicitly unknown. | `MODEL-004` | — |
+| `AUD-001` | TODO | P0 | Required | Verify real task-group schema variants against sanitized fixtures | Determine authoritative or sanitized current task group representations; document whether join_operator exists, its data type and default; add Rust parser/AND/OR fixtures and mark unsupported unknown cases. | `MODEL-004` | — |
 | `AUD-002` | PARTIAL | P0 | Required | Diff Go behavior and Rust behavior with a version-pinned contract table | For every Go state/filter/dispatcher method, identify exact Rust behavior, intentional differences, and expected offline fixture outputs. | `INV-002` | `migration/GAP-AUDIT.md` |
 | `AUD-003` | DONE | P0 | Required | Resolve duplicate Rust project ownership | Document and enforce rust/go-quest-port as the only active code path; archive or explicitly label rust/quest-audit-cli as nonshippable research to prevent agents editing it by mistake. | — | `rust/quest-audit-cli/README.md` |
 | `AUD-006` | DONE | P0 | Required | Inventory original feature claims versus actually evidenced operation | Matrix must distinguish source handler, precondition, server confirmation, and real-world verification; no handler or README claim may imply supported engagement. | `INV-003` | `migration/CAPABILITY-CONTRACT.md` |
@@ -89,15 +89,17 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
+| `MODEL-010` | TODO | P0 | Required | Check TaskEntry.type against task-map key and supported task family | Parse Go TaskEntry.type and compare it to the map key where both exist; mismatches, unrecognized types, empty application IDs and task-specific app mappings remain explicit unknown/inconsistent cases. | `PARSE-010` | — |
 | `MODEL-001` | DONE | P1 | Required | Parse Quest object, array, and wrapped collection | All three JSON input shapes parse; invalid root types are rejected. | — | `src/lib.rs` |
 | `MODEL-004` | DONE | P1 | Required | Read v2 and legacy task_config | Both schema variants are accepted in tests without panic. | — | `src/model.rs` |
 | `MODEL-005` | DONE | P1 | Required | Recognize ten documented current/historical task IDs | All named categories are classified; deprecated type flagged and unknown untrusted. | — | `src/manager.rs` |
 | `MODEL-006` | DONE | P1 | Required | Parse task-specific application IDs | Uses per-task applications first, top-level only as fallback; unit test passes. | — | `src/manager.rs` |
+| `MODEL-011` | TODO | P1 | Required | Correct reward wire models without inventing source fields | Cover every Go QuestRewardsConfig/QuestReward field with serde aliases, null handling and golden fixture; any Rust orb quantities documented as non-Go extensions, not claimed Go parity. | `MODEL-009`, `PARSE-010` | — |
 | `MODEL-002` | PARTIAL | P2 | Required | Port core Quest, status, task, reward data types | All original data types and field mappings reviewed; supported fields deserialized with tests; absent upstream types explicitly documented. | — | `src/model.rs` |
 | `MODEL-003` | TODO | P2 | Required | Preserve optional nested metadata, assets and unknown fields | Assets, gradients, metadata and optional fields round-trip or preserve unknown data; regression tests pass. | `MODEL-002` | — |
 | `MODEL-007` | TODO | P2 | Required | Typed task enum, unknown variants and versioned schemas | Typed parsing supports unknown future variants without accidentally asserting support; tests cover drift. | `MODEL-002` | — |
 | `MODEL-008` | PARTIAL | P2 | Required | Validate timestamps, invalid values, and untrusted local input | Invalid/ambiguous dates, oversized JSON, unexpected numeric values and missing IDs produce explicit unknown/invalid outcomes, not implicit success. | — | `src/model.rs` |
-| `MODEL-009` | PARTIAL | P2 | Required | Full read-only reward metadata support | Reward types, amounts, expiry and all expected fields parsed without equating claimed to redeemed. | — | `src/model.rs` |
+| `MODEL-009` | PARTIAL | P2 | Required | Full read-only reward metadata support | Map Go QuestRewardsConfig and QuestReward field-by-field (assignment_method, rewards_expire_at, platforms, sku_id, asset, asset_video, messages); handle extra Rust fields as separately sourced extensions or remove them. | — | `src/model.rs` |
 
 ### Parser
 
@@ -112,24 +114,27 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `PARSE-007` | TODO | P1 | Required | Differentiate null, missing, wrong type, and invalid nested status | For timestamps, user_status and progress, synthetic wrong-type fields lead to explicit invalid/unknown handling rather than confusing defaults. | `MODEL-008` | — |
 | `PARSE-008` | TODO | P1 | Required | Handle UTF-8, BOM, Windows paths, and malformed JSON safely | CLI tests cover valid Unicode names and paths, BOM policy, malformed UTF-8, and stable diagnostic output under Windows/Linux. | `CLI-003` | — |
 | `PARSE-009` | TODO | P1 | Required | Document strict versus tolerant parsing for historical configuration | Tests show version fallback rules, absent task map, unexpected join-operator formats and migration precedence; no guessed fallback silently succeeds. | `AUD-001` | — |
-| `PARSE-010` | TODO | P1 | Required | Measure field coverage against original types.go not just top-level names | Every Go struct field has a Rust counterpart, intentional ignore, or explicit annotation in a generated/manual coverage table; compile tests for supported families. | `MODEL-002` | — |
+| `PARSE-010` | TODO | P1 | Required | Measure field coverage against original types.go not just top-level names | Generate or review a field-by-field coverage matrix for 26 Go struct declarations and all JSON-tagged fields, mapping each to Rust, intentional exclusion or unimplemented release task; tests for every required family. | `MODEL-002` | — |
 
 ### State
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
-| `STATUS-010` | TODO | P0 | Required | Validate completion/enrollment/claim timestamps instead of nonempty-string truthiness | Whitespace and non-RFC3339 timestamps cannot establish a server-confirmed state; valid timezone offsets are supported. | `STATE-001` | — |
+| `STATE-019` | TODO | P0 | Required | Validate Quest ID consistency across wrapper, config and user status | When quest.id, config.id and user_status.quest_id coexist, report conflicting IDs as inconsistent/unknown and do not display a confirmed reward for mismatched records; synthetic tests. | `PARSE-001`, `STATUS-010` | — |
+| `STATUS-010` | TODO | P0 | Required | Validate completion/enrollment/claim timestamps instead of nonempty-string truthiness | Validate RFC3339 completion/enrollment/claim timestamps AND per-task progress.completed_at (including timezone offsets); whitespace or malformed strings cannot yield confirmed status. | `STATE-001` | — |
 | `STATUS-011` | TODO | P0 | Required | Detect impossible ordering and contradictory status timestamps | Synthetic claim-before-completion, completion-before-enrollment, starts-after-expiry, and invalid clocks yield explicit inconsistent/unknown states. | `STATUS-010` | — |
 | `STATUS-012` | TODO | P0 | Required | Avoid silent unexpired treatment of malformed/missing expiration dates | Distinguish missing/invalid expires_at from valid future expiry and display uncertainty in filters/status; tests cover malformed dates. | `STATE-008` | — |
-| `STATUS-013` | TODO | P0 | Required | Label provenance and trust for each reported milestone | Output explicitly identifies source field, local inference, synthetic fixture versus server-shaped record, and never presents locally inferred status as authoritative. | `STATE-007` | — |
+| `STATUS-013` | TODO | P0 | Required | Label provenance and trust for each reported milestone | Clearly separate locally supplied, untrusted JSON fields from authenticated server observations. Never call a completed_at field 'server-verified' unless its provenance is authenticated; report source and trust level on each verdict. | `STATE-007` | — |
 | `STATUS-015` | TODO | P0 | Required | Verify AND/OR groups with mixed progress, missing task statuses, and other operators | Property/table tests cover single/AND/OR, unknown operator, unknown/missing task statuses and conditional eligibility without false success. | `STATE-005`, `AUD-001` | — |
 | `STATE-001` | DONE | P1 | Required | Port IsExpired/IsEnrolled/IsCompleted/HasClaimedRewards | Methods derive status from server-shaped timestamps and expiry; tests pass. | — | `src/model.rs` |
 | `STATE-002` | DONE | P1 | Required | Preserve original GetTaskName as compatibility-only heuristic | Original first-match precedence is represented but never determines entire Quest completion. | — | `src/model.rs` |
 | `STATE-003` | DONE | P1 | Required | Handle Android video-only classification | Recognizes mobile-only video task when desktop video is absent. | — | `src/model.rs` |
 | `STATE-004` | DONE | P1 | Required | Port FilterValid/FilterRedeemable semantics | Filters noncompleted/nonexpired and completed/unclaimed, respectively; tests pass. | — | `src/manager.rs` |
-| `STATE-005` | DONE | P1 | Required | Correctly evaluate AND/OR task groups | AND requires all task timestamps; OR requires one; unknown compound operators are unsupported; tests pass. | — | `src/manager.rs` |
+| `STATE-005` | PARTIAL | P1 | Required | Correctly evaluate AND/OR task groups | Verify AND/OR behavior against authenticated/sanitized real-world Quest schema samples or an authoritative reference; maintain synthetic regression tests and fail closed on missing/unknown operators. | — | `src/manager.rs` |
 | `STATE-006` | DONE | P1 | Required | Do not turn numeric progress into completion | Progress >= target without completed_at is flagged, not reported as Quest completed; tests pass. | — | `src/manager.rs` |
 | `STATE-009` | DONE | P1 | Required | Account enrollment-block marker remains diagnostic | Blocked-until input retained and displayed; no false claim of enrollment. | — | `src/main.rs` |
+| `STATE-020` | TODO | P1 | Required | Retain and interpret task progress freshness metadata | Parse QuestTaskProgress.updated_at and optional heartbeat last_beat_at/expires_at, and report stale/unknown observation time separately from success; do not fake heartbeats. | `PARSE-010`, `STATUS-010` | — |
+| `STATE-021` | TODO | P1 | Required | Validate task and progress event name consistency | Parse TaskEntry.type/event_name and QuestTaskProgress.event_name; classify mismatched task reports as unverified/inconsistent, with synthetic tests. | `MODEL-010`, `STATE-020` | — |
 | `STATUS-014` | TODO | P1 | Required | Keep unsupported/unknown tasks distinguishable even on completed Quest records | Mixed known/unknown and deprecated tasks retain warnings; Quest completed_at may be reported but never construed as implemented task handler support. | `MODEL-005` | — |
 | `STATUS-016` | TODO | P1 | Required | Inject an evaluation clock and add deterministic --at option | Tests/CLI can evaluate a timestamp without Utc::now nondeterminism; DST/UTC offsets and boundary-time cases are covered. | `STATE-008` | — |
 | `STATUS-017` | TODO | P1 | Required | Compare Go and Rust filtering behavior for preview, blocking, starts and duplicates | Document identical and intentionally different filter results with named fixtures; no ambiguous parity claim. | `AUD-002`, `PARSE-002` | — |
@@ -181,7 +186,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `TEST-001` | DONE | P1 | Required | Fifteen synthetic Rust unit tests passing | 15 unit tests passed in GitHub Actions run 41256646888. | — | [source](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888) |
 | `TEST-002` | TODO | P1 | Required | Separate integration tests and golden JSON snapshots | Integration and golden tests verify CLI JSON output, operator logic, timestamp problems and fixtures. | `TEST-001` | — |
 | `TEST-003` | PARTIAL | P1 | Required | 22 offline method validation cases | Implement 22 specified test cases as executable offline tests, mapping each case to a test name and result. | — | `research/standalone/METHOD-VALIDATION-FIXTURES.md` |
-| `TEST-004` | DONE | P1 | Required | Reproducible compile and artifact checks on both platforms | Earlier CI run 41256646888 passed Linux and Windows jobs; note later commits require their own CI. | — | [source](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888) |
+| `TEST-004` | DONE | P1 | Required | Cross-platform Linux/Windows build and smoke tests verified on historical commit | A recorded earlier CI run built and smoke-tested the Rust project on both Linux and Windows. Reproducible locked builds and tagged-current-commit release verification remain REL-006 and REL-002. | — | [source](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888) |
 | `TEST-005` | TODO | P1 | Optional/excluded | Coverage, property tests, fuzzing and benchmark numbers | Published measurements reproduce with inputs, machine specs and tools; no fabricated RAM/CPU claims. | `TEST-001` | — |
 
 ### Quality
@@ -194,14 +199,18 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `QA-002` | TODO | P1 | Required | Property tests and fuzz harness for schema and untrusted JSON | Fuzz/property tests demonstrate no panics and stable unknown/invalid classification with bounded synthetic inputs; CI smoke-level fuzz schedule specified. | `PARSE-005` | — |
 | `QA-004` | TODO | P1 | Required | Stress test duplicate IDs, 100k mock tasks, large values and empty lists | Test resource limits, correct ordering, duplicate handling and no panic on synthetic large/empty documents. | `PARSE-005`, `PARSE-002` | — |
 | `QA-007` | TODO | P1 | Required | Regression corpus for source-level failures in related Go/Python/TS projects | Each known false-success, infinite retry, stale status and conditional EventEmitter case has a synthetic input and expected safe diagnostic. | `TEST-003` | — |
-| `QA-008` | DONE | P1 | Required | Test tracker checker itself against malformed manifests | Unit tests confirm checker rejects duplicate IDs, broken deps/cycles, stale Markdown, invalid statuses and nonexistent path evidence appropriately. | `OPS-002` | `migration/test_check_progress.py` |
+| `QA-008` | PARTIAL | P1 | Required | Test tracker checker itself against malformed manifests | Unit tests confirm checker rejects duplicate IDs, broken deps/cycles, stale Markdown, invalid statuses and nonexistent path evidence appropriately. | `OPS-002` | `migration/test_check_progress.py` |
+| `QA-009` | TODO | P1 | Required | Differential offline Go-versus-Rust fixtures for original pure methods | Use only non-network Go model/Quest/filter helpers and synthetic JSON; compare deterministic outputs with Rust for known parity and document intentional divergences; never execute selfbot login. | `AUD-002`, `STATE-019` | — |
+| `QA-010` | TODO | P1 | Required | Propagate worker errors and panic failures without false-success reports | Tests inject synthetic worker error/panic conditions and show no task/Quest can be marked confirmed from partial results; cancellation and thread cleanup behavior explicit. | `PAR-002` | — |
 | `QA-006` | TODO | P2 | Optional/excluded | Reproducible CPU/RAM performance and binary-size measurements | Benchmark setup, platform/hardware, time/memory and reproducible input sets published; no speculative improvement claims. | `TEST-005` | — |
 
 ### Security
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
+| `SEC-003` | TODO | P0 | Required | Sanitize terminal control sequences and Unicode formatting attacks | Escape or visibly render ANSI/OSC controls, newlines, carriage returns and bidi override characters in untrusted Quest names/IDs/errors; tests prove report cannot manipulate terminal output. | `CLI-003` | — |
 | `SEC-001` | DONE | P1 | Required | No personal Discord user-token use in current offline app | Current Rust code has no personal-token login or Discord network API calls. | — | `src/main.rs` |
+| `SEC-004` | TODO | P1 | Required | Minimize user identifiers and unexpected sensitive content in output | Review output/diagnostics for identifiers or secret-like data from local JSON, add default-redaction and explicit opt-in rules as appropriate, and test JSON/text privacy behavior. | `SEC-003`, `STATUS-013` | — |
 | `SEC-002` | TODO | P2 | Required | Add secret-redacting diagnostics and dependency review | Logging never exposes token fragments or confidential headers; dependency licenses reviewed. | `ENV-009` | — |
 
 ### Release
@@ -215,13 +224,14 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `REL-003` | TODO | P1 | Required | Publish versioned release notes, SHA256 and release assets | A durable GitHub release (not expiring Actions artifacts only) with checksum manifest, notes, limitations and reproducible tag. | `ENV-008` | — |
 | `REL-004` | TODO | P1 | Required | Harden CI permissions, action pinning and dependency updates | Set least-privilege permissions, avoid broad tokens, pin actions or document version policy, scope PR workflows and dependabot policy. | `ENV-006` | — |
 | `REL-006` | TODO | P1 | Required | Check reproducible locked builds and supply-chain provenance | Build with --locked from clean checkout, checksum input lockfile, document signing/provenance limitation. | `ENV-005`, `REL-001` | — |
+| `REL-009` | TODO | P1 | Required | Verify native Windows EXE dependencies on a clean target machine | CI and documentation verify binary launches on a fresh supported Windows runner without installed Go/Node/Python/Discord; identify required DLL/runtime dependencies and target architecture rather than assuming fully static. | `REL-002` | — |
 | `REL-005` | TODO | P2 | Optional/excluded | Generate SBOM or dependency/license inventory for release | Catalog all transitive crates and licenses, verify upstream notice obligations, attach inventory to release. | `ENV-009`, `ENV-005` | — |
 
 ### Tracking
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
-| `OPS-001` | DONE | P0 | Required | Regenerate Markdown task rows automatically from canonical JSON | Adding/removing a task ID through JSON and --write updates whole table, phase headings, counts without manual copying, preserving existing curated prose. | `DOC-004` | `migration/check_progress.py` |
+| `OPS-001` | DONE | P0 | Required | Regenerate Markdown task rows automatically from canonical JSON | When a task is added, changed, or removed in progress.json, --write deterministically regenerates all task rows, headings, summaries, and release gates; --check fails mismatches; curated notes belong in separate non-generated documents. | `DOC-004` | `migration/check_progress.py` |
 | `OPS-002` | DONE | P0 | Required | Validate expanded tracker schema, dependencies, cycles, and priorities | Checker enforces required fields, unique IDs, permitted statuses/P0-P3, release_gate flags, DAG dependencies and consistent summaries. | `DOC-004` | `migration/check_progress.py` |
 | `OPS-003` | TODO | P0 | Required | Evidence must identify tested commit or immutable file and not just a claim | Tracker records verification date, commit/run/source and CI status; checker warns on unverified or outdated 'done' reports. | `OPS-002` | — |
 | `OPS-004` | DONE | P0 | Required | Summarize release-gating versus optional tasks separately | Dashboard computes open release blockers from task metadata; excluded and optional tasks do not distort readiness percentage. | `OPS-002` | `migration/check_progress.py` |
@@ -234,10 +244,12 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
+| `DOC-005` | TODO | P0 | Required | Document provenance limits and safe local JSON input workflows | README explains supported offline input forms and how to create/test sanitized synthetic fixtures without scraping or exposing personal user tokens; distinguishes reported data from independently verified server status. | `STATUS-013` | — |
 | `DOC-001` | DONE | P1 | Required | Project README documents offline scope and Windows EXE | README explains commands, no live completion, passing prior CI and artifact link. | — | `README.md` |
 | `DOC-002` | DONE | P1 | Required | Publish master 1:1 migration spec, file map, tracker | Docs contain exact scoped goals and all Go source files; machine tracker has statuses, acceptance and evidence. | — | `migration/SPEC.md` |
 | `DOC-003` | DONE | P1 | Required | AI agent updating protocol | Agent guidance requires rechecking CI, modifying tracker with code changes, and no false completion claims. | — | `AGENTS.md` |
 | `DOC-004` | DONE | P1 | Required | Keep progress manifest and Markdown view synchronized | A local checker or generator validates IDs/statuses/dependencies and summary counts; CI runs it. | `DOC-002` | `migration/check_progress.py` |
+| `DOC-006` | TODO | P2 | Optional/excluded | Document installation, common CLI errors and Windows troubleshooting | Published guide covers native EXE/OS architectures, trusted release verification, missing file, malformed input, invalid flags, Unicode paths and artifact expiry without promising live Discord functionality. | `REL-007`, `UX-004` | — |
 
 ### Excluded
 
