@@ -10,7 +10,9 @@ This repository documents Discord Quest task types, observable progress models, 
 
 ## Source-code audit and recommendation
 
-**[Read the source-backed recommendation and project ranking](research/RECOMMENDATION.md)**. Nine projects received detailed audits and six more received targeted code inspections at pinned Git commit revisions: see **[audit index](audits/README.md)** and **[secondary inspections](audits/SECONDARY-IMPLEMENTATIONS.md)** and individual findings for Go, TypeScript, Python, Vencord, userscripts, and the hosted Next.js implementation. These are static source reviews, not live Quest completion tests or malware certifications. Main findings: breadth claims are frequently untested; several projects incorrectly report success without final server confirmation; some custody models expose personal user tokens.\n\n## Standalone .exe / CLI / .bat source research (November 2026)
+**[Read the source-backed recommendation and project ranking](research/RECOMMENDATION.md)**. Nine projects received detailed audits and six more received targeted code inspections at pinned Git commit revisions: see **[audit index](audits/README.md)** and **[secondary inspections](audits/SECONDARY-IMPLEMENTATIONS.md)** and individual findings for Go, TypeScript, Python, Vencord, userscripts, and the hosted Next.js implementation. These are static source reviews, not live Quest completion tests or malware certifications. Main findings: breadth claims are frequently untested; several projects incorrectly report success without final server confirmation; some custody models expose personal user tokens.
+
+## Standalone .exe / CLI / .bat source research (November 2026)
 
 **[Read the full standalone code walkthrough index](research/standalone/README.md).** This detailed series covers **Go yeweroooo**, **TypeScript aiko-chan-ai**, **Python SUDIN010**, **Python unconsents**, and **TypeScript lfathh**, with supplementary [Node SDK and hosted server](research/standalone/EXTRA-NODE-AND-HOSTED.md) analysis. It explains startup, exact file responsibilities, HTTP vs Gateway connections, task selection, progress state, rewards, concurrency, dependencies, and code-level failure examples with links to pinned Git commits.
 
@@ -20,7 +22,13 @@ This repository documents Discord Quest task types, observable progress models, 
 
 **Important:** Standalone processes can start without the Discord desktop app, but that does not prove they satisfy real-game, streaming, publisher-achievement or console Quest requirements. No live tasks were run, and inauthentic Quest completion violates Discord's policy.
 
-**[New: deeper method-by-method research (November 2026)](research/standalone/METHODS-DEEP-DIVE-2026-11-01.md)** compares HTTP vs Gateway, video/game/activity/stream/achievement tracking, exact source-level errors, and which *engineering method* is strongest for a standalone CLI. Includes [22 offline test fixtures](research/standalone/METHOD-VALIDATION-FIXTURES.md) and corrects an earlier overstatement of SUDIN completion verification.\n\n## AI-tracked Go-to-Rust migration
+**[New: deeper method-by-method research (November 2026)](research/standalone/METHODS-DEEP-DIVE-2026-11-01.md)** compares HTTP vs Gateway, video/game/activity/stream/achievement tracking, exact source-level errors, and which *engineering method* is strongest for a standalone CLI. Includes [22 offline test fixtures](research/standalone/METHOD-VALIDATION-FIXTURES.md) and corrects an earlier overstatement of SUDIN completion verification.
+
+## Start for the next AI agent
+
+**[START-HERE — exact next tasks, repository workflow and evidence rules](rust/go-quest-port/migration/START-HERE.md)**. Follow the canonical [machine task tracker](rust/go-quest-port/migration/progress.json), [auto-generated progress board](rust/go-quest-port/migration/PROGRESS.md), [new source-level gap audit](rust/go-quest-port/migration/GAP-AUDIT.md), [38-case test matrix](rust/go-quest-port/migration/TEST-MATRIX.md), and [release gates](rust/go-quest-port/migration/RELEASE-GATES.md). The scope is a verified **offline** native Rust analyzer, not an operational Discord selfbot.
+
+## AI-tracked Go-to-Rust migration
 
 The Rust migration has a **[live progress checklist](rust/go-quest-port/migration/PROGRESS.md)** and **[machine-readable task tracker](rust/go-quest-port/migration/progress.json)** so coding agents can see exactly what is **done / partial / todo / intentionally excluded**. Task IDs include acceptance criteria, dependencies and evidence; these are not percentages or a claim of full operational selfbot parity.
 
