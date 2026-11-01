@@ -1028,7 +1028,7 @@
       "id": "DOC-004",
       "phase": "docs",
       "title": "Keep progress manifest and Markdown view synchronized",
-      "status": "todo",
+      "status": "done",
       "go_source": [
         "all"
       ],
@@ -1037,11 +1037,15 @@
         "migration/PROGRESS.md"
       ],
       "acceptance": "A local checker or generator validates IDs/statuses/dependencies and summary counts; CI runs it.",
-      "evidence": [],
+      "evidence": [
+        "migration/check_progress.py",
+        ".github/workflows/rust-go-quest-port.yml",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41258881189"
+      ],
       "depends_on": [
         "DOC-002"
       ],
-      "notes": ""
+      "notes": "Python stdlib script validates IDs, statuses, evidence, dependencies, task rows and summary counts. --write updates current IDs/counts; CI check step passed in Linux test job for run 41258881189."
     },
     {
       "id": "SCOPE-001",
