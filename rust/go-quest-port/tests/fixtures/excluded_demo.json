@@ -1,0 +1,46 @@
+{
+  "quests": [
+    {
+      "id": "full-demo",
+      "config": {
+        "starts_at": "2026-01-01T00:00:00Z",
+        "expires_at": "2027-01-01T00:00:00Z",
+        "task_config_v2": {
+          "tasks": {
+            "WATCH_VIDEO": {
+              "target": 10,
+              "type": "WATCH_VIDEO"
+            }
+          }
+        }
+      },
+      "user_status": {
+        "enrolled_at": "2026-11-01T10:00:00Z",
+        "progress": {
+          "WATCH_VIDEO": {
+            "value": 0
+          }
+        }
+      }
+    }
+  ],
+  "excluded_quests": [
+    {
+      "id": "partial-demo",
+      "preview": true,
+      "config": {
+        "id": "partial-demo",
+        "starts_at": "2026-01-01T00:00:00Z"
+      },
+      "user_status": {
+        "quest_id": "partial-demo"
+      },
+      "targeted_content": {
+        "restricted": "HIDDEN_TARGETING_SECRET"
+      },
+      "traffic_metadata_raw": "HIDDEN_TRAFFIC_SECRET",
+      "traffic_metadata_sealed": "HIDDEN_SEALED_SECRET"
+    }
+  ],
+  "quest_enrollment_blocked_until": null
+}
