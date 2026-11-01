@@ -20,7 +20,13 @@ This repository documents Discord Quest task types, observable progress models, 
 
 **Important:** Standalone processes can start without the Discord desktop app, but that does not prove they satisfy real-game, streaming, publisher-achievement or console Quest requirements. No live tasks were run, and inauthentic Quest completion violates Discord's policy.
 
-**[New: deeper method-by-method research (November 2026)](research/standalone/METHODS-DEEP-DIVE-2026-11-01.md)** compares HTTP vs Gateway, video/game/activity/stream/achievement tracking, exact source-level errors, and which *engineering method* is strongest for a standalone CLI. Includes [22 offline test fixtures](research/standalone/METHOD-VALIDATION-FIXTURES.md) and corrects an earlier overstatement of SUDIN completion verification.\n\n## Rust research prototype
+**[New: deeper method-by-method research (November 2026)](research/standalone/METHODS-DEEP-DIVE-2026-11-01.md)** compares HTTP vs Gateway, video/game/activity/stream/achievement tracking, exact source-level errors, and which *engineering method* is strongest for a standalone CLI. Includes [22 offline test fixtures](research/standalone/METHOD-VALIDATION-FIXTURES.md) and corrects an earlier overstatement of SUDIN completion verification.\n\n## Go-to-Rust port (native Windows CLI)
+
+The [Rust Go-project port](rust/go-quest-port/README.md) implements local Quest JSON parsing, Go-style Quest filtering, typed data models, AND/OR task-group checks, bounded concurrent analysis and 15 synthetic unit tests. The [Windows build and test workflow](../../actions/workflows/rust-go-quest-port.yml) produces a downloadable EXE artifact when CI succeeds.
+
+**Scope:** This is an offline analysis CLI, not a functional Discord selfbot or simulated reward-completion tool. It requires no Discord installation or personal Discord token.
+
+## Rust research prototype
 
 A [read-only Rust Quest status analyzer library](rust/quest-audit-cli/README.md) has been started. It contains typed Quest JSON parsing, task-group (AND/OR) evaluation, separate Quest/reward states, and 14 synthetic unit tests. **It is not yet a runnable executable; Rust compilation and tests are not verified.** It does not submit progress or simulate rewarded activity.
 
