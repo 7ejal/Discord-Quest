@@ -107,6 +107,10 @@ pub struct Reward {
 #[derive(Debug, Clone, Default, Deserialize)]
 pub struct QuestUserStatus {
     #[serde(default)]
+    /// Optional Quest ID on source status; must agree with the parent Quest.
+    #[serde(default)]
+    pub quest_id: Option<String>,
+    #[serde(default)]
     pub enrolled_at: Option<String>,
     #[serde(default)]
     pub completed_at: Option<String>,
@@ -138,6 +142,15 @@ pub fn invalid_timestamp(timestamp: &Option<String>) -> bool {
     timestamp
         .as_ref()
         .is_some_and(|_| !has_timestamp(timestamp))
+}
+
+/// Expiration cannot be assumed valid when the supplied file is incomplete.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ExpiryState {
+    Missing,
+    Invalid,
+    Active,
+    Expired,
 }
 
 impl Quest {
@@ -174,13 +187,20 @@ impl Quest {
             .is_some_and(|s| has_timestamp(&s.claimed_at))
     }
 
-    /// Matches Go's timestamp semantics but keeps malformed dates distinguishable.
+    /// Missing/invalid expiry is unknown rather than silently treated as active.
+    pub fn expiry_state(&self, now: DateTime<Utc>) -> ExpiryState {
+        match self.config.expires_at.as_deref() {
+            None => ExpiryState::Missing,
+            Some(raw) => match DateTime::parse_from_rfc3339(raw) {
+                Err(_) => ExpiryState::Invalid,
+                Ok(expiry) if now >= expiry.with_timezone(&Utc) => ExpiryState::Expired,
+                Ok(_) => ExpiryState::Active,
+            },
+        }
+    }
+
     pub fn is_expired(&self, now: DateTime<Utc>) -> bool {
-        self.config
-            .expires_at
-            .as_deref()
-            .and_then(|raw| DateTime::parse_from_rfc3339(raw).ok())
-            .is_some_and(|expires| now >= expires.with_timezone(&Utc))
+        self.expiry_state(now) == ExpiryState::Expired
     }
 
     pub fn is_android_video_only(&self) -> bool {
