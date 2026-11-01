@@ -2,6 +2,8 @@
 
 This audit compares the **actual repository state**, not the previous prose claims. Source baseline: [Go `352d7f4`](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e). Rust target: [current project source](../src). **No live Discord account or Quest completion was tested.**
 
+**Follow-up:** [Pre-code source audit, 126 tasks](PRE-CODE-REVIEW-2026-11-01.md) adds key/type mismatch, reward-model correction, JSON provenance trust, terminal escape handling, cross-Quest ID consistency, freshness metadata and clean Windows executable testing. `STATE-005` is now *partial*, not done, because real AND/OR schema compatibility is unproven.
+
 ## Highest-impact discrepancies, with proof and task IDs
 
 | Priority | Source-backed finding | Why important | Tracker task |
