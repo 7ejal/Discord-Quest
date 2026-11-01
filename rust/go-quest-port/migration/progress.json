@@ -478,12 +478,12 @@
       "rust_paths": [
         "src/model.rs"
       ],
-      "acceptance": "Reward types, amounts, expiry and all expected fields parsed without equating claimed to redeemed.",
+      "acceptance": "Map Go QuestRewardsConfig and QuestReward field-by-field (assignment_method, rewards_expire_at, platforms, sku_id, asset, asset_video, messages); handle extra Rust fields as separately sourced extensions or remove them.",
       "evidence": [
         "src/model.rs"
       ],
       "depends_on": [],
-      "notes": "",
+      "notes": "Rust Reward includes orb_quantity/premium_orb_quantity but pinned Go QuestReward has sku_id, asset, asset_video, messages and no such quantity fields. Do not label Rust rewards model equivalent.",
       "priority": "P2",
       "required_for_release": true
     },
@@ -575,20 +575,21 @@
       "id": "STATE-005",
       "phase": "state",
       "title": "Correctly evaluate AND/OR task groups",
-      "status": "done",
+      "status": "partial",
       "go_source": [
         "manager.go:DoingQuest"
       ],
       "rust_paths": [
         "src/manager.rs"
       ],
-      "acceptance": "AND requires all task timestamps; OR requires one; unknown compound operators are unsupported; tests pass.",
+      "acceptance": "Verify AND/OR behavior against authenticated/sanitized real-world Quest schema samples or an authoritative reference; maintain synthetic regression tests and fail closed on missing/unknown operators.",
       "evidence": [
         "src/manager.rs",
+        "src/lib.rs",
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": "",
+      "notes": "AND/OR evaluation works in synthetic Rust tests, but pinned Go TaskConfigV2 has only a tasks map and no join_operator field. Real schema compatibility remains unverified (AUD-001). Do not call production-schema semantics verified.",
       "priority": "P1",
       "required_for_release": true
     },
@@ -978,7 +979,7 @@
     {
       "id": "TEST-004",
       "phase": "tests",
-      "title": "Reproducible compile and artifact checks on both platforms",
+      "title": "Cross-platform Linux/Windows build and smoke tests verified on historical commit",
       "status": "done",
       "go_source": [
         ".github/workflows/"
@@ -986,12 +987,12 @@
       "rust_paths": [
         ".github/workflows/rust-go-quest-port.yml"
       ],
-      "acceptance": "Earlier CI run 41256646888 passed Linux and Windows jobs; note later commits require their own CI.",
+      "acceptance": "A recorded earlier CI run built and smoke-tested the Rust project on both Linux and Windows. Reproducible locked builds and tagged-current-commit release verification remain REL-006 and REL-002.",
       "evidence": [
         "https://github.com/7ejal/Discord-Quest/actions/runs/41256646888"
       ],
       "depends_on": [],
-      "notes": "",
+      "notes": "The previously used word 'reproducible' referred to successful CI runs, NOT to lockfile-pinned bit-for-bit reproducibility. Cargo.lock absent at audit.",
       "priority": "P1",
       "required_for_release": true
     },
@@ -1239,12 +1240,12 @@
       "rust_paths": [
         "tests/schema_variants.rs"
       ],
-      "acceptance": "Interpret join_operator/string/numeric and config v1/v2 using vetted sanitized fixtures; unsupported representations remain explicitly unknown.",
+      "acceptance": "Determine authoritative or sanitized current task group representations; document whether join_operator exists, its data type and default; add Rust parser/AND/OR fixtures and mark unsupported unknown cases.",
       "evidence": [],
       "depends_on": [
         "MODEL-004"
       ],
-      "notes": "Do not treat speculative unofficial field structures as confirmed."
+      "notes": "Pinned original Go types.go TaskConfigV2 contains only `Tasks map[string]TaskEntry` and no join_operator. Current Rust `Option<String>` join_operator is a synthetic extension; exact modern schema semantics require evidence."
     },
     {
       "id": "AUD-002",
@@ -1619,12 +1620,12 @@
         "migration/GO-FILE-MAP.md",
         "src/model.rs"
       ],
-      "acceptance": "Every Go struct field has a Rust counterpart, intentional ignore, or explicit annotation in a generated/manual coverage table; compile tests for supported families.",
+      "acceptance": "Generate or review a field-by-field coverage matrix for 26 Go struct declarations and all JSON-tagged fields, mapping each to Rust, intentional exclusion or unimplemented release task; tests for every required family.",
       "evidence": [],
       "depends_on": [
         "MODEL-002"
       ],
-      "notes": ""
+      "notes": "Static comparison: upstream types.go has 26 struct declarations; active Rust model.rs has 12. Not all Go types belong in approved offline scope, so produce an explicit included/excluded map at field level."
     },
     {
       "id": "STATUS-010",
@@ -1640,12 +1641,12 @@
         "src/model.rs",
         "src/manager.rs"
       ],
-      "acceptance": "Whitespace and non-RFC3339 timestamps cannot establish a server-confirmed state; valid timezone offsets are supported.",
+      "acceptance": "Validate RFC3339 completion/enrollment/claim timestamps AND per-task progress.completed_at (including timezone offsets); whitespace or malformed strings cannot yield confirmed status.",
       "evidence": [],
       "depends_on": [
         "STATE-001"
       ],
-      "notes": ""
+      "notes": "Existing has_timestamp tests only nonempty, including TaskProgress.completed_at; both top-level and per-task validation need fixing."
     },
     {
       "id": "STATUS-011",
@@ -1703,12 +1704,12 @@
         "src/manager.rs",
         "src/main.rs"
       ],
-      "acceptance": "Output explicitly identifies source field, local inference, synthetic fixture versus server-shaped record, and never presents locally inferred status as authoritative.",
+      "acceptance": "Clearly separate locally supplied, untrusted JSON fields from authenticated server observations. Never call a completed_at field 'server-verified' unless its provenance is authenticated; report source and trust level on each verdict.",
       "evidence": [],
       "depends_on": [
         "STATE-007"
       ],
-      "notes": ""
+      "notes": "The current CLI only reads local files and cannot authenticate that JSON originated with Discord. Current comments and verdict names overstate source authority."
     },
     {
       "id": "STATUS-014",
@@ -2091,7 +2092,7 @@
       "id": "QA-008",
       "phase": "quality",
       "title": "Test tracker checker itself against malformed manifests",
-      "status": "done",
+      "status": "partial",
       "priority": "P1",
       "required_for_release": true,
       "go_source": [
@@ -2103,12 +2104,14 @@
       "acceptance": "Unit tests confirm checker rejects duplicate IDs, broken deps/cycles, stale Markdown, invalid statuses and nonexistent path evidence appropriately.",
       "evidence": [
         "migration/test_check_progress.py",
-        "https://github.com/7ejal/Discord-Quest/actions/runs/41260136915"
+        "migration/check_progress.py",
+        "migration/check_links.py",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41260352466"
       ],
       "depends_on": [
         "OPS-002"
       ],
-      "notes": "14 stdlib tests for manifest validation, cycles, priority, evidence and auto-generated task rows passed in Linux CI."
+      "notes": "14 tracker unit tests exist and pass, but tests for Markdown stale detection, invalid status, and nonexistent evidence path rejection are not all present in test_check_progress.py; some checks exist in separate check_links.py."
     },
     {
       "id": "REL-001",
@@ -2291,7 +2294,7 @@
       "rust_paths": [
         "migration/check_progress.py"
       ],
-      "acceptance": "Adding/removing a task ID through JSON and --write updates whole table, phase headings, counts without manual copying, preserving existing curated prose.",
+      "acceptance": "When a task is added, changed, or removed in progress.json, --write deterministically regenerates all task rows, headings, summaries, and release gates; --check fails mismatches; curated notes belong in separate non-generated documents.",
       "evidence": [
         "migration/check_progress.py",
         "migration/PROGRESS.md",
@@ -2300,7 +2303,7 @@
       "depends_on": [
         "DOC-004"
       ],
-      "notes": "--write regenerates entire Markdown inventory from canonical JSON; --check fails drift; unit tested in CI."
+      "notes": "PROGRESS.md is fully generated, so hand-written prose is not preserved there. See START-HERE.md or DECISIONS.md for curated narrative."
     },
     {
       "id": "OPS-002",
@@ -2462,6 +2465,274 @@
         "DOC-003"
       ],
       "notes": "PR and issue templates require IDs, acceptance, tests, evidence, remaining risks and exclusions."
+    },
+    {
+      "id": "MODEL-010",
+      "phase": "models",
+      "title": "Check TaskEntry.type against task-map key and supported task family",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:TaskEntry"
+      ],
+      "rust_paths": [
+        "src/model.rs",
+        "src/manager.rs"
+      ],
+      "acceptance": "Parse Go TaskEntry.type and compare it to the map key where both exist; mismatches, unrecognized types, empty application IDs and task-specific app mappings remain explicit unknown/inconsistent cases.",
+      "evidence": [],
+      "depends_on": [
+        "PARSE-010"
+      ],
+      "notes": "Current Rust TaskEntry has target/event_name/applications but omits Go type field, even though it is part of source schema."
+    },
+    {
+      "id": "MODEL-011",
+      "phase": "models",
+      "title": "Correct reward wire models without inventing source fields",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:QuestReward",
+        "types.go:QuestRewardsConfig"
+      ],
+      "rust_paths": [
+        "src/model.rs",
+        "tests/rewards.rs"
+      ],
+      "acceptance": "Cover every Go QuestRewardsConfig/QuestReward field with serde aliases, null handling and golden fixture; any Rust orb quantities documented as non-Go extensions, not claimed Go parity.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-009",
+        "PARSE-010"
+      ],
+      "notes": "Original Go type contains sku_id, asset, asset_video and messages, unlike current simplified Rust Reward."
+    },
+    {
+      "id": "STATE-019",
+      "phase": "state",
+      "title": "Validate Quest ID consistency across wrapper, config and user status",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:Quest",
+        "types.go:QuestConfig",
+        "types.go:QuestUserStatus"
+      ],
+      "rust_paths": [
+        "src/model.rs",
+        "src/manager.rs"
+      ],
+      "acceptance": "When quest.id, config.id and user_status.quest_id coexist, report conflicting IDs as inconsistent/unknown and do not display a confirmed reward for mismatched records; synthetic tests.",
+      "evidence": [],
+      "depends_on": [
+        "PARSE-001",
+        "STATUS-010"
+      ],
+      "notes": "Go QuestUserStatus.QuestID exists but Rust omits it."
+    },
+    {
+      "id": "STATE-020",
+      "phase": "state",
+      "title": "Retain and interpret task progress freshness metadata",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:QuestTaskProgress",
+        "types.go:QuestTaskHeartbeat"
+      ],
+      "rust_paths": [
+        "src/model.rs",
+        "src/manager.rs"
+      ],
+      "acceptance": "Parse QuestTaskProgress.updated_at and optional heartbeat last_beat_at/expires_at, and report stale/unknown observation time separately from success; do not fake heartbeats.",
+      "evidence": [],
+      "depends_on": [
+        "PARSE-010",
+        "STATUS-010"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "STATE-021",
+      "phase": "state",
+      "title": "Validate task and progress event name consistency",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:TaskEntry",
+        "types.go:QuestTaskProgress"
+      ],
+      "rust_paths": [
+        "src/model.rs",
+        "src/manager.rs"
+      ],
+      "acceptance": "Parse TaskEntry.type/event_name and QuestTaskProgress.event_name; classify mismatched task reports as unverified/inconsistent, with synthetic tests.",
+      "evidence": [],
+      "depends_on": [
+        "MODEL-010",
+        "STATE-020"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "SEC-003",
+      "phase": "security",
+      "title": "Sanitize terminal control sequences and Unicode formatting attacks",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:QuestMessages"
+      ],
+      "rust_paths": [
+        "src/main.rs",
+        "src/output/",
+        "tests/cli_safety.rs"
+      ],
+      "acceptance": "Escape or visibly render ANSI/OSC controls, newlines, carriage returns and bidi override characters in untrusted Quest names/IDs/errors; tests prove report cannot manipulate terminal output.",
+      "evidence": [],
+      "depends_on": [
+        "CLI-003"
+      ],
+      "notes": "Current CLI prints Quest names and IDs from local JSON directly, allowing control-sequence/log injection."
+    },
+    {
+      "id": "SEC-004",
+      "phase": "security",
+      "title": "Minimize user identifiers and unexpected sensitive content in output",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "types.go:QuestUserStatus",
+        "types.go:Quest"
+      ],
+      "rust_paths": [
+        "src/main.rs",
+        "tests/privacy.rs"
+      ],
+      "acceptance": "Review output/diagnostics for identifiers or secret-like data from local JSON, add default-redaction and explicit opt-in rules as appropriate, and test JSON/text privacy behavior.",
+      "evidence": [],
+      "depends_on": [
+        "SEC-003",
+        "STATUS-013"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "QA-009",
+      "phase": "quality",
+      "title": "Differential offline Go-versus-Rust fixtures for original pure methods",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "quest.go",
+        "manager.go:FilterValid",
+        "manager.go:FilterRedeemable"
+      ],
+      "rust_paths": [
+        "tests/go_parity.rs",
+        "migration/GO-FILE-MAP.md"
+      ],
+      "acceptance": "Use only non-network Go model/Quest/filter helpers and synthetic JSON; compare deterministic outputs with Rust for known parity and document intentional divergences; never execute selfbot login.",
+      "evidence": [],
+      "depends_on": [
+        "AUD-002",
+        "STATE-019"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "QA-010",
+      "phase": "quality",
+      "title": "Propagate worker errors and panic failures without false-success reports",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "main.go:goroutines"
+      ],
+      "rust_paths": [
+        "src/manager.rs",
+        "tests/workers.rs"
+      ],
+      "acceptance": "Tests inject synthetic worker error/panic conditions and show no task/Quest can be marked confirmed from partial results; cancellation and thread cleanup behavior explicit.",
+      "evidence": [],
+      "depends_on": [
+        "PAR-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "REL-009",
+      "phase": "release",
+      "title": "Verify native Windows EXE dependencies on a clean target machine",
+      "status": "todo",
+      "priority": "P1",
+      "required_for_release": true,
+      "go_source": [
+        "README.md",
+        "go.mod"
+      ],
+      "rust_paths": [
+        ".github/workflows/release.yml",
+        "README.md"
+      ],
+      "acceptance": "CI and documentation verify binary launches on a fresh supported Windows runner without installed Go/Node/Python/Discord; identify required DLL/runtime dependencies and target architecture rather than assuming fully static.",
+      "evidence": [],
+      "depends_on": [
+        "REL-002"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "DOC-005",
+      "phase": "docs",
+      "title": "Document provenance limits and safe local JSON input workflows",
+      "status": "todo",
+      "priority": "P0",
+      "required_for_release": true,
+      "go_source": [
+        "README.md"
+      ],
+      "rust_paths": [
+        "README.md",
+        "migration/SPEC.md"
+      ],
+      "acceptance": "README explains supported offline input forms and how to create/test sanitized synthetic fixtures without scraping or exposing personal user tokens; distinguishes reported data from independently verified server status.",
+      "evidence": [],
+      "depends_on": [
+        "STATUS-013"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "DOC-006",
+      "phase": "docs",
+      "title": "Document installation, common CLI errors and Windows troubleshooting",
+      "status": "todo",
+      "priority": "P2",
+      "required_for_release": false,
+      "go_source": [
+        "README.md"
+      ],
+      "rust_paths": [
+        "docs/TROUBLESHOOTING.md"
+      ],
+      "acceptance": "Published guide covers native EXE/OS architectures, trusted release verification, missing file, malformed input, invalid flags, Unicode paths and artifact expiry without promising live Discord functionality.",
+      "evidence": [],
+      "depends_on": [
+        "REL-007",
+        "UX-004"
+      ],
+      "notes": ""
     }
   ],
   "migration_mode": "native offline Quest analysis; excludes user-account selfbot impersonation and engagement spoofing",
