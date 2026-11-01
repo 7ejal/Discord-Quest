@@ -1,7 +1,9 @@
 //! Offline Rust port of the Go Discord Quest project's portable components.
 //! Deliberately excludes personal-token logins, engagement spoofing and claims.
 
+pub mod gateway_trace;
 pub mod manager;
+pub mod mock_http;
 pub mod model;
 pub mod output;
 
