@@ -121,6 +121,22 @@ def evidence_cell(task: dict) -> str:
     return TICK + safe_cell(first).replace(TICK, "'") + TICK
 
 
+def dependency_queues(tasks: list[dict]) -> tuple[list[dict], list[tuple[dict, list[dict]]]]:
+    """Return actionable tasks and blocked tasks, using actual dependency status."""
+    by_id = {task["id"]: task for task in tasks}
+    open_gates = [task for task in tasks if task["required_for_release"] and task["status"] != "done"]
+    priority_key = lambda task: (PRIORITIES.index(task["priority"]), task["id"])
+    ready = []
+    blocked = []
+    for task in open_gates:
+        unfinished = [by_id[dep] for dep in task["depends_on"] if by_id[dep]["status"] != "done"]
+        if unfinished:
+            blocked.append((task, unfinished))
+        else:
+            ready.append(task)
+    return sorted(ready, key=priority_key), sorted(blocked, key=lambda entry: priority_key(entry[0]))
+
+
 def render(data: dict) -> str:
     tasks = data["tasks"]
     counts = Counter(t["status"] for t in tasks)
@@ -158,22 +174,38 @@ def render(data: dict) -> str:
         "Optional and excluded tasks do not block release. See [release criteria]"
         + "(RELEASE-GATES.md). A green historical CI run does not verify future commits.",
         "",
-        "## Next uncompleted high-priority release gates",
+        "## Ready to start (all dependencies DONE)",
         "",
-        "| ID | Priority | Blocker | Dependencies |",
+        "| ID | Priority | Work | Dependencies |",
         "|---|---|---|---|",
     ]
-    priority_open = sorted(
-        open_gates, key=lambda x: (PRIORITIES.index(x["priority"]), x["id"])
-    )
-    for task in priority_open[:18]:
+    ready, blocked = dependency_queues(tasks)
+    for task in ready[:18]:
         deps = ", ".join(TICK + dep + TICK for dep in task["depends_on"]) or "—"
         lines.append(
             "| " + TICK + task["id"] + TICK + " | " + task["priority"]
             + " | " + safe_cell(task["title"]) + " | " + deps + " |"
         )
-    if not priority_open:
-        lines.append("| — | — | No open release-gating tasks | — |")
+    if not ready:
+        lines.append("| — | — | No unblocked release tasks | — |")
+    lines.extend([
+        "",
+        "## Blocked release gates (prerequisites not DONE)",
+        "",
+        "| ID | Priority | Work | Unfinished dependencies (status/priority) |",
+        "|---|---|---|---|",
+    ])
+    for task, unfinished in blocked[:18]:
+        blockers = ", ".join(
+            TICK + item["id"] + TICK + " " + item["status"].upper() + "/" + item["priority"]
+            for item in unfinished
+        )
+        lines.append(
+            "| " + TICK + task["id"] + TICK + " | " + task["priority"]
+            + " | " + safe_cell(task["title"]) + " | " + blockers + " |"
+        )
+    if not blocked:
+        lines.append("| — | — | No blocked release tasks | — |")
     lines.extend([
         "",
         "## Detailed task inventory",
