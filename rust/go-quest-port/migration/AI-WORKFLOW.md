@@ -21,6 +21,10 @@
 6. Implement the selected task completely, not a stub. No empty methods, no “fake success,” and no claims of universal Quest support.
 7. Add or update tests and documentation for each behavior changed.
 
+## Mandatory validation on main-server
+
+Follow [MAIN-SERVER-WORKFLOW.md](MAIN-SERVER-WORKFLOW.md) after each Rust source-code commit. Import the GitHub revision via Gateway fast-forward pull, run formatting, strict Clippy, locked tests and CLI smoke in the isolated checkout, then confirm GitHub Actions Linux/Windows. Record exact SHA and errors; no background CI service is installed.
+
 ## Development loop
 
 ```text
