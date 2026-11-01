@@ -10,6 +10,8 @@ if [[ "$(uname -s)" != "Linux" || "$(uname -m)" != "x86_64" ]]; then
 fi
 
 export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-2}"
+# Avoid rustup silently downloading a missing compiler onto the production host.
+export RUSTUP_AUTO_INSTALL=0
 echo "Commit: $(git rev-parse HEAD)"
 echo "Toolchain: $(rustc --version)"
 python3 migration/check_progress.py --check
