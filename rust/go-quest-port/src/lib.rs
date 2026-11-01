@@ -6,6 +6,7 @@ pub mod model;
 
 use model::Quest;
 use serde_json::Value;
+use std::collections::BTreeMap;
 
 /// Upper bound for each local JSON document, including programmatic callers.
 pub const MAX_JSON_BYTES: usize = 8 * 1024 * 1024;
@@ -35,11 +36,20 @@ fn parse_quest_list(values: Vec<Value>) -> Result<Vec<Quest>, String> {
     if values.len() > MAX_QUESTS {
         return Err(format!("Too many Quests: maximum is {MAX_QUESTS}"));
     }
-    values
-        .into_iter()
-        .enumerate()
-        .map(|(index, value)| parse_full_quest(value, index))
-        .collect()
+    let mut seen = BTreeMap::<String, Value>::new();
+    let mut unique = Vec::with_capacity(values.len());
+    for (index, value) in values.into_iter().enumerate() {
+        let quest = parse_full_quest(value.clone(), index)?;
+        if let Some(previous) = seen.get(&quest.id) {
+            if previous != &value {
+                return Err(format!("Conflicting records for duplicate Quest ID at index {index}"));
+            }
+            continue;
+        }
+        seen.insert(quest.id.clone(), value);
+        unique.push(quest);
+    }
+    Ok(unique)
 }
 
 /// Parse a Go-like response with quests, an array of Quests, or one Quest.
@@ -227,6 +237,70 @@ mod tests {
             .warnings
             .iter()
             .any(|s| s.contains("invalid enrolled_at")));
+    }
+
+    #[test]
+    fn duplicate_quest_ids_are_not_double_counted() {
+        let repeated = json!([fixture(), fixture()]);
+        let (result, _) = parse_quests(&repeated.to_string()).unwrap();
+        assert_eq!(result.len(), 1);
+    }
+
+    #[test]
+    fn conflicting_duplicate_quest_ids_fail_closed() {
+        let a = fixture();
+        let mut b = fixture();
+        b["user_status"]["completed_at"] = json!("2026-11-01T11:30:00Z");
+        let err = parse_quests(&json!([a, b]).to_string()).unwrap_err();
+        assert!(err.contains("Conflicting records"));
+        assert!(err.contains("index 1"));
+    }
+
+    #[test]
+    fn missing_or_invalid_expiration_is_not_eligible() {
+        for expiry in [Value::Null, json!("invalid-expiry")] {
+            let mut q = fixture();
+            q["config"]["expires_at"] = expiry;
+            let quest = decode(q);
+            assert_eq!(assess_quest(&quest, &now()).verdict, Verdict::Unsupported);
+            assert_eq!(QuestManager::new(vec![quest], None).filter_valid(now()).len(), 0);
+        }
+    }
+
+    #[test]
+    fn contradictory_milestone_ordering_is_inconsistent() {
+        for (first, second) in [("enrolled_at", "completed_at"),
+                                ("completed_at", "claimed_at")] {
+            let mut q = fixture();
+            q["user_status"][first] = json!("2026-11-01T12:00:00Z");
+            q["user_status"][second] = json!("2026-11-01T11:00:00Z");
+            assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::Inconsistent);
+        }
+        let mut q = fixture();
+        q["config"]["starts_at"] = json!("2027-12-01T00:00:00Z");
+        assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::Inconsistent);
+    }
+
+    #[test]
+    fn conflicting_status_or_config_quest_id_is_inconsistent() {
+        let mut q = fixture();
+        q["config"]["id"] = json!("wrong-id");
+        q["user_status"]["completed_at"] = json!("2026-11-01T11:30:00Z");
+        assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::Inconsistent);
+        let mut q = fixture();
+        q["user_status"]["quest_id"] = json!("other-id");
+        assert_eq!(assess_quest(&decode(q), &now()).verdict, Verdict::Inconsistent);
+    }
+
+    #[test]
+    fn invalid_numeric_progress_or_target_has_no_numeric_confirmation() {
+        let mut q = fixture();
+        q["config"]["task_config_v2"]["tasks"]["WATCH_VIDEO"]["target"] = json!(-5);
+        q["user_status"]["progress"]["PLAY_ACTIVITY"]["value"] = json!(-10);
+        let outcome = assess_quest(&decode(q), &now());
+        assert!(outcome.tasks.iter().all(|task| task.numeric_goal_reached != Some(true)));
+        assert!(outcome.warnings.iter().any(|w| w.contains("invalid target")));
+        assert!(outcome.warnings.iter().any(|w| w.contains("invalid progress")));
     }
 
     #[test]
