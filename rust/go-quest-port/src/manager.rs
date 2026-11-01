@@ -1,5 +1,5 @@
 //! Port of the Go QuestManager / FilterValid / FilterRedeemable logic.
-//! Adds explicit server-authoritative status reporting and AND/OR interpretation.
+//! Adds local-input status interpretation and AND/OR group evaluation.
 use crate::model::{has_timestamp, invalid_timestamp, Quest, TaskConfig};
 use chrono::{DateTime, Utc};
 use serde::Serialize;
@@ -105,7 +105,9 @@ fn join_operator(group: Option<&TaskConfig>) -> String {
     match group {
         None => "missing".to_owned(),
         Some(g) if g.tasks.len() == 1 => "single".to_owned(),
-        Some(g) => g.join_operator.as_deref()
+        Some(g) => g
+            .join_operator
+            .as_deref()
             .unwrap_or("missing")
             .trim()
             .to_ascii_lowercase(),
@@ -134,9 +136,9 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
                 }
                 _ => None,
             };
-            let server_task_completed = progress
-                .is_some_and(|p| has_timestamp(&p.completed_at));
-            let application_id = def.applications
+            let server_task_completed = progress.is_some_and(|p| has_timestamp(&p.completed_at));
+            let application_id = def
+                .applications
                 .iter()
                 .find(|a| !a.id.is_empty())
                 .map(|a| a.id.clone())
@@ -174,9 +176,10 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
         }
     }
 
-    if tasks.iter().any(|task| {
-        task.numeric_goal_reached == Some(true) && !task.server_task_completed
-    }) {
+    if tasks
+        .iter()
+        .any(|task| task.numeric_goal_reached == Some(true) && !task.server_task_completed)
+    {
         warnings.push(
             "Numeric task progress reached its target without a task completion timestamp."
                 .to_owned(),
@@ -185,15 +188,23 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
     if tasks.iter().any(|task| task.family == "unknown") {
         warnings.push("The Quest contains an unrecognized task type.".to_owned());
     }
-    if tasks.iter().any(|task| task.family == "historical_deprecated") {
+    if tasks
+        .iter()
+        .any(|task| task.family == "historical_deprecated")
+    {
         warnings.push("The Quest uses a deprecated desktop-play task identifier.".to_owned());
     }
     if rewards_claimed && !quest_completed {
         warnings.push("Claimed timestamp exists without Quest completion timestamp.".to_owned());
     }
-    if !quest_completed && tasks.iter().any(|task|
-        matches!(task.family, "desktop_stream" | "linked_console" | "publisher_or_activity_achievement")
-    ) {
+    if !quest_completed
+        && tasks.iter().any(|task| {
+            matches!(
+                task.family,
+                "desktop_stream" | "linked_console" | "publisher_or_activity_achievement"
+            )
+        })
+    {
         warnings.push(
             "Some tasks require authentic streaming, console, or application-provider activity."
                 .to_owned(),
@@ -201,10 +212,8 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
     }
 
     let operator = join_operator(group);
-    let is_expired = parse_time(&quest.config.expires_at)
-        .is_some_and(|expiry| now >= &expiry);
-    let not_started = parse_time(&quest.config.starts_at)
-        .is_some_and(|start| now < &start);
+    let is_expired = parse_time(&quest.config.expires_at).is_some_and(|expiry| now >= &expiry);
+    let not_started = parse_time(&quest.config.starts_at).is_some_and(|start| now < &start);
 
     let verdict = if rewards_claimed && !quest_completed {
         Verdict::Inconsistent
@@ -267,7 +276,6 @@ pub fn analyze_parallel(
     thread::scope(|scope| {
         for worker_id in 0..n {
             let tx = sender.clone();
-            let now = now;
             scope.spawn(move || {
                 for index in (worker_id..quests.len()).step_by(n) {
                     let assessment = assess_quest(&quests[index], &now);
@@ -281,5 +289,8 @@ pub fn analyze_parallel(
     drop(sender);
     let mut indexed: Vec<_> = receiver.into_iter().collect();
     indexed.sort_by_key(|(index, _)| *index);
-    indexed.into_iter().map(|(_, assessment)| assessment).collect()
+    indexed
+        .into_iter()
+        .map(|(_, assessment)| assessment)
+        .collect()
 }
