@@ -11,15 +11,15 @@ Project: [rust/go-quest-port](../) · Source: [pinned upstream Go](https://githu
 
 | Status | Count | Interpretation |
 |---|---:|---|
-| DONE | 53 | Acceptance evidence recorded; check verification commit |
-| PARTIAL | 21 | Some implementation exists but acceptance incomplete |
-| TODO | 49 | Work not yet demonstrated |
+| DONE | 59 | Acceptance evidence recorded; check verification commit |
+| PARTIAL | 20 | Some implementation exists but acceptance incomplete |
+| TODO | 44 | Work not yet demonstrated |
 | EXCLUDED | 4 | Deliberately outside approved scope |
 | **TOTAL** | **127** | Inventory snapshot, not a completion percentage |
 
 ## Release-gating status (approved offline scope only)
 
-**108 required tasks · 57 open release gates · 51 done release gates.**
+**108 required tasks · 52 open release gates · 56 done release gates.**
 Optional and excluded tasks do not block release. See [release criteria](RELEASE-GATES.md). A green historical CI run does not verify future commits.
 
 ## Ready to start (all dependencies DONE)
@@ -29,17 +29,17 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 | `AUD-001` | P0 | Verify real task-group schema variants against sanitized fixtures | `MODEL-004` |
 | `AUD-002` | P0 | Diff Go behavior and Rust behavior with a version-pinned contract table | `INV-002` |
 | `OPS-003` | P0 | Evidence must identify tested commit or immutable file and not just a claim | `OPS-002` |
+| `QA-001` | P0 | Maintain test-to-requirement traceability for all release-gating tasks | `TEST-002` |
 | `QA-005` | P0 | Negative end-to-end test ensures no Discord network, user-token, or reward submission | `SEC-001` |
 | `REL-007` | P0 | Document artifact retention and last-verified commit instead of stale EXE links | `ENV-004` |
-| `UX-002` | P0 | Version JSON output schema and keep stdout machine-readable | `CLI-001` |
 | `AUD-004` | P1 | Audit source links, file map, and documentation consistency | `DOC-002` |
 | `AUD-005` | P1 | Prevent drift between Rust task families and data/task-types.json | `MODEL-005` |
 | `QA-008` | P1 | Test tracker checker itself against malformed manifests | `OPS-002` |
 | `REL-001` | P1 | Pin rust-toolchain, MSRV and target architecture policy | `ENV-005` |
 | `STATE-005` | P1 | Correctly evaluate AND/OR task groups | — |
 | `STATUS-014` | P1 | Keep unsupported/unknown tasks distinguishable even on completed Quest records | `MODEL-005` |
-| `TEST-002` | P1 | Separate integration tests and golden JSON snapshots | `TEST-001` |
 | `TEST-003` | P1 | 22 offline method validation cases | — |
+| `UX-005` | P1 | Test Windows path quoting, Unicode and terminal encoding behavior | `PARSE-008` |
 | `CLI-002` | P2 | Add --version and --verbose and structured errors | `CLI-001` |
 | `CLI-003` | P2 | Robust CLI UX for invalid inputs and safe help output | — |
 | `ENV-006` | P2 | Add fmt, clippy and dependency audit checks | `ENV-003` |
@@ -52,21 +52,21 @@ Optional and excluded tasks do not block release. See [release criteria](RELEASE
 | `DOC-005` | P0 | Document provenance limits and safe local JSON input workflows | `STATUS-013` PARTIAL/P0 |
 | `PARSE-005` | P0 | Bound input file bytes, nesting depth, quest count, and output size | `CLI-003` PARTIAL/P2 |
 | `PARSE-006` | P0 | Validate target/progress numeric domain and overflow cases | `MODEL-008` PARTIAL/P2 |
-| `QA-001` | P0 | Maintain test-to-requirement traceability for all release-gating tasks | `TEST-002` PARTIAL/P1 |
-| `QA-003` | P0 | Golden CLI snapshots with deterministic fixture time and text/JSON outputs | `STATUS-016` TODO/P1, `UX-002` PARTIAL/P0 |
 | `REL-002` | P0 | Build and smoke test Linux and Windows artifacts for tagged commit | `ENV-007` TODO/P2 |
 | `STATUS-013` | P0 | Label provenance and trust for each reported milestone | `STATE-007` PARTIAL/P2 |
 | `STATUS-015` | P0 | Verify AND/OR groups with mixed progress, missing task statuses, and other operators | `STATE-005` PARTIAL/P1, `AUD-001` TODO/P0 |
 | `UX-006` | P0 | Keep debug logs sanitized and do not echo raw input or secrets | `SEC-002` TODO/P2 |
 | `AUD-008` | P1 | Document upstream code/license provenance and version baselines | `ENV-009` TODO/P2 |
 | `PARSE-007` | P1 | Differentiate null, missing, wrong type, and invalid nested status | `MODEL-008` PARTIAL/P2 |
-| `PARSE-008` | P1 | Handle UTF-8, BOM, Windows paths, and malformed JSON safely | `CLI-003` PARTIAL/P2 |
 | `PARSE-009` | P1 | Document strict versus tolerant parsing for historical configuration | `AUD-001` TODO/P0 |
 | `PARSE-010` | P1 | Measure field coverage against original types.go not just top-level names | `MODEL-002` PARTIAL/P2 |
 | `QA-002` | P1 | Property tests and fuzz harness for schema and untrusted JSON | `PARSE-005` PARTIAL/P0 |
 | `QA-004` | P1 | Stress test duplicate IDs, 100k mock tasks, large values and empty lists | `PARSE-005` PARTIAL/P0 |
 | `QA-007` | P1 | Regression corpus for source-level failures in related Go/Python/TS projects | `TEST-003` PARTIAL/P1 |
 | `QA-009` | P1 | Differential offline Go-versus-Rust fixtures for original pure methods | `AUD-002` PARTIAL/P0 |
+| `QA-010` | P1 | Propagate worker errors and panic failures without false-success reports | `PAR-002` TODO/P2 |
+| `REL-003` | P1 | Publish versioned release notes, SHA256 and release assets | `ENV-008` TODO/P2 |
+| `REL-004` | P1 | Harden CI permissions, action pinning and dependency updates | `ENV-006` PARTIAL/P2 |
 
 ## Detailed task inventory
 
@@ -130,12 +130,12 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 |---|---|---|---|---|---|---|---|
 | `PARSE-001` | DONE | P0 | Required | Reject empty or invalid Quest objects instead of silently accepting {} | Synthetic {} and missing/blank quest ID or missing config produce a typed invalid/unknown result; never classify as normal not-enrolled without warning. | `MODEL-001` | `migration/MAIN-SERVER-CI-2026-11-01.md` |
 | `PARSE-002` | DONE | P0 | Required | Define duplicate quest IDs and reproduce intentional Go map-dedup semantics | Multiple entries with same ID have documented deterministic conflict handling, not accidental double counting; tests cover same/different statuses. | `AUD-002` | `migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md` |
-| `PARSE-005` | PARTIAL | P0 | Required | Bound input file bytes, nesting depth, quest count, and output size | Oversized/deep/wide synthetic documents fail cleanly with typed errors and no unbounded allocations; limits are configurable/documented. | `CLI-003` | `migration/MAIN-SERVER-CI-2026-11-01.md` |
+| `PARSE-005` | PARTIAL | P0 | Required | Bound input file bytes, nesting depth, quest count, and output size | Oversized/deep/wide synthetic documents fail cleanly with typed errors and no unbounded allocations; limits are configurable/documented. | `CLI-003` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
 | `PARSE-006` | PARTIAL | P0 | Required | Validate target/progress numeric domain and overflow cases | Negative, zero, nonfinite/out-of-range targets and values cannot become confirmed completion; warnings/tests cover arithmetic safety. | `MODEL-008` | `migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md` |
 | `PARSE-003` | DONE | P1 | Required | Retain excluded_quests and preview/traffic metadata in reports | Go wrapper's excluded list is not discarded, and incomplete excluded configurations are labeled partial/not evaluated; tests prove no silent loss. | `MODEL-002` | `migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md` |
 | `PARSE-004` | TODO | P1 | Optional/excluded | Preserve unknown future JSON fields when required for round-trip | Schema retains unknown fields or outputs explicit lossiness notices, with fixture round-trip tests for nested extension fields. | `MODEL-003` | — |
 | `PARSE-007` | TODO | P1 | Required | Differentiate null, missing, wrong type, and invalid nested status | For timestamps, user_status and progress, synthetic wrong-type fields lead to explicit invalid/unknown handling rather than confusing defaults. | `MODEL-008` | — |
-| `PARSE-008` | TODO | P1 | Required | Handle UTF-8, BOM, Windows paths, and malformed JSON safely | CLI tests cover valid Unicode names and paths, BOM policy, malformed UTF-8, and stable diagnostic output under Windows/Linux. | `CLI-003` | — |
+| `PARSE-008` | DONE | P1 | Required | Handle UTF-8, BOM, Windows paths, and malformed JSON safely | CLI tests cover valid Unicode names and paths, BOM policy, malformed UTF-8, and stable diagnostic output under Windows/Linux. | `CLI-003` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
 | `PARSE-009` | TODO | P1 | Required | Document strict versus tolerant parsing for historical configuration | Tests show version fallback rules, absent task map, unexpected join-operator formats and migration precedence; no guessed fallback silently succeeds. | `AUD-001` | — |
 | `PARSE-010` | TODO | P1 | Required | Measure field coverage against original types.go not just top-level names | Generate or review a field-by-field coverage matrix for 26 Go struct declarations and all JSON-tagged fields, mapping each to Rust, intentional exclusion or unimplemented release task; tests for every required family. | `MODEL-002` | — |
 
@@ -159,7 +159,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | `STATE-020` | DONE | P1 | Required | Retain and interpret task progress freshness metadata | Parse QuestTaskProgress.updated_at and optional heartbeat last_beat_at/expires_at, and report stale/unknown observation time separately from success; do not fake heartbeats. | `PARSE-010`, `STATUS-010` | `migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md` |
 | `STATE-021` | DONE | P1 | Required | Validate task and progress event name consistency | Parse TaskEntry.type/event_name and QuestTaskProgress.event_name; classify mismatched task reports as unverified/inconsistent, with synthetic tests. | `MODEL-010`, `STATE-020` | `migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md` |
 | `STATUS-014` | TODO | P1 | Required | Keep unsupported/unknown tasks distinguishable even on completed Quest records | Mixed known/unknown and deprecated tasks retain warnings; Quest completed_at may be reported but never construed as implemented task handler support. | `MODEL-005` | — |
-| `STATUS-016` | TODO | P1 | Required | Inject an evaluation clock and add deterministic --at option | Tests/CLI can evaluate a timestamp without Utc::now nondeterminism; DST/UTC offsets and boundary-time cases are covered. | `STATE-008` | — |
+| `STATUS-016` | DONE | P1 | Required | Inject an evaluation clock and add deterministic --at option | Tests/CLI can evaluate a timestamp without Utc::now nondeterminism; DST/UTC offsets and boundary-time cases are covered. | `STATE-008` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
 | `STATUS-017` | TODO | P1 | Required | Compare Go and Rust filtering behavior for preview, blocking, starts and duplicates | Document identical and intentionally different filter results with named fixtures; no ambiguous parity claim. | `AUD-002`, `PARSE-002` | — |
 | `STATUS-018` | TODO | P1 | Required | Model claimable, claimed, and externally redeemed as separate evidence states | Result format and tests differentiate Quest completion, reward claim availability/confirmation, and externally unknown redemption. | `STATE-007`, `MODEL-009` | — |
 | `STATE-007` | PARTIAL | P2 | Required | Separate task, Quest, claim, and external redemption | Quest and claim statuses separate; add explicit externally-unverified redemption representation and tests. | — | `src/manager.rs` |
@@ -171,19 +171,19 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 |---|---|---|---|---|---|---|---|
 | `CLI-001` | DONE | P1 | Required | demo/inspect, JSON and --workers options | Demo and file inspection work with machine-readable output; options present and smoke-tested. | — | `src/main.rs` |
 | `CLI-004` | DONE | P1 | Required | Bundle synthetic example and input/output documentation | Synthetic examples and command usage documented; demo smoke-tested. | — | `examples/sample-quests.json` |
-| `CLI-002` | TODO | P2 | Required | Add --version and --verbose and structured errors | New flags documented; error codes predictable; no personal tokens required. | `CLI-001` | — |
+| `CLI-002` | PARTIAL | P2 | Required | Add --version and --verbose and structured errors | New flags documented; error codes predictable; no personal tokens required. | `CLI-001` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
 | `CLI-003` | PARTIAL | P2 | Required | Robust CLI UX for invalid inputs and safe help output | Tests cover missing flag values, unknown flags, non-UTF8 paths, large input and invalid JSON with stable nonzero exit codes. | — | `src/main.rs` |
 
 ### Ux
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
-| `UX-002` | PARTIAL | P0 | Required | Version JSON output schema and keep stdout machine-readable | --json emits exactly one documented valid JSON result on stdout with schema_version, errors on stderr and deterministic field naming; golden tests pass. | `CLI-001` | `migration/MAIN-SERVER-CI-2026-11-01.md` |
+| `UX-002` | DONE | P0 | Required | Version JSON output schema and keep stdout machine-readable | --json emits exactly one documented valid JSON result on stdout with schema_version, errors on stderr and deterministic field naming; golden tests pass. | `CLI-001` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
 | `UX-006` | PARTIAL | P0 | Required | Keep debug logs sanitized and do not echo raw input or secrets | Tests show token-like strings inside malformed JSON/errors cannot be emitted; diagnostic truncation and escaping documented. | `SEC-002` | `migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md` |
 | `UX-001` | TODO | P1 | Required | Support --version, --verbose, robust --help and CLI test coverage | Stable version/help output and verbose diagnostic mode that does not disclose sensitive data; tests cover invalid flags. | `CLI-002` | — |
 | `UX-004` | TODO | P1 | Required | Document stable exit codes for invalid input and execution errors | Typed failures have predictable nonzero exit codes; success/empty report semantics are documented and tested on both platforms. | `CLI-003` | — |
 | `UX-005` | TODO | P1 | Required | Test Windows path quoting, Unicode and terminal encoding behavior | Windows smoke tests cover spaces and non-ASCII filenames and output, including bat wrapper if added. | `PARSE-008` | — |
-| `UX-003` | TODO | P2 | Optional/excluded | Add optional stdin/pipeline support with bounded input | A documented '-' stdin input works with identical validation to inspect file and rejects oversized streams; no network or token collection. | `PARSE-005` | — |
+| `UX-003` | DONE | P2 | Optional/excluded | Add optional stdin/pipeline support with bounded input | A documented '-' stdin input works with identical validation to inspect file and rejects oversized streams; no network or token collection. | `PARSE-005` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
 
 ### Concurrency
 
@@ -206,8 +206,8 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
-| `TEST-001` | DONE | P1 | Required | Native Rust offline CLI regression suite: 52 passing tests | All 52 Rust tests pass under locked Cargo on the isolated main-server checkout at commit 5043f64b141b03917a14976c109c9e60a6562903, with matching successful Linux/Windows GitHub Actions run 41275135541. | — | `migration/MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.md` |
-| `TEST-002` | PARTIAL | P1 | Required | Separate integration tests and golden JSON snapshots | Integration and golden tests verify CLI JSON output, operator logic, timestamp problems and fixtures. | `TEST-001` | `migration/MAIN-SERVER-CI-2026-11-01-BATCH2.md` |
+| `TEST-001` | DONE | P1 | Required | Native Rust offline CLI regression suite: 65 passing tests | 65 Rust tests passed on Linux main-server and native Windows CI at Git commit d0edd8301cc49b9aa5da5153e50e443384ceaf35; test coverage is synthetic/offline, not live Discord or complete Go selfbot parity. | — | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
+| `TEST-002` | DONE | P1 | Required | Separate integration tests and golden JSON snapshots | Integration and golden tests verify CLI JSON output, operator logic, timestamp problems and fixtures. | `TEST-001` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
 | `TEST-003` | PARTIAL | P1 | Required | 22 offline method validation cases | Implement 22 specified test cases as executable offline tests, mapping each case to a test name and result. | — | `research/standalone/METHOD-VALIDATION-FIXTURES.md` |
 | `TEST-004` | DONE | P1 | Required | Cross-platform Linux/Windows build and smoke tests verified on historical commit | A recorded earlier CI run built and smoke-tested the Rust project on both Linux and Windows. Reproducible locked builds and tagged-current-commit release verification remain REL-006 and REL-002. | — | [source](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888) |
 | `TEST-005` | TODO | P1 | Optional/excluded | Coverage, property tests, fuzzing and benchmark numbers | Published measurements reproduce with inputs, machine specs and tools; no fabricated RAM/CPU claims. | `TEST-001` | — |
@@ -217,7 +217,7 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 | ID | Status | Priority | Gate | Work | Acceptance | Depends on | Evidence (first) |
 |---|---|---|---|---|---|---|---|
 | `QA-001` | PARTIAL | P0 | Required | Maintain test-to-requirement traceability for all release-gating tasks | Every release-gate task has test file/case ID or a verified non-code acceptance artifact; CI checks missing test mapping. | `TEST-002` | `migration/TEST-MATRIX.md` |
-| `QA-003` | TODO | P0 | Required | Golden CLI snapshots with deterministic fixture time and text/JSON outputs | Committed expected outputs compare identically on Windows/Linux with normalized paths/timezones; fixture changes reviewed. | `STATUS-016`, `UX-002` | — |
+| `QA-003` | DONE | P0 | Required | Golden CLI snapshots with deterministic fixture time and text/JSON outputs | Committed expected outputs compare identically on Windows/Linux with normalized paths/timezones; fixture changes reviewed. | `STATUS-016`, `UX-002` | `migration/MAIN-SERVER-CI-2026-11-01-PIPELINES.md` |
 | `QA-005` | TODO | P0 | Required | Negative end-to-end test ensures no Discord network, user-token, or reward submission | Offline CLI works with network blocked and denies user-token operation flags; evidence proves no credential requirement. | `SEC-001` | — |
 | `QA-002` | TODO | P1 | Required | Property tests and fuzz harness for schema and untrusted JSON | Fuzz/property tests demonstrate no panics and stable unknown/invalid classification with bounded synthetic inputs; CI smoke-level fuzz schedule specified. | `PARSE-005` | — |
 | `QA-004` | TODO | P1 | Required | Stress test duplicate IDs, 100k mock tasks, large values and empty lists | Test resource limits, correct ordering, duplicate handling and no panic on synthetic large/empty documents. | `PARSE-005`, `PARSE-002` | — |
