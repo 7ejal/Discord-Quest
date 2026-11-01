@@ -1,6 +1,6 @@
 //! Port of the Go QuestManager / FilterValid / FilterRedeemable logic.
 //! Adds local-input status interpretation and AND/OR group evaluation.
-use crate::model::{has_timestamp, invalid_timestamp, Quest, TaskConfig};
+use crate::model::{has_timestamp, invalid_timestamp, ExpiryState, Quest, TaskConfig};
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use std::thread;
@@ -28,7 +28,7 @@ impl QuestManager {
     pub fn filter_valid(&self, now: DateTime<Utc>) -> Vec<&Quest> {
         self.quests
             .iter()
-            .filter(|quest| !quest.is_completed() && !quest.is_expired(now))
+            .filter(|quest| !quest.is_completed() && quest.expiry_state(now) == ExpiryState::Active)
             .collect()
     }
 
@@ -130,12 +130,18 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
             let reported = progress.and_then(|p| p.value);
             let numeric_goal_reached = match (reported, def.target) {
                 (Some(value), Some(target))
-                    if target > 0.0 && target.is_finite() && value.is_finite() =>
+                    if target > 0.0 && value >= 0.0 && target.is_finite() && value.is_finite() =>
                 {
                     Some(value >= target)
                 }
                 _ => None,
             };
+            if def.target.is_some_and(|target| !target.is_finite() || target <= 0.0) {
+                warnings.push(format!("Input has invalid target for task {name}."));
+            }
+            if reported.is_some_and(|value| !value.is_finite() || value < 0.0) {
+                warnings.push(format!("Input has invalid progress for task {name}."));
+            }
             let server_task_completed = progress.is_some_and(|p| has_timestamp(&p.completed_at));
             let application_id = def
                 .applications
@@ -212,10 +218,40 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
     }
 
     let operator = join_operator(group);
-    let is_expired = parse_time(&quest.config.expires_at).is_some_and(|expiry| now >= &expiry);
-    let not_started = parse_time(&quest.config.starts_at).is_some_and(|start| now < &start);
+    let expiry_state = quest.expiry_state(*now);
+    match expiry_state {
+        ExpiryState::Missing => warnings.push("Input has missing expires_at; eligibility is unknown.".to_owned()),
+        ExpiryState::Invalid => warnings.push("Input has invalid expires_at; eligibility is unknown.".to_owned()),
+        _ => {}
+    }
+    if invalid_timestamp(&quest.config.starts_at) {
+        warnings.push("Input has invalid starts_at timestamp.".to_owned());
+    }
+    let start = parse_time(&quest.config.starts_at);
+    let end = parse_time(&quest.config.expires_at);
+    let not_started = start.is_some_and(|date| now < &date);
+    let inconsistent_id = (!quest.config.id.trim().is_empty() && quest.config.id != quest.id)
+        || status.is_some_and(|record| {
+            record.quest_id.as_ref().is_some_and(|id| id.trim().is_empty() || id != &quest.id)
+        });
+    if inconsistent_id {
+        warnings.push("Quest ID disagrees with config or user_status Quest ID.".to_owned());
+    }
+    let invalid_order = start.zip(end).is_some_and(|(start, end)| start > end)
+        || status.is_some_and(|record| {
+            let enrolled = parse_time(&record.enrolled_at);
+            let completed = parse_time(&record.completed_at);
+            let claimed = parse_time(&record.claimed_at);
+            enrolled.zip(completed).is_some_and(|(a, b)| a > b)
+                || completed.zip(claimed).is_some_and(|(a, b)| a > b)
+        });
+    if invalid_order {
+        warnings.push("Input contains contradictory timestamp ordering.".to_owned());
+    }
 
-    let verdict = if rewards_claimed && !quest_completed {
+    let verdict = if inconsistent_id || invalid_order {
+        Verdict::Inconsistent
+    } else if rewards_claimed && !quest_completed {
         Verdict::Inconsistent
     } else if quest_completed {
         if rewards_claimed {
@@ -223,8 +259,12 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
         } else {
             Verdict::QuestConfirmedUnclaimed
         }
-    } else if is_expired {
+    } else if expiry_state == ExpiryState::Expired {
         Verdict::Expired
+    } else if matches!(expiry_state, ExpiryState::Missing | ExpiryState::Invalid) {
+        Verdict::Unsupported
+    } else if invalid_timestamp(&quest.config.starts_at) {
+        Verdict::Unsupported
     } else if not_started {
         Verdict::NotStarted
     } else if !enrolled {
