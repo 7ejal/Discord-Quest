@@ -1,3 +1,5 @@
+> **SUPERSEDED RESEARCH PROTOTYPE — DO NOT CONTINUE DEVELOPMENT HERE.** The active native Rust CLI is [`rust/go-quest-port`](../go-quest-port/README.md). All tasks, work status, tests, release criteria, and agent instructions are tracked in [`rust/go-quest-port/migration/START-HERE.md`](../go-quest-port/migration/START-HERE.md) and [`progress.json`](../go-quest-port/migration/progress.json). This older library is retained only as historical reference. It has **no `src/main.rs`** and is not a verified runnable CLI.
+
 # Rust Quest status analyzer — library foundation (WIP)
 
 **Status (2026-11-01):** Rust library source committed and unit tests authored. This is **not yet a runnable CLI executable**: the `src/main.rs` binary entry point has not been published. Compilation/tests have **not been executed** in this research environment.
