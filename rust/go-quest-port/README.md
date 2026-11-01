@@ -1,14 +1,15 @@
-# Go Quest models → native Rust CLI (Linux only)
+# Offline Quest inspector — Linux x86_64
 
-**Active target: Linux x86_64, command-line only. Verification and packaging run on the connected `main-server` in an isolated Git checkout.** The project is an **offline, read-only inspector for locally supplied Quest JSON**. It is not an operational Discord selfbot, does not authenticate input as server data and cannot perform rewarded engagement, bypass verification, or automatically claim rewards.
+A native Rust CLI for inspecting synthetic or sanitized local Quest JSON. No
+Discord installation, account token or network connection is needed. The binary
+does not enroll accounts, perform engagement, send heartbeats, bypass CAPTCHA,
+or claim rewards.
 
-Original Go reference: [yeweroooo/Discord-Quest-Auto-Completion-Selfbot @ `352d7f4`](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e). The original MIT copyright notice is retained in [LICENSE](LICENSE), with attribution in [NOTICE](NOTICE).
+## Build and verify on main-server
 
-## Build and test — main-server only
-
-The repository has **no active GitHub-hosted test workflow** and no Windows release target. Do not install a self-hosted runner or alter production services.
-
-After a GitHub commit is fast-forward pulled into `/root/quest-rust-ci-20261101`, run:
+Use the isolated `/root/quest-rust-ci-20261101` checkout. Source changes are
+committed to GitHub first, reviewed, then imported with a fast-forward pull.
+Production services and system configuration are outside this workflow.
 
 ```bash
 cd /root/quest-rust-ci-20261101/rust/go-quest-port
@@ -16,50 +17,107 @@ CARGO_BUILD_JOBS=2 nice -n 10 bash scripts/test-linux.sh
 CARGO_BUILD_JOBS=2 nice -n 10 bash scripts/package-linux.sh
 ```
 
-The first script checks the progress manifest, 17 tracker unit tests, local documentation links, formatting, strict Clippy, locked Cargo tests and a Linux release build with synthetic JSON smoke tests. The second packages the **tested Linux x86_64 executable**, README, license/notice and file checksums into `dist/linux-x86_64/`. Scripts prevent automatic rustup toolchain installation. A local server archive is **not** a GitHub release or public downloadable artifact.
+The test script runs tracker/links checks, Cargo formatting, strict Clippy,
+locked tests, the pinned pure-Go comparison, optimized compilation, golden
+reports, and smoke tests in a process-local network namespace. Rust 1.98.1 is
+pinned; automatic toolchain installation is disabled. Go and Python are build
+verification tools only; neither is required to run the released executable.
 
-See [Linux-only contract](migration/LINUX-ONLY.md), [main-server procedure](migration/MAIN-SERVER-WORKFLOW.md), and [release gates](migration/RELEASE-GATES.md).
+Packaging refuses an uncommitted checkout, verifies the extracted executable
+and all archive hashes, and includes LICENSE, NOTICE, Cargo.lock, compiler/source
+provenance and dependency/license inventories. Output is in `dist/linux-x86_64`.
+An archive on main-server is a local release candidate, not a public GitHub
+release. Windows, GUI and GitHub-hosted verification are outside scope.
 
-**Verified Linux release candidate:** [main-server test, archive SHA256 and measured CPU/RAM](migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md). For extraction, system libraries and CLI errors, see [Linux troubleshooting](docs/TROUBLESHOOTING.md). The archive is server-resident; no permanent public GitHub release has been claimed.
-
-## Latest verified Linux-only build
-
-The [main-server network-isolated release verification](migration/MAIN-SERVER-NETWORK-ISOLATION-2026-11-01.md) passed **66 Rust tests**, **17 tracker tests**, formatting, strict Clippy and Linux release packaging at source commit `44dfcf924ec8`. It also verified the CLI with Linux networking disabled and checked that fake credential/targeting canaries did not appear in output. The [task catalog contract test](tests/task_catalog.rs) checks all 10 known task identifiers and deprecated status against the repository data catalog.
-
-Source-pinned archive SHA256: `21e53ea165b11f7c70e27f5bcb13020ee617506c134c1a358883d1b1d173d85e`. This is a local release candidate, **not** a permanent public GitHub release. No Windows or GUI support is planned.
-
-## Run the native CLI on Linux
+## Usage
 
 ```bash
+./target/release/go-quest-port --help
 ./target/release/go-quest-port --version
 ./target/release/go-quest-port demo --json --at 2026-11-01T12:00:00Z
 ./target/release/go-quest-port inspect examples/sample-quests.json --json
-cat examples/sample-quests.json | ./target/release/go-quest-port inspect - --json
+cat examples/sample-quests.json | ./target/release/go-quest-port inspect - --json --verbose
 ```
 
-```text
-go-quest-port demo [--json] [--workers N] [--at RFC3339]
-go-quest-port inspect <local-quests.json|-> [--json] [--workers N] [--at RFC3339]
-go-quest-port --version
-```
+Options after `demo` or `inspect <path|->`:
 
-**Limits and behavior:** UTF-8 JSON only, optional initial UTF-8 BOM; 8 MiB input cap, maximum 10,000 Quest objects, 16 MiB buffered JSON output cap. `--workers` accepts 1–32 bounded analysis threads. `--at` makes report times deterministic. JSON includes `schema_version` and `input_trust: "unverified_local_json"`. The parser separates excluded partial Quests, handles task IDs/reward metadata, flags contradictory status or malformed timestamps and escapes untrusted terminal-control characters. It **never** connects to Discord.
+| Option | Meaning |
+|---|---|
+| `--json` | One versioned JSON document on stdout |
+| `--at RFC3339` | Fixed evaluation clock, including timezone |
+| `--workers N` | 1–32 bounded workers; default 4 |
+| `--verbose` | Counts and trust label on stderr; no raw input or filenames |
+| `--max-input-bytes N` | Lower the default 8 MiB input limit |
+| `--max-output-bytes N` | Lower the default 16 MiB report limit |
 
-The [golden JSON/text snapshots](tests/golden/) and [test suites](tests/) are synthetic: they do not prove any Quest was genuinely completed.
+Hard limits: UTF-8 input with optional leading BOM, 10,000 full and 10,000
+excluded records per list, depth 64, and 100,000 combined task/progress entries
+per document. Both text and JSON reports are buffered before stdout. Oversized
+reports fail without printing a partial result. Input/output limits may be
+lowered, never raised above the safety caps.
 
-## State of development and tracking
+Exit codes: **0** success (including an empty valid list), **64** command/option
+error, **65** invalid data or JSON output limit, **70** worker failure, **74** I/O
+failure (including text output limit). Errors go to stderr with source values
+and filenames omitted. Linux filenames need not be UTF-8; file contents must be.
 
-The authoritative status is [progress.json](migration/progress.json), rendered as [PROGRESS.md](migration/PROGRESS.md). Start work using [START-HERE.md](migration/START-HERE.md), [GO-FILE-MAP.md](migration/GO-FILE-MAP.md), [GAP-AUDIT.md](migration/GAP-AUDIT.md) and [SPEC.md](migration/SPEC.md).
+## Input, schema and privacy
 
-**Historical verification:** [GitHub Actions run #41277276280](https://github.com/7ejal/Discord-Quest/actions/runs/41277276280) passed 65 Rust tests on Linux and Windows before the Linux-only decision. Those results are historical; new validation runs on `main-server` only. Do not claim current code passed based on an earlier commit.
+Accepts one full Quest, an array, or a wrapper with `quests`,
+`excluded_quests` and optional `quest_enrollment_blocked_until`.
+Use `examples/sample-quests.json` as a synthetic starting point; change invented
+names and IDs locally. Remove user IDs, targeting/traffic metadata, credentials
+and personal details before sharing input or output. No scraping or account
+login is part of this workflow.
 
-**Remaining engineering work:** Complete model/schema coverage, robustness and stress testing, honest provenance and status reporting, credential-free offline boundary tests, Linux release verification and optional distribution. The tracker distinguishes `done`, `partial`, `todo` and `excluded`; the absence of Windows or GUI support is deliberate, not missing functionality.
+Duplicate identical Quest records are deduplicated; conflicting duplicates are
+errors. V2 config takes precedence without merging; legacy config is accepted
+only when v2 is null/absent. Missing/null optional status timestamps carry no
+milestone; wrong types fail. Invalid dates and numbers never establish completion.
+Unknown and deprecated task IDs retain warnings even when the local file reports
+Quest completion or a claimed reward.
 
-## Source and licensing
+The pinned Go model contains **no join operator**. Rust supports string
+`and`/`or` only as an explicit offline extension; a lone task with no operator
+is `single`. Missing multi-task or unknown operators fail closed. Compatibility
+with modern authenticated Discord task-group samples remains unverified.
 
-- [Go-to-Rust file mapping](migration/GO-FILE-MAP.md)
-- [Capability limitations](migration/CAPABILITY-CONTRACT.md)
-- [Linux-only platform/test policy](migration/LINUX-ONLY.md)
-- [MIT LICENSE](LICENSE) · [NOTICE](NOTICE)
+JSON schema version 1 is additive: every assessment/task has
+`input_trust: "unverified_local_json"`, and external redemption is independently
+`unknown`. `reward_claim_availability` describes reported local fields and
+explicitly leaves eligibility unverified. Legacy field names
+`server_task_completed` and verdict `quest_confirmed_unclaimed` are retained
+for compatibility; they mean valid timestamps **reported in this local file**,
+never independently authenticated server evidence.
 
-No credentials, publisher achievements or gameplay are requested or collected.
+Application selection reports both the chosen ID and its source (task config,
+campaign fallback or missing). User IDs, opaque metadata and arbitrary source
+extensions are not included in summaries. Campaign names, Quest/application IDs,
+task/event labels and freshness fields remain visible inspection data. Do not
+put secrets in those fields. Terminal controls are escaped in human output;
+JSON preserves report strings for machine processing.
+
+## Verification and remaining gates
+
+[Continuation release evidence](migration/MAIN-SERVER-COMPLETION-2026-11-01.md)
+records exact tested commits, check results, artifact hashes and measured resource
+use. [Progress](migration/PROGRESS.md) is generated from
+[progress.json](migration/progress.json); status changes require passing evidence.
+
+The [field/behavior ledger](migration/MODEL-COVERAGE.md) covers all 26 pinned Go
+structs, including explicit exclusions and opaque metadata preservation.
+[Acceptance mapping](migration/ACCEPTANCE-EVIDENCE.md) maps tests and non-code
+artifacts to tasks. [Research-case mapping](migration/RESEARCH-CASE-MAP.md)
+distinguishes executable checks from network/OAuth cases that do not apply.
+
+Modern task-group schema verification remains open under `AUD-001` and
+`STATE-005`. Public release publication remains unperformed under `REL-003`;
+the existing general-release gate is retained. Do not describe this candidate
+as fully release-ready. Optional network integrations are deferred, not needed
+to run the offline CLI.
+
+Original source: yeweroooo/Discord-Quest-Auto-Completion-Selfbot at
+`352d7f457c9511bc9e7c9b940a71012bfb47572e`. The MIT license and original
+copyright are preserved in [LICENSE](LICENSE) and [NOTICE](NOTICE).
+See [Linux troubleshooting](docs/TROUBLESHOOTING.md) for library/architecture
+compatibility and [main-server workflow](migration/MAIN-SERVER-WORKFLOW.md).

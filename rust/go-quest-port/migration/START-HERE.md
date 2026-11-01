@@ -29,9 +29,16 @@ After Rust code changes, use the user-authorized [main-server validation workflo
 3. Inspect actual `src/{model,manager,lib,main}.rs`, `Cargo.toml`, and latest CI. Record current branch and commit.
 4. Pick at most a few unblocked **P0 release-gating** tasks. Start by writing a regression test that fails for the known defect.
 5. Implement it correctly, with no placeholder no-op code. Keep code simple and maintainable.
-6. Run test, fmt, Clippy, CLI smoke and tracker checker. On GitHub confirm the **current commit** passes Windows and Linux jobs before saying verified.
+6. Run test, fmt, Clippy, CLI smoke and tracker checker. Confirm the **current commit** passes Linux main-server checks before saying verified.
 7. Update progress.json evidence; regenerate Markdown; update GO-FILE-MAP or decisions when semantics change.
 8. Commit/test/docs/manifest updates together. Report exact task IDs and remaining risks.
+
+## Current source coverage
+
+See [model/behavior ledger](MODEL-COVERAGE.md), [acceptance evidence](ACCEPTANCE-EVIDENCE.md)
+and [continuation verification](MAIN-SERVER-COMPLETION-2026-11-01.md). Do not
+repeat historical completed phases; consult the generated queue. Modern schema
+evidence and public publication remain open. Windows/GUI work is outside scope.
 
 ## Immediate engineering order (avoid chasing optional features)
 

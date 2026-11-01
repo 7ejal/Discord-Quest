@@ -15,7 +15,7 @@
 
 ## Main-server CI is required after code changes
 
-Follow [migration/MAIN-SERVER-WORKFLOW.md](migration/MAIN-SERVER-WORKFLOW.md): **commit on GitHub → Gateway fast-forward pull into isolated checkout on main-server → run Cargo format, strict Clippy, locked tests and release JSON smoke → verify Windows GitHub Actions on the same code revision**. Never test arbitrary PR branches on production or overwrite other directories. Report unavailable server testing honestly.
+Follow [migration/MAIN-SERVER-WORKFLOW.md](migration/MAIN-SERVER-WORKFLOW.md): **commit on GitHub → Gateway fast-forward pull into isolated checkout on main-server → run Cargo format, strict Clippy, locked tests and release JSON smoke → build/package Linux x86_64 on main-server**. Never test arbitrary PR branches on production or overwrite other directories. Report unavailable server testing honestly.
 
 ## Mandatory practices
 

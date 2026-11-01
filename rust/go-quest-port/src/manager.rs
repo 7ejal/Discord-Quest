@@ -203,7 +203,11 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
                 numeric_goal_reached,
                 server_task_completed,
                 application_id,
-                application_id_source: if def.applications.iter().any(|app| !app.id.trim().is_empty()) {
+                application_id_source: if def
+                    .applications
+                    .iter()
+                    .any(|app| !app.id.trim().is_empty())
+                {
                     "task_config"
                 } else if !quest.config.application.id.trim().is_empty() {
                     "campaign_application"

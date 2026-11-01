@@ -40,10 +40,6 @@ If `main-server` is unreachable, lacks safe resources, or has uncommitted unrela
 
 This procedure must not be misinterpreted as authority to run commands indefinitely or schedule background jobs without an explicit automation request.
 
-## Last verified run
+## Verification records
 
-- Main-server verified Rust code commit `36e386b7f0d4ddef6f3743f997ec3bc5830e525c` with 23 Rust tests and 14 Python tracker tests.
-- A subsequent main-server run on documentation/tracker commit `2a73153d8ed6da46aafde51a7c87ef1b9f0fe134` also passed all 23 Rust tests, formatting, Clippy, tracker checks and the release JSON smoke test.
-- [Matching successful GitHub Actions run](https://github.com/7ejal/Discord-Quest/actions/runs/41270547366).
-
-**This document defines a reproducible test procedure, not an ongoing automation or completed universal Go-port.**
+[Continuation record](MAIN-SERVER-COMPLETION-2026-11-01.md) identifies current tested source and artifact details. Earlier records are historical and do not verify later code. Tests include the stdlib-only pinned pure-Go harness; the executable itself has no Go/Python runtime requirement.

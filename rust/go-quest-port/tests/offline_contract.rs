@@ -310,3 +310,20 @@ fn deterministic_mutation_corpus_never_panics_or_confirms_completion() {
         }
     }
 }
+
+#[test]
+fn application_identity_is_kept_per_quest() {
+    let mut first = fixture();
+    first["id"] = json!("first");
+    first["config"]["task_config_v2"]["tasks"]["WATCH_VIDEO"]["applications"] =
+        json!([{"id":"first-app"}]);
+    let mut second = fixture();
+    second["id"] = json!("second");
+    second["config"]["task_config_v2"]["tasks"]["WATCH_VIDEO"]["applications"] =
+        json!([{"id":"second-app"}]);
+    let parsed = parse_document(&json!([first, second]).to_string()).unwrap();
+    let results = analyze_parallel(&parsed.quests, at(), 2);
+    assert_eq!(results[0].tasks[0].application_id.as_deref(), Some("first-app"));
+    assert_eq!(results[1].tasks[0].application_id.as_deref(), Some("second-app"));
+    assert_eq!(results[0].tasks[0].application_id_source, "task_config");
+}

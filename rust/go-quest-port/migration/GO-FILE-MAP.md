@@ -105,3 +105,7 @@ The [main-server model validation report](MAIN-SERVER-CI-2026-11-01-MODEL-BATCH.
 - [`examples/sample-quests.json`](../examples/sample-quests.json): fabricated test data.
 
 Source provenance is recorded here, not a claim that *every Go function was copied or that every game's Quests can be completed*. The canonical task-by-task record is [progress.json](progress.json).
+
+## Current field and pure-helper evidence
+
+[MODEL-COVERAGE.md](MODEL-COVERAGE.md) contains the field-by-field ledger for all 26 pinned Go structs and the current pure-method/filter/dispatcher comparison, including explicit exclusions. [Go reference harness](../../../tools/go-quest-reference/) includes no upstream client code. [Executable comparison](../tests/go_parity.rs) checks parity and intentional differences on synthetic records.
