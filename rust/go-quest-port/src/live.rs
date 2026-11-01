@@ -30,7 +30,9 @@ impl std::fmt::Display for LiveError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let label = match self {
             Self::InvalidQuestId => "Quest ID must contain 1-20 ASCII digits",
-            Self::InvalidCredentialInput => "Expected one OAuth2 Bearer access token from non-terminal stdin",
+            Self::InvalidCredentialInput => {
+                "Expected one OAuth2 Bearer access token from non-terminal stdin"
+            }
             Self::AuthenticationRequired => "OAuth2 authorization failed or expired (HTTP 401)",
             Self::PermissionDenied => "Read was denied (HTTP 403)",
             Self::RateLimited => "Rate limited (HTTP 429); no retry was attempted",
@@ -51,7 +53,11 @@ fn make_client() -> Result<Client, LiveError> {
         .redirect(Policy::none())
         .connect_timeout(Duration::from_secs(4))
         .timeout(Duration::from_secs(10))
-        .user_agent(concat!("go-quest-port/", env!("CARGO_PKG_VERSION"), " (read-only)"))
+        .user_agent(concat!(
+            "go-quest-port/",
+            env!("CARGO_PKG_VERSION"),
+            " (read-only)"
+        ))
         .build()
         .map_err(|_| LiveError::RemoteUnavailable)
 }
@@ -118,7 +124,10 @@ pub fn fetch_public_quest_config(id: &str) -> Result<PublicQuestConfig, LiveErro
 fn parse_public_config(id: &str, value: &Value) -> Result<PublicQuestConfig, LiveError> {
     let object = value.as_object().ok_or(LiveError::InvalidResponse)?;
     // Never treat a malformed HTTP 200 JSON object as a valid Quest config.
-    if !object.get("id").and_then(Value::as_str).is_some_and(|v| v == id)
+    if !object
+        .get("id")
+        .and_then(Value::as_str)
+        .is_some_and(|v| v == id)
         || !object.get("expires_at").is_some_and(Value::is_string)
     {
         return Err(LiveError::InvalidResponse);
@@ -178,7 +187,9 @@ pub fn check_oauth_identity_from_stdin() -> Result<OAuthCheck, LiveError> {
     let token = std::str::from_utf8(&bytes).map_err(|_| LiveError::InvalidCredentialInput)?;
     if token.is_empty()
         || token.len() > MAX_OAUTH_TOKEN_BYTES
-        || token.bytes().any(|b| b.is_ascii_whitespace() || b.is_ascii_control())
+        || token
+            .bytes()
+            .any(|b| b.is_ascii_whitespace() || b.is_ascii_control())
     {
         return Err(LiveError::InvalidCredentialInput);
     }
@@ -231,8 +242,15 @@ mod tests {
     #[test]
     fn missing_id_or_expiry_fails_closed() {
         let id = "123456789012345678";
-        for value in [json!({}), json!({"id":id}), json!({"id":"99","expires_at":"date"})] {
-            assert_eq!(parse_public_config(id, &value).unwrap_err(), LiveError::InvalidResponse);
+        for value in [
+            json!({}),
+            json!({"id":id}),
+            json!({"id":"99","expires_at":"date"}),
+        ] {
+            assert_eq!(
+                parse_public_config(id, &value).unwrap_err(),
+                LiveError::InvalidResponse
+            );
         }
     }
 }

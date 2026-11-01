@@ -41,7 +41,7 @@ Archive includes the Linux executable, README, upstream MIT LICENSE, NOTICE, bui
 
 ## Scope and remaining work
 
-CLI-only, offline and read-only. No GUI, personal-account authentication, fabricated rewarded participation, Discord presence spoofing, CAPTCHA solving or automatic reward claiming. Input JSON is unverified local data. Release milestones and remaining work are tracked in [progress.json](progress.json) and [RELEASE-GATES.md](RELEASE-GATES.md).
+CLI-only, primarily offline and read-only, with explicit public-Quest HTTPS and optional official OAuth2 identity checks. No GUI, raw personal-account selfbot authentication, fabricated rewarded participation, Discord presence spoofing, CAPTCHA solving or automatic reward claiming. Input JSON is unverified local data. Release milestones and remaining work are tracked in [progress.json](progress.json) and [RELEASE-GATES.md](RELEASE-GATES.md).
 
 The GitHub Actions Windows results retained elsewhere in the repository are **historical evidence only**, not current platform support. New task IDs or changed acceptance criteria should use this Linux-only contract.
 

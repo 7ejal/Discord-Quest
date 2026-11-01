@@ -1,9 +1,11 @@
-# Offline Quest inspector — Linux x86_64
+# Quest inspector — Linux x86_64 (offline + opt-in live reads)
 
-A native Rust CLI for inspecting synthetic or sanitized local Quest JSON. No
-Discord installation, account token or network connection is needed. The binary
-does not enroll accounts, perform engagement, send heartbeats, bypass CAPTCHA,
-or claim rewards.
+A native Rust CLI for inspecting synthetic or sanitized local Quest JSON.
+The offline commands need no Discord installation, credentials or network connection.
+**Opt-in live commands** can perform limited genuine HTTPS reads: an unauthenticated
+public Quest **config by ID** (unofficially documented endpoint) or an official
+OAuth2 `identify` identity check. Neither accesses personal Quest progress,
+performs engagement, sends Quest heartbeats, bypasses CAPTCHA or claims rewards.
 
 ## Build and verify on main-server
 
@@ -28,6 +30,36 @@ and all archive hashes, and includes LICENSE, NOTICE, Cargo.lock, compiler/sourc
 provenance and dependency/license inventories. Output is in `dist/linux-x86_64`.
 An archive on main-server is a local release candidate, not a public GitHub
 release. Windows, GUI and GitHub-hosted verification are outside scope.
+
+## Genuine read-only HTTPS commands
+
+```bash
+./target/release/go-quest-port quest-config 1552869482471358576 --json
+./target/release/go-quest-port oauth-check --oauth-token-stdin --json
+```
+
+The `quest-config` command requests one public Quest configuration directly
+from `https://discord.com/api/v10/quests/<id>` over TLS. An HTTP 200
+was observed on November 1, 2026 for Quest
+`1552869482471358576`; this is an observed response for that date only,
+not a guarantee of future availability, user eligibility or reward completion.
+The endpoint is documented by the **unofficial** Discord API reference, not the
+published developer OAuth2 API contract.
+
+`oauth-check` makes one official `GET /users/@me` request using a **Discord
+OAuth2 `identify` access token** received via a non-interactive stdin pipe.
+The command refuses interactive stdin, does not take tokens as argv, logs,
+config or `.env`, never prints account details, does not forward credentials
+across redirects, and does not enable personal account Quest retrieval.
+Obtain an OAuth2 token through your own **authorized** Discord app consent
+flow; **never paste credentials into this chat or terminal history**.
+This command has been tested for synthetic failures, but a real user token has
+not been supplied or verified in this repository. Personal Discord session
+tokens in the Go project are **not** OAuth2 access tokens.
+
+Both commands have a fixed Discord HTTPS origin, no proxy or redirect
+following, 4-second connect and 10-second total timeouts, a 1 MiB response
+cap, and no automatic retries. Errors omit server response bodies.
 
 ## Usage
 
@@ -105,9 +137,9 @@ They are exercised in `tests/offline_network_fixtures.rs` and make **no**
 network requests. The binary still exposes only `demo` and `inspect`;
 there is no live account/token/Quest API operation.
 
-## Requested live HTTP / Go parity work (not implemented)
+## Requested full Go selfbot/Quest parity (not implemented)
 
-The user requested Go-style raw `Authorization` header account access and live Quest inspection. This is tracked under [GO-LIVE-HTTP-REQUEST.md](migration/GO-LIVE-HTTP-REQUEST.md) and separate tracked `AUD-009`, `SEC-005`, `NET-005`–`NET-009`, `QA-011`, `AUD-010` tasks. Static authorization/security/parity audits are documented in [GO-HTTP-AUTH-AUDIT-2026-11-01.md](migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md) and [GO-LIVE-PARITY-DECISION-2026-11-01.md](migration/GO-LIVE-PARITY-DECISION-2026-11-01.md); they are **not** a working live client. **The current executable still has no HTTP or account login command.** Current offline test results do not verify real Discord account or Quest functionality. Supported authorization and service rules must be checked before any live integration; do not send, commit or print personal tokens.
+The user requested Go-style raw `Authorization` header account access and live Quest inspection. This is tracked under [GO-LIVE-HTTP-REQUEST.md](migration/GO-LIVE-HTTP-REQUEST.md) and separate tracked `AUD-009`, `SEC-005`, `NET-005`–`NET-009`, `QA-011`, `AUD-010` tasks. Static authorization/security/parity audits are documented in [GO-HTTP-AUTH-AUDIT-2026-11-01.md](migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md) and [GO-LIVE-PARITY-DECISION-2026-11-01.md](migration/GO-LIVE-PARITY-DECISION-2026-11-01.md); they are **not** a working live client. **The executable now has read-only `quest-config` and official OAuth2 `oauth-check` commands, but still does not have Go-style personal-session-token login, live personal Quest fetching, or simulated completion.** Current offline test results do not verify real Discord account or Quest functionality. Supported authorization and service rules must be checked before any live integration; do not send, commit or print personal tokens.
 
 ## Verification and remaining gates
 

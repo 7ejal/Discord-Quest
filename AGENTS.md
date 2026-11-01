@@ -25,6 +25,6 @@ Read the tracker before any repository edit. Pick exact task IDs; update the JSO
 
 Use `python3 rust/go-quest-port/migration/check_progress.py --check` for tracker consistency. For Rust code, follow the project README's Cargo commands and verify CI on the current commit.
 
-The Rust application currently handles **offline** Quest state inspection. It does not impersonate user clients, forge video/game/stream progress, solve CAPTCHA, or claim rewards. Do not change that scope based on upstream feature names.
+The Rust application mainly handles **offline** Quest inspection; optional live commands now fetch public Quest configuration or verify official OAuth2 identity. Neither exposes personal Quest state, impersonates clients, forges rewarded engagement, solves CAPTCHA, or claims rewards. See `rust/go-quest-port/migration/LIVE-HTTP-VERIFICATION-2026-11-01.md`. Do not change that scope based on upstream feature names.
 
 For broader research, read [research/standalone](research/standalone), [audits](audits), and [docs](docs).

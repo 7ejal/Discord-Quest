@@ -1,8 +1,8 @@
 [package]
 name = "go-quest-port"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
-description = "Offline Rust port of the Go Discord Quest project's models, filtering, scheduling and status analysis"
+description = "Rust Quest offline status analyzer with opt-in read-only public config and OAuth2 identity HTTP checks"
 license = "MIT"
 
 [dependencies]

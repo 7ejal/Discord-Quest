@@ -21,7 +21,7 @@ Follow [migration/MAIN-SERVER-WORKFLOW.md](migration/MAIN-SERVER-WORKFLOW.md): *
 
 - **Choose named IDs** from progress.json; do not start “port everything” without a scoped change.
 - Improve existing source rather than generating separate duplicate Rust projects.
-- Keep the app **native**, locally runnable and self-contained for offline Quest inspection.
+- Keep the app **native**, locally runnable and self-contained for offline Quest inspection; separately permit explicitly approved read-only public Quest config and OAuth2 identify HTTPS commands, never raw personal-session tokens.
 - Mark tasks `done` only with acceptance evidence; otherwise `partial` or `todo`.
 - Reconcile progress.json and PROGRESS.md in the same commit. Run `python3 migration/check_progress.py --check`.
 - Verify tests and CI on the current revision; previous run 41256646888 proves only the prior code state.

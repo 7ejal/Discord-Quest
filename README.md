@@ -45,9 +45,9 @@ GitHub CI now checks that the canonical tracker and Markdown progress table stay
 
 ## Native Rust CLI — Linux only
 
-The [Rust Go-project port](rust/go-quest-port/README.md) is now a **Linux x86_64 CLI-only** local JSON inspector. All builds and checks run on the connected **main-server** via [the Linux-only workflow](rust/go-quest-port/migration/LINUX-ONLY.md). Windows builds and GitHub-hosted CI were retired. The current [progress tracker](rust/go-quest-port/migration/PROGRESS.md) distinguishes verified tasks from remaining work. A Linux archive produced on the server is not automatically a public GitHub release.
+The [Rust Go-project port](rust/go-quest-port/README.md) is a **Linux x86_64 CLI-only** local JSON inspector with additional opt-in read-only HTTPS checks for public Quest config and official OAuth2 identity. All builds and checks run on the connected **main-server** via [the Linux-only workflow](rust/go-quest-port/migration/LINUX-ONLY.md). Windows builds and GitHub-hosted CI were retired. The current [progress tracker](rust/go-quest-port/migration/PROGRESS.md) distinguishes verified tasks from remaining work. A Linux archive produced on the server is not automatically a public GitHub release.
 
-**Scope:** This is an offline analysis CLI, not a functional Discord selfbot or simulated reward-completion tool. It requires no Discord installation or personal Discord token.
+**Scope:** Offline analysis remains available without an account. Opt-in public Quest config HTTPS and authorized OAuth2 identity are separate read-only commands; this is not a Discord selfbot or simulated reward-completion tool. No personal Discord session token is accepted.
 
 ## Rust research prototype
 

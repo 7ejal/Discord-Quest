@@ -3192,11 +3192,14 @@
       ]
     },
     {
-      "status": "todo",
-      "evidence": [],
+      "status": "partial",
+      "evidence": [
+        "src/live.rs",
+        "migration/LIVE-HTTP-VERIFICATION-2026-11-01.md"
+      ],
       "priority": "P1",
       "required_for_release": false,
-      "notes": "New user-requested Linux-only Go HTTP parity backlog, 2026-11-01. No implementation or live account test has occurred. This does not modify the supported offline release scope. See migration/GO-LIVE-HTTP-REQUEST.md.",
+      "notes": "Distinct official OAuth2 identity command implemented and synthetic tested under LIVE-002. The originally requested bare personal-token Go-style account check remains intentionally unsupported and this acceptance is NOT satisfied. No personal-token login was attempted.",
       "id": "NET-006",
       "phase": "network",
       "title": "Implement isolated opt-in read-only account connectivity check, only if service authorization permits",
@@ -3218,11 +3221,12 @@
     {
       "status": "partial",
       "evidence": [
-        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md"
+        "migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md",
+        "migration/LIVE-HTTP-VERIFICATION-2026-11-01.md"
       ],
       "priority": "P0",
       "required_for_release": false,
-      "notes": "Source-level GET /quests/@me exists, but no approved OAuth2 Quest-read scope or current authorized sanitized task-group payload was established. Endpoint/schema verification and release authorization blocked; no live request performed.",
+      "notes": "Actual public Quest configuration GET verified (LIVE-001), but no officially permitted current-user Quest list OAuth2 scope or sanitized authenticated task group schema exists. Real personal Quest read remains blocked. No personal account token used.",
       "id": "NET-007",
       "phase": "network",
       "title": "Verify legitimately accessible live Quest read endpoints and schema",
@@ -3350,6 +3354,56 @@
       "depends_on": [
         "AUD-009"
       ]
+    },
+    {
+      "id": "LIVE-001",
+      "status": "done",
+      "priority": "P1",
+      "required_for_release": false,
+      "phase": "network",
+      "title": "Fetch public Quest configuration via real bounded Discord HTTPS",
+      "acceptance": "Real token-free HTTPS GET of a published Quest config succeeds on main-server; numeric ID input validation, remote-body caps, redirects, errors and no account status claims are tested; pin source behavior and observation date.",
+      "depends_on": [],
+      "go_source": [
+        "client.go"
+      ],
+      "rust_paths": [
+        "src/live.rs",
+        "src/main.rs",
+        "tests/live_cli.rs",
+        "migration/LIVE-HTTP-VERIFICATION-2026-11-01.md"
+      ],
+      "evidence": [
+        "src/live.rs",
+        "tests/live_cli.rs",
+        "migration/LIVE-HTTP-VERIFICATION-2026-11-01.md"
+      ],
+      "notes": "Verified positive unauthenticated Quest-config read on main-server on 2026-11-01 for current public Quest 1552869482471358576; not a user Quest status or documented official third-party API promise. CLI source/locked tests passed."
+    },
+    {
+      "id": "LIVE-002",
+      "status": "partial",
+      "priority": "P1",
+      "required_for_release": false,
+      "phase": "network",
+      "title": "Verify official OAuth2 identify account token with a one-shot HTTPS GET",
+      "acceptance": "Opt-in OAuth2 identify token from noninteractive local stdin is tested against real authorized user consent; single bounded GET users/@me, no account identity or secret exposed, errors/redirection/timeout constrained.",
+      "depends_on": [],
+      "go_source": [
+        "client.go"
+      ],
+      "rust_paths": [
+        "src/live.rs",
+        "src/main.rs",
+        "tests/live_cli.rs",
+        "migration/LIVE-HTTP-VERIFICATION-2026-11-01.md"
+      ],
+      "evidence": [
+        "src/live.rs",
+        "tests/live_cli.rs",
+        "migration/LIVE-HTTP-VERIFICATION-2026-11-01.md"
+      ],
+      "notes": "Implemented and synthetic error/secret tests passed. No real OAuth2 access token or user consent was provided; real account check remains unverified. No user Quest scope."
     }
   ],
   "migration_mode": "native offline Quest analysis; excludes user-account selfbot impersonation and engagement spoofing",

@@ -11,11 +11,11 @@ Project: [rust/go-quest-port](../) · Source: [pinned upstream Go](https://githu
 
 | Status | Count | Interpretation |
 |---|---:|---|
-| DONE | 119 | Acceptance evidence recorded; check verification commit |
-| PARTIAL | 4 | Some implementation exists but acceptance incomplete |
-| TODO | 6 | Work not yet demonstrated |
+| DONE | 120 | Acceptance evidence recorded; check verification commit |
+| PARTIAL | 6 | Some implementation exists but acceptance incomplete |
+| TODO | 5 | Work not yet demonstrated |
 | EXCLUDED | 7 | Deliberately outside approved scope |
-| **TOTAL** | **136** | Inventory snapshot, not a completion percentage |
+| **TOTAL** | **138** | Inventory snapshot, not a completion percentage |
 
 ## Release-gating status (approved offline scope only)
 
@@ -168,7 +168,9 @@ All tasks have exact acceptance, evidence and dependencies in the JSON source. D
 |---|---|---|---|---|---|---|---|
 | `NET-005` | DONE | P0 | Optional/excluded | Validate proposed raw Authorization header behavior and service permission constraints | Record whether raw personal-account Authorization is supportable and permissible for a read-only CLI, including exact authentication semantics and denial/rate-limit responses; document risk and a supported alternative if approval is not possible. Do not claim login success without a tested implementation. | `AUD-009` | `migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md` |
 | `NET-007` | PARTIAL | P0 | Optional/excluded | Verify legitimately accessible live Quest read endpoints and schema | Identify endpoints and granted access used to read Quest records; obtain only authorized, sanitized and provenance-labeled examples. If unsupported, record explicit blocker rather than relying on guessed Discord private APIs or fabricated task group operators. | `AUD-009`, `AUD-001` | `migration/GO-HTTP-AUTH-AUDIT-2026-11-01.md` |
-| `NET-006` | TODO | P1 | Optional/excluded | Implement isolated opt-in read-only account connectivity check, only if service authorization permits | A dedicated Linux-only CLI check performs exactly one fixed HTTPS users/@me GET with user-requested header semantics, if approved in NET-005; rejects malformed credentials, disables token forwarding on redirects, limits body/timeout, never prints user identifiers or credentials, and returns minimal results. Local mock tests cover 200, 401, 403, 429, redirect and error cases. | `NET-005`, `SEC-005`, `NET-001` | — |
+| `LIVE-001` | DONE | P1 | Optional/excluded | Fetch public Quest configuration via real bounded Discord HTTPS | Real token-free HTTPS GET of a published Quest config succeeds on main-server; numeric ID input validation, remote-body caps, redirects, errors and no account status claims are tested; pin source behavior and observation date. | — | `src/live.rs` |
+| `LIVE-002` | PARTIAL | P1 | Optional/excluded | Verify official OAuth2 identify account token with a one-shot HTTPS GET | Opt-in OAuth2 identify token from noninteractive local stdin is tested against real authorized user consent; single bounded GET users/@me, no account identity or secret exposed, errors/redirection/timeout constrained. | — | `src/live.rs` |
+| `NET-006` | PARTIAL | P1 | Optional/excluded | Implement isolated opt-in read-only account connectivity check, only if service authorization permits | A dedicated Linux-only CLI check performs exactly one fixed HTTPS users/@me GET with user-requested header semantics, if approved in NET-005; rejects malformed credentials, disables token forwarding on redirects, limits body/timeout, never prints user identifiers or credentials, and returns minimal results. Local mock tests cover 200, 401, 403, 429, redirect and error cases. | `NET-005`, `SEC-005`, `NET-001` | `src/live.rs` |
 | `NET-008` | TODO | P1 | Optional/excluded | Import authorized read-only HTTP Quest data into the existing bounded offline analyzer | After NET-007 verifies legitimate access, a separate opt-in command fetches bounded Quest JSON and feeds the existing parser; validates API status and schemas, labels authenticated provenance accurately, does not enroll, heartbeat, simulate activity, claim or redeem rewards; strictly limits memory and output. | `NET-006`, `NET-007` | — |
 | `NET-009` | PARTIAL | P1 | Optional/excluded | Add bounded live HTTP transport lifecycle, timeout and rate-limit tests | Mocked transport tests show one-shot request behavior, timeout and cancel handling, 429 fail-closed/no uncontrolled retries, suppressed server bodies/errors and no token leakage, plus Linux CPU/RAM verification. No production network calls during CI. | `NET-006`, `NET-002` | `src/mock_http.rs` |
 | `NET-001` | DONE | P2 | Optional/excluded | Provide credential-free HTTP fixture/mock adapter | Fake in-memory responses drive analysis under tests, with no live Discord requests. | — | `src/mock_http.rs` |

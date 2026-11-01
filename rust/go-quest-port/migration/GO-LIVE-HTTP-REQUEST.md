@@ -6,7 +6,7 @@
 
 The user wants the Rust CLI to accept an account credential locally and use the same HTTP `Authorization` header approach as the original Go program, not to substitute an official OAuth2 flow. They want to test an account and inspect actual Quest state, rather than relying solely on local JSON.
 
-**Current implementation:** `demo` and `inspect` use only offline/sanitized JSON. There is no account-login command, HTTP client, live Quest fetch, user-token support, Gateway session, or reward-completion automation. The earlier incomplete account module was reverted in Git commit `3170899f96631a0357684656d838653af1c12248`.
+**Current implementation update (2026-11-01):** `demo` and `inspect` remain offline. A new opt-in read-only HTTPS `quest-config` command fetched public Quest config directly from Discord and `oauth-check` implements an official OAuth2 `identify` request (not authenticated live with any user token). There is still no raw personal-user token login, live personal Quest list, Gateway session, or reward-completion automation. See [live verification](LIVE-HTTP-VERIFICATION-2026-11-01.md). The earlier incomplete account module was reverted in Git commit `3170899f96631a0357684656d838653af1c12248`.
 
 ## Separate milestones to verify
 
@@ -31,4 +31,4 @@ The user wants the Rust CLI to accept an account credential locally and use the 
 
 Inspect the exact Go reference at commit `352d7f457c9511bc9e7c9b940a71012bfb47572e`. Start by validating design choices and writing mock-based tests, then implement approved code. Commit to GitHub, fast-forward pull to `/root/quest-rust-ci-20261101`, run `scripts/test-linux.sh` with low resource limits, and update task evidence on the tested immutable commit.
 
-**Status update (2026-11-01):** Protocol/security/feature audits `AUD-009`, `SEC-005`, `NET-005`, `AUD-010` are documented in [HTTP audit](GO-HTTP-AUTH-AUDIT-2026-11-01.md) and [feature parity matrix](GO-LIVE-PARITY-DECISION-2026-11-01.md). Current private Quest access remains unsupported and `NET-007` is partial/blocked. **No live HTTP functionality or account testing is implemented.**
+**Status update (2026-11-01):** Protocol/security/feature audits `AUD-009`, `SEC-005`, `NET-005`, `AUD-010` are documented in [HTTP audit](GO-HTTP-AUTH-AUDIT-2026-11-01.md) and [feature parity matrix](GO-LIVE-PARITY-DECISION-2026-11-01.md). Current private Quest access remains unsupported and `NET-007` is partial/blocked. **Live public Quest config retrieval is implemented and verified, while real OAuth2 identity account verification and current-user Quest status are unverified.**

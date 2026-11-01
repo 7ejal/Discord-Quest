@@ -1,4 +1,4 @@
-//! Linux-only offline Quest analysis. No account access or network operations.
+//! Linux Quest analysis: offline inspection plus explicit, read-only live API commands.
 use chrono::{DateTime, Utc};
 use go_quest_port::{
     live::{self, LiveError},
@@ -71,15 +71,16 @@ struct Report {
 
 fn usage() {
     println!(
-        "Go Quest -> Rust (offline port)\n\
-         Usage:\n\
-         go-quest-port demo [--json] [--workers N] [--at RFC3339] [--verbose]\n\
-         go-quest-port inspect <local-quests.json|-> [same options]\n\
-         --max-input-bytes N   Lower the default 8388608-byte input cap\n\
-         --max-output-bytes N  Lower the default 16777216-byte report cap\n\
-         --version | --help\n\
-         Live commands are explicit and read-only: public config or OAuth2 identity.\\n\\
-         No personal-session token, Quest spoofing, or reward claims."
+        r#"Go Quest -> Rust (offline analyzer + opt-in read-only live checks)
+Usage:
+  go-quest-port demo [--json] [--workers N] [--at RFC3339] [--verbose]
+  go-quest-port inspect <local-quests.json|-> [same options]
+  go-quest-port quest-config <public-quest-id> [--json]
+  go-quest-port oauth-check --oauth-token-stdin [--json]
+  --max-input-bytes N   Lower the 8388608-byte offline input cap
+  --max-output-bytes N  Lower the 16777216-byte offline report cap
+  --version | --help
+Live checks do not read personal Quests, simulate engagement, or claim rewards."#
     );
 }
 
@@ -115,10 +116,22 @@ fn run() -> Result<(), CliError> {
                 .map_err(|_| CliError::Live(LiveError::InvalidResponse))?;
             println!("{serialized}");
         } else {
-            println!("Public Quest config (not account progress): {}", config.quest_id);
-            println!("Title: {}", config.title.as_deref().unwrap_or("not supplied"));
-            println!("Expires: {}", config.expires_at.as_deref().unwrap_or("not supplied"));
-            println!("Task types: {}", config.task_types.join(", "));
+            println!(
+                "Public Quest config (not account progress): {}",
+                config.quest_id
+            );
+            println!(
+                "Title: {}",
+                config.title.as_deref().unwrap_or("not supplied")
+            );
+            println!(
+                "Expires: {}",
+                config.expires_at.as_deref().unwrap_or("not supplied")
+            );
+            println!(
+                "Task types: {}",
+                escape_terminal(&config.task_types.join(", "))
+            );
         }
         return Ok(());
     }
@@ -127,7 +140,11 @@ fn run() -> Result<(), CliError> {
             Some(flag) if flag == "--oauth-token-stdin" => match args.next() {
                 None => false,
                 Some(flag) if flag == "--json" && args.next().is_none() => true,
-                _ => return Err(CliError::Usage("oauth-check expects --oauth-token-stdin [--json]")),
+                _ => {
+                    return Err(CliError::Usage(
+                        "oauth-check expects --oauth-token-stdin [--json]",
+                    ))
+                }
             },
             _ => return Err(CliError::Usage("oauth-check requires --oauth-token-stdin")),
         };
