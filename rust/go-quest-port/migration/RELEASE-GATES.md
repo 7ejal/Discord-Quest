@@ -2,6 +2,8 @@
 
 **This is not a release checklist for a reward-completion selfbot.** Release eligibility is evaluated against the approved **offline inspection** scope. All `excluded` tasks remain out of scope and never turn into release blockers.
 
+**Platform override:** Linux x86_64 only; [main-server-only verification](LINUX-ONLY.md). Windows packaging, Windows compatibility testing and GitHub-hosted runners are explicitly out of scope.
+
 ## Gate 0 — Data safety and truthful behavior (must)
 
 - Reject blank/malformed Quest objects, duplicate ambiguities, invalid task numeric ranges and excessive input (`PARSE-001`, `PARSE-002`, `PARSE-005`, `PARSE-006`).
@@ -28,7 +30,7 @@
 
 ## Gate 3 — Native packaging (must)
 
-- Build and smoke-test **Windows** and **Linux** binaries at the target tag.
+- Build and smoke-test the **Linux x86_64 executable only** on `main-server`, from the exact source commit recorded in the archive.
 - Locked Cargo build from clean checkout; recorded Rust toolchain and target triples.
 - Current-commit test run, not historical stale-commit success.
 - Releasable artifact download, SHA256 manifest, version, changelog and known limitations (`REL-001`, `REL-002`, `REL-003`, `REL-006`, `REL-007`).
@@ -58,7 +60,7 @@ Release tag:
 Git commit:
 GitHub Actions run URL:
 Linux binary architecture / checksum:
-Windows binary architecture / checksum:
+Main-server validation record:
 Cargo.lock SHA256:
 Passed commands + results:
 Tracker open release gates (expected zero):
@@ -67,4 +69,4 @@ Known non-gating limitations:
 Who verified / date:
 ```
 
-**Current status:** Not release-ready. Earlier GitHub Actions run `41256646888` passed 15 Rust tests and Windows/ Linux smoke tests, but multiple required gaps remain. This checklist does not imply a current signed or durable published release.
+**Current status:** Not release-ready until all applicable Linux release gates pass. Historical Windows/hosted CI evidence is not part of the active verification process. Follow [LINUX-ONLY.md](LINUX-ONLY.md) and do not claim a public release when the archive exists only on main-server.
