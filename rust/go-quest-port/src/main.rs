@@ -6,6 +6,8 @@ use std::{env, error::Error, fs, process};
 
 #[derive(Serialize)]
 struct Report {
+    schema_version: u32,
+    input_trust: &'static str,
     analyzed: usize,
     go_filter_valid: usize,
     go_filter_redeemable: usize,
@@ -64,6 +66,8 @@ fn run() -> Result<(), Box<dyn Error>> {
     let manager = QuestManager::new(quests, enrollment_blocked_until.clone());
     let now = Utc::now();
     let report = Report {
+        schema_version: 1,
+        input_trust: "unverified_local_json",
         analyzed: manager.quests().len(),
         go_filter_valid: manager.filter_valid(now).len(),
         go_filter_redeemable: manager.filter_redeemable().len(),
