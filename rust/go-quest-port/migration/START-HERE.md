@@ -12,9 +12,9 @@ Complete the **supported native Rust offline Quest inspection** application unde
 
 **Source Go reference:** [`yeweroooo/Discord-Quest-Auto-Completion-Selfbot` pinned commit `352d7f457c9511bc9e7c9b940a71012bfb47572e`](https://github.com/yeweroooo/Discord-Quest-Auto-Completion-Selfbot/tree/352d7f457c9511bc9e7c9b940a71012bfb47572e). Compare code to pinned revision, do not silently trust newest HEAD.
 
-## Dependency-ready tasks (snapshot only)
+## Dependency-aware tasks (live generated queue)
 
-At the current tracker snapshot, the P0 release tasks whose dependencies are already marked DONE are: `AUD-001`, `AUD-002`, `PARSE-001`, `STATUS-010`, `UX-002`, `QA-005`, `REL-007`, `OPS-003`, `OPS-009`. Other P0 tasks may be **blocked** by unfinished P1/P2 prerequisites. The list will become stale after code changes; choose from the canonical JSON dependency graph, not from this static list. `OPS-009` will make this queue automatic.
+Open [PROGRESS.md](PROGRESS.md): **Ready to start** lists release-gating tasks whose dependencies are all marked DONE; **Blocked release gates** lists unfinished prerequisites with their statuses and priorities. The queue is regenerated from [progress.json](progress.json) with `python3 migration/check_progress.py --write`. Do not rely on static lists from earlier discussions.
 
 ## Required main-server test step
 
