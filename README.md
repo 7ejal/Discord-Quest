@@ -24,6 +24,10 @@ This repository documents Discord Quest task types, observable progress models, 
 
 **[New: deeper method-by-method research (November 2026)](research/standalone/METHODS-DEEP-DIVE-2026-11-01.md)** compares HTTP vs Gateway, video/game/activity/stream/achievement tracking, exact source-level errors, and which *engineering method* is strongest for a standalone CLI. Includes [22 offline test fixtures](research/standalone/METHOD-VALIDATION-FIXTURES.md) and corrects an earlier overstatement of SUDIN completion verification.
 
+## Final pre-code audit
+
+The [source-level pre-code verification](rust/go-quest-port/migration/PRE-CODE-REVIEW-2026-11-01.md) expanded the Rust migration inventory to **126 tracked tasks** and corrected two overclaimed statuses. The [generated dashboard](rust/go-quest-port/migration/PROGRESS.md) is authoritative for current counts; the review explains exactly why tasks were added and why local JSON cannot authenticate server completion. The supported app is an offline analyzer, not a 1:1 operational Quest selfbot.
+
 ## Start for the next AI agent
 
 **[START-HERE — exact next tasks, repository workflow and evidence rules](rust/go-quest-port/migration/START-HERE.md)**. Follow the canonical [machine task tracker](rust/go-quest-port/migration/progress.json), [auto-generated progress board](rust/go-quest-port/migration/PROGRESS.md), [new source-level gap audit](rust/go-quest-port/migration/GAP-AUDIT.md), [38-case test matrix](rust/go-quest-port/migration/TEST-MATRIX.md), and [release gates](rust/go-quest-port/migration/RELEASE-GATES.md). The scope is a verified **offline** native Rust analyzer, not an operational Discord selfbot.
