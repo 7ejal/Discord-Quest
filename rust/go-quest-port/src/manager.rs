@@ -1,9 +1,9 @@
 //! Port of the Go QuestManager / FilterValid / FilterRedeemable logic.
 //! Adds local-input status interpretation and AND/OR group evaluation.
-use crate::model::{has_timestamp, invalid_timestamp, ExpiryState, Quest, TaskConfig};
+use crate::model::{has_timestamp, invalid_timestamp, ExpiryState, Quest, TaskConfig, TaskKind};
 use chrono::{DateTime, Utc};
 use serde::Serialize;
-use std::thread;
+use std::{sync::atomic::{AtomicBool, Ordering}, thread};
 
 #[derive(Debug)]
 pub struct QuestManager {
@@ -60,6 +60,7 @@ pub enum Verdict {
 
 #[derive(Debug, Serialize)]
 pub struct TaskAssessment {
+    pub input_trust: &'static str,
     pub task_type: String,
     pub family: &'static str,
     pub goal: Option<f64>,
@@ -76,6 +77,9 @@ pub struct TaskAssessment {
 
 #[derive(Debug, Serialize)]
 pub struct QuestAssessment {
+    pub input_trust: &'static str,
+    pub external_redemption: &'static str,
+    pub reward_claim_availability: &'static str,
     pub quest_id: String,
     pub name: String,
     pub verdict: Verdict,
@@ -88,16 +92,7 @@ pub struct QuestAssessment {
 }
 
 pub fn task_family(name: &str) -> &'static str {
-    match name {
-        "WATCH_VIDEO" | "WATCH_VIDEO_ON_MOBILE" => "video",
-        "PLAY_ON_DESKTOP" => "desktop_game",
-        "STREAM_ON_DESKTOP" => "desktop_stream",
-        "PLAY_ACTIVITY" => "embedded_activity",
-        "PLAY_ON_XBOX" | "PLAY_ON_PLAYSTATION" => "linked_console",
-        "ACHIEVEMENT_IN_GAME" | "ACHIEVEMENT_IN_ACTIVITY" => "publisher_or_activity_achievement",
-        "PLAY_ON_DESKTOP_V2" => "historical_deprecated",
-        _ => "unknown",
-    }
+    TaskKind::from(name).family()
 }
 
 fn parse_time(raw: &Option<String>) -> Option<DateTime<Utc>> {
@@ -109,7 +104,7 @@ fn parse_time(raw: &Option<String>) -> Option<DateTime<Utc>> {
 fn join_operator(group: Option<&TaskConfig>) -> String {
     match group {
         None => "missing".to_owned(),
-        Some(g) if g.tasks.len() == 1 => "single".to_owned(),
+        Some(g) if g.tasks.len() == 1 && g.join_operator.is_none() => "single".to_owned(),
         Some(g) => g
             .join_operator
             .as_deref()
@@ -126,7 +121,8 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
     let enrolled = quest.is_enrolled();
     let quest_completed = quest.is_completed();
     let rewards_claimed = quest.has_claimed_rewards();
-    let mut warnings = Vec::new();
+    let mut warnings = quest.field_warnings.clone();
+    let mut invalid_numbers = false;
     let mut tasks = Vec::new();
     let mut task_type_mismatch = false;
     let mut event_mismatch = false;
@@ -161,7 +157,7 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
             let reported = progress.and_then(|p| p.value);
             let numeric_goal_reached = match (reported, def.target) {
                 (Some(value), Some(target))
-                    if target > 0.0 && value >= 0.0 && target.is_finite() && value.is_finite() =>
+                    if valid_number(target, false) && valid_number(value, true) =>
                 {
                     Some(value >= target)
                 }
@@ -169,14 +165,18 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
             };
             if def
                 .target
-                .is_some_and(|target| !target.is_finite() || target <= 0.0)
+                .is_some_and(|target| !valid_number(target, false))
             {
                 warnings.push(format!("Input has invalid target for task {name}."));
+                invalid_numbers = true;
             }
-            if reported.is_some_and(|value| !value.is_finite() || value < 0.0) {
+            if reported.is_some_and(|value| !valid_number(value, true)) {
                 warnings.push(format!("Input has invalid progress for task {name}."));
+                invalid_numbers = true;
             }
-            let server_task_completed = progress.is_some_and(|p| has_timestamp(&p.completed_at));
+            let server_task_completed = progress.is_some_and(|p| has_timestamp(&p.completed_at))
+                && def.target.is_some_and(|v| valid_number(v, false))
+                && reported.is_none_or(|v| valid_number(v, true));
             if def.applications.iter().any(|app| app.id.trim().is_empty()) {
                 warnings.push(format!("Task {name} includes a blank application ID."));
             }
@@ -191,6 +191,7 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
                 });
 
             tasks.push(TaskAssessment {
+                input_trust: "unverified_local_json",
                 task_type: name.clone(),
                 family: task_family(name),
                 goal: def.target,
@@ -321,18 +322,33 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
             let claimed = parse_time(&record.claimed_at);
             enrolled.zip(completed).is_some_and(|(a, b)| a > b)
                 || completed.zip(claimed).is_some_and(|(a, b)| a > b)
+                || [enrolled, completed, claimed].into_iter().flatten().any(|date| date > *now)
+                || record.progress.values().any(|p| parse_time(&p.completed_at).is_some_and(|date| date > *now || enrolled.is_some_and(|e| date < e)))
         });
     if invalid_order {
         warnings.push("Input contains contradictory timestamp ordering.".to_owned());
     }
 
+    let malformed_status = status.is_some_and(|s| {
+        [&s.enrolled_at, &s.completed_at, &s.claimed_at].into_iter().any(invalid_timestamp)
+            || s.progress.values().any(|p| invalid_timestamp(&p.completed_at))
+    });
+    if quest.config.task_config_v2.is_some() && quest.config.task_config.is_some() {
+        warnings.push("Both task configs supplied; v2 takes precedence without merging.".to_owned());
+    }
+    if !matches!(operator.as_str(), "single" | "and" | "or") {
+        warnings.push("Missing/unknown join_operator for task group; group is unsupported.".to_owned());
+    }
     let verdict = if inconsistent_id
         || invalid_order
         || task_type_mismatch
         || event_mismatch
+        || invalid_numbers
         || (rewards_claimed && !quest_completed)
     {
         Verdict::Inconsistent
+    } else if malformed_status {
+        Verdict::Unsupported
     } else if quest_completed {
         if rewards_claimed {
             Verdict::RewardClaimed
@@ -349,7 +365,7 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
         Verdict::NotStarted
     } else if !enrolled {
         Verdict::NotEnrolled
-    } else if tasks.is_empty() || tasks.iter().any(|t| t.family == "unknown") {
+    } else if tasks.is_empty() || tasks.iter().any(|t| t.family == "unknown" || t.family == "historical_deprecated") {
         Verdict::Unsupported
     } else {
         let group_satisfied = match operator.as_str() {
@@ -368,6 +384,9 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
     };
 
     QuestAssessment {
+        input_trust: "unverified_local_json",
+        external_redemption: "unknown",
+        reward_claim_availability: if verdict == Verdict::QuestConfirmedUnclaimed { "reported_completed_unclaimed_eligibility_unverified" } else if verdict == Verdict::RewardClaimed { "reported_claimed" } else { "unknown" },
         quest_id: quest.id.clone(),
         name: quest.name().to_owned(),
         verdict,
@@ -380,37 +399,89 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
     }
 }
 
-/// Bounded parallel analysis, preserving original input ordering.
-/// The original Go code starts one goroutine per Quest; this adapts that
-/// orchestration to bounded Rust scoped threads to prevent unlimited concurrency.
-pub fn analyze_parallel(
-    quests: &[Quest],
-    now: DateTime<Utc>,
-    workers: usize,
-) -> Vec<QuestAssessment> {
-    if quests.is_empty() {
-        return Vec::new();
-    }
-    let n = workers.clamp(1, 32).min(quests.len());
-    let (sender, receiver) = std::sync::mpsc::channel();
-    thread::scope(|scope| {
-        for worker_id in 0..n {
-            let tx = sender.clone();
-            scope.spawn(move || {
-                for index in (worker_id..quests.len()).step_by(n) {
-                    let assessment = assess_quest(&quests[index], &now);
-                    if tx.send((index, assessment)).is_err() {
-                        return;
-                    }
-                }
-            });
-        }
-    });
-    drop(sender);
-    let mut indexed: Vec<_> = receiver.into_iter().collect();
-    indexed.sort_by_key(|(index, _)| *index);
-    indexed
-        .into_iter()
-        .map(|(_, assessment)| assessment)
-        .collect()
+/// Source integer values outside IEEE-754's exact range cannot be compared reliably.
+fn valid_number(value: f64, allow_zero: bool) -> bool {
+    value.is_finite() && value.fract() == 0.0 && value <= 9_007_199_254_740_991.0
+        && if allow_zero { value >= 0.0 } else { value > 0.0 }
 }
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum AnalysisError {
+    Cancelled,
+    WorkerPanicked,
+}
+
+/// All workers are joined before any result is returned, including error paths.
+fn analyze_with<T: Send, F: Fn(usize) -> Result<T, AnalysisError> + Sync>(
+    count: usize, workers: usize, evaluate: F,
+) -> Result<Vec<T>, AnalysisError> {
+    if count == 0 { return Ok(Vec::new()); }
+    let workers = workers.clamp(1, 32).min(count);
+    let batches = thread::scope(|scope| {
+        let mut handles = Vec::new();
+        for worker in 0..workers {
+            let evaluate = &evaluate;
+            handles.push(scope.spawn(move || {
+                (worker..count).step_by(workers).map(|index|
+                    evaluate(index).map(|value| (index, value))
+                ).collect::<Result<Vec<_>, _>>()
+            }));
+        }
+        handles.into_iter().map(|handle| handle.join()).collect::<Vec<_>>()
+    });
+    let mut indexed = Vec::with_capacity(count);
+    for batch in batches {
+        indexed.extend(batch.map_err(|_| AnalysisError::WorkerPanicked)??);
+    }
+    indexed.sort_by_key(|(index, _)| *index);
+    Ok(indexed.into_iter().map(|(_, value)| value).collect())
+}
+
+pub fn try_analyze_parallel(
+    quests: &[Quest], now: DateTime<Utc>, workers: usize, cancelled: &AtomicBool,
+) -> Result<Vec<QuestAssessment>, AnalysisError> {
+    if cancelled.load(Ordering::Relaxed) { return Err(AnalysisError::Cancelled); }
+    analyze_with(quests.len(), workers, |index| {
+        if cancelled.load(Ordering::Relaxed) { return Err(AnalysisError::Cancelled); }
+        Ok(assess_quest(&quests[index], &now))
+    })
+}
+
+/// Compatibility API: a failed worker panics rather than returning partial success.
+pub fn analyze_parallel(quests: &[Quest], now: DateTime<Utc>, workers: usize) -> Vec<QuestAssessment> {
+    try_analyze_parallel(quests, now, workers, &AtomicBool::new(false))
+        .expect("offline analysis failed")
+}
+
+#[cfg(test)]
+mod worker_tests {
+    use super::*;
+    use std::sync::atomic::AtomicUsize;
+
+    #[test]
+    fn worker_panic_returns_no_partial_success_and_joins_other_workers() {
+        let finished = AtomicUsize::new(0);
+        let result = analyze_with(20, 2, |index| {
+            if index == 0 { panic!("synthetic worker failure"); }
+            finished.fetch_add(1, Ordering::Relaxed);
+            Ok(index)
+        });
+        assert_eq!(result, Err(AnalysisError::WorkerPanicked));
+        assert_eq!(finished.load(Ordering::Relaxed), 10);
+    }
+
+    #[test]
+    fn worker_error_returns_no_partial_success() {
+        let result = analyze_with(20, 2, |index| {
+            if index == 3 { return Err(AnalysisError::Cancelled); }
+            Ok(index)
+        });
+        assert_eq!(result, Err(AnalysisError::Cancelled));
+    }
+
+    #[test]
+    fn cancellation_is_observed_before_scheduling() {
+        assert!(matches!(try_analyze_parallel(&[], Utc::now(), 32, &AtomicBool::new(true)), Err(AnalysisError::Cancelled)));
+    }
+}
+

@@ -19,7 +19,12 @@ python3 migration/test_check_progress.py
 python3 migration/check_links.py
 cargo fmt --all -- --check
 cargo clippy --all-targets --locked -- -D warnings
-cargo test --all-targets --locked
+# Build only the reviewed pure Go reference; upstream networking code is absent.
+export GOMAXPROCS=2
+export GO_QUEST_REFERENCE_BIN="$project_dir/target/go-quest-reference"
+mkdir -p target
+GO111MODULE=off nice -n 10 go build -o "$GO_QUEST_REFERENCE_BIN" ../../tools/go-quest-reference
+cargo test --all-targets --locked -- --test-threads=2
 cargo build --release --locked
 
 temp_dir="$(mktemp -d)"
@@ -70,3 +75,4 @@ print("Network-isolated CLI and privacy test: OK")
 PY
 
 echo "PASS: Linux x86_64, tracker, fmt, clippy, tests, release build, JSON smoke"
+

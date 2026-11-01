@@ -12,6 +12,8 @@ use std::collections::BTreeMap;
 /// Upper bound for each local JSON document, including programmatic callers.
 pub const MAX_JSON_BYTES: usize = 8 * 1024 * 1024;
 pub const MAX_QUESTS: usize = 10_000;
+pub const MAX_TASKS: usize = 100_000;
+pub const MAX_DEPTH: usize = 64;
 
 /// Require an identifiable full Quest before deserializing it. The Go wire
 /// structs accept zero values, but silently treating an empty object as a real
@@ -29,8 +31,33 @@ fn parse_full_quest(value: Value, index: usize) -> Result<Quest, String> {
     if !obj.get("config").is_some_and(Value::is_object) {
         return Err(format!("Quest at index {index} must have an object config"));
     }
-    serde_json::from_value(value)
-        .map_err(|error| format!("Quest at index {index}: invalid field: {error}"))
+    if obj.get("config").and_then(Value::as_object).is_some_and(|config| config.is_empty()) {
+        return Err(format!("Quest at index {index} has an empty config"));
+    }
+    if let Some(Value::Object(status)) = obj.get("user_status") {
+        if !status.is_empty() && !["quest_id", "user_id", "enrolled_at", "completed_at", "claimed_at", "progress"]
+            .iter().any(|key| status.contains_key(*key)) {
+            return Err(format!("Quest at index {index}: unrecognized user_status shape"));
+        }
+    }
+    let mut field_warnings = Vec::new();
+    for (field, state) in [
+        ("user_status", obj.get("user_status")),
+        ("progress", obj.get("user_status").and_then(|s| s.get("progress"))),
+        ("enrolled_at", obj.get("user_status").and_then(|s| s.get("enrolled_at"))),
+        ("completed_at", obj.get("user_status").and_then(|s| s.get("completed_at"))),
+        ("claimed_at", obj.get("user_status").and_then(|s| s.get("claimed_at"))),
+    ] {
+        if state.is_none() {
+            field_warnings.push(format!("Input has missing {field}; no milestone inferred."));
+        } else if state == Some(&Value::Null) {
+            field_warnings.push(format!("Input has null {field}; no milestone inferred."));
+        }
+    }
+    let mut quest: Quest = serde_json::from_value(value)
+        .map_err(|_| format!("Quest at index {index}: invalid field type"))?;
+    quest.field_warnings = field_warnings;
+    Ok(quest)
 }
 
 fn parse_quest_list(values: Vec<Value>) -> Result<Vec<Quest>, String> {
@@ -81,7 +108,7 @@ fn parse_excluded(values: Vec<Value>) -> Result<Vec<QuestPartial>, String> {
             ));
         }
         let partial: QuestPartial = serde_json::from_value(value.clone())
-            .map_err(|error| format!("Excluded Quest at index {index}: invalid field: {error}"))?;
+            .map_err(|_| format!("Excluded Quest at index {index}: invalid field type"))?;
         if let Some(previous) = seen.get(&partial.id) {
             if previous != &value {
                 return Err(format!(
@@ -105,8 +132,48 @@ pub fn parse_document(input: &str) -> Result<ParsedDocument, String> {
     // A UTF-8 BOM is common in Windows-edited local JSON fixtures.
     // Accept it only at the very start of the document.
     let normalized = input.strip_prefix('\u{feff}').unwrap_or(input);
-    let document: Value =
-        serde_json::from_str(normalized).map_err(|error| format!("Invalid JSON: {error}"))?;
+    // Scan structure before serde allocates nested maps. Ignore delimiters in strings.
+    let mut depth = 0usize;
+    let mut in_string = false;
+    let mut escaped = false;
+    for byte in normalized.bytes() {
+        if in_string {
+            if escaped { escaped = false; }
+            else if byte == b'\\' { escaped = true; }
+            else if byte == b'"' { in_string = false; }
+        } else {
+            match byte {
+                b'"' => in_string = true,
+                b'{' | b'[' => {
+                    depth += 1;
+                    if depth > MAX_DEPTH { return Err("JSON nesting exceeds depth limit".to_owned()); }
+                }
+                b'}' | b']' => depth = depth.saturating_sub(1),
+                _ => {}
+            }
+        }
+    }
+    let document: Value = serde_json::from_str(normalized)
+        .map_err(|error| format!("Invalid JSON at line {}, column {}", error.line(), error.column()))?;
+    let mut pending = vec![&document];
+    let mut task_count = 0usize;
+    while let Some(value) = pending.pop() {
+        match value {
+            Value::Object(fields) => {
+                for (key, child) in fields {
+                    if key == "tasks" || key == "progress" {
+                        task_count = task_count.saturating_add(child.as_object().map_or(0, |m| m.len()));
+                        if task_count > MAX_TASKS {
+                            return Err("Task/progress entries exceed document limit".to_owned());
+                        }
+                    }
+                    pending.push(child);
+                }
+            }
+            Value::Array(values) => pending.extend(values),
+            _ => {}
+        }
+    }
     match document {
         Value::Array(records) => Ok(ParsedDocument {
             quests: parse_quest_list(records)?,
@@ -553,3 +620,4 @@ mod tests {
         assert!(parse_quests("not JSON").is_err());
     }
 }
+

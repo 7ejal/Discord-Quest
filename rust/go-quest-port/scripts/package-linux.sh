@@ -4,6 +4,12 @@ set -euo pipefail
 project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$project_dir"
 
+# A package must describe exactly committed source, never local edits.
+if [[ -n "$(git status --porcelain --untracked-files=normal)" ]]; then
+  echo "Refusing to package a dirty checkout" >&2
+  exit 1
+fi
+
 # The archive is distributed only after a complete test/build on this host.
 bash scripts/test-linux.sh
 
@@ -21,6 +27,7 @@ trap 'rm -rf -- "$tmp"' EXIT
 mkdir -p "$tmp/$name"
 install -m 0755 target/release/go-quest-port "$tmp/$name/go-quest-port"
 cp README.md LICENSE NOTICE "$tmp/$name/"
+cp Cargo.lock "$tmp/$name/"
 python3 - "$project_dir/Cargo.lock" > "$tmp/$name/LOCKED-DEPENDENCIES.txt" <<'PY'
 import pathlib, sys, tomllib
 lock = tomllib.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
@@ -29,6 +36,17 @@ print("Locked Cargo dependency inventory (names and versions only)")
 print("Individual third-party license review is a separate release task.")
 for package in packages:
     print(package["name"], package["version"])
+PY
+
+cargo metadata --locked --offline --format-version 1 --filter-platform x86_64-unknown-linux-gnu > "$tmp/metadata.json"
+python3 - "$tmp/metadata.json" > "$tmp/$name/DEPENDENCY-LICENSES.txt" <<'PY'
+import json, pathlib, sys
+metadata = json.loads(pathlib.Path(sys.argv[1]).read_text())
+for package in sorted(metadata["packages"], key=lambda p: (p["name"], p["version"])):
+    license_id = package.get("license") or ""
+    if not license_id:
+        raise SystemExit("Missing dependency license declaration")
+    print(package["name"], package["version"], license_id)
 PY
 
 cat > "$tmp/$name/BUILD-INFO.txt" <<EOF
@@ -43,7 +61,7 @@ Verification: scripts/test-linux.sh passed on this machine
 Source trust: unverified local JSON; not a Discord selfbot
 EOF
 
-(cd "$tmp/$name" && sha256sum go-quest-port README.md LICENSE NOTICE BUILD-INFO.txt LOCKED-DEPENDENCIES.txt > SHA256SUMS)
+(cd "$tmp/$name" && sha256sum go-quest-port README.md LICENSE NOTICE BUILD-INFO.txt LOCKED-DEPENDENCIES.txt DEPENDENCY-LICENSES.txt Cargo.lock > SHA256SUMS)
 archive="$target_dir/$name.tar.gz"
 tar -C "$tmp" -czf "$archive" "$name"
 sha256sum "$archive" > "$archive.sha256"
@@ -66,3 +84,4 @@ if command -v ldd >/dev/null 2>&1; then
 else
   echo "(ldd unavailable)"
 fi
+

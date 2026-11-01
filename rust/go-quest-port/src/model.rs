@@ -1,11 +1,53 @@
 //! Typed Rust equivalents of the relevant Go Quest data structures.
 //! Only local JSON parsing. No personal account authentication or network calls.
 use chrono::{DateTime, Utc};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::BTreeMap;
 
-#[derive(Debug, Clone, Default, Deserialize)]
+/// Recognition only: these variants never execute engagement.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum TaskKind {
+    WatchVideo, WatchVideoOnMobile, PlayOnDesktop, PlayOnDesktopV2,
+    StreamOnDesktop, PlayActivity, PlayOnXbox, PlayOnPlaystation,
+    AchievementInActivity, AchievementInGame, Unknown(String),
+}
+
+impl From<&str> for TaskKind {
+    fn from(name: &str) -> Self {
+        match name {
+            "WATCH_VIDEO" => Self::WatchVideo,
+            "WATCH_VIDEO_ON_MOBILE" => Self::WatchVideoOnMobile,
+            "PLAY_ON_DESKTOP" => Self::PlayOnDesktop,
+            "PLAY_ON_DESKTOP_V2" => Self::PlayOnDesktopV2,
+            "STREAM_ON_DESKTOP" => Self::StreamOnDesktop,
+            "PLAY_ACTIVITY" => Self::PlayActivity,
+            "PLAY_ON_XBOX" => Self::PlayOnXbox,
+            "PLAY_ON_PLAYSTATION" => Self::PlayOnPlaystation,
+            "ACHIEVEMENT_IN_ACTIVITY" => Self::AchievementInActivity,
+            "ACHIEVEMENT_IN_GAME" => Self::AchievementInGame,
+            _ => Self::Unknown(name.to_owned()),
+        }
+    }
+}
+
+impl TaskKind {
+    pub fn family(&self) -> &'static str {
+        match self {
+            Self::WatchVideo | Self::WatchVideoOnMobile => "video",
+            Self::PlayOnDesktop => "desktop_game",
+            Self::PlayOnDesktopV2 => "historical_deprecated",
+            Self::StreamOnDesktop => "desktop_stream",
+            Self::PlayActivity => "embedded_activity",
+            Self::PlayOnXbox | Self::PlayOnPlaystation => "linked_console",
+            Self::AchievementInActivity | Self::AchievementInGame => "publisher_or_activity_achievement",
+            Self::Unknown(_) => "unknown",
+        }
+    }
+}
+
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct AllQuestsResponse {
     #[serde(default)]
     pub quests: Vec<Quest>,
@@ -13,9 +55,12 @@ pub struct AllQuestsResponse {
     pub excluded_quests: Vec<QuestPartial>,
     #[serde(default)]
     pub quest_enrollment_blocked_until: Option<String>,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct QuestPartial {
     #[serde(default)]
     pub id: String,
@@ -32,10 +77,15 @@ pub struct QuestPartial {
     pub traffic_metadata_raw: Option<String>,
     #[serde(default)]
     pub traffic_metadata_sealed: Option<String>,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct Quest {
+    #[serde(skip)]
+    pub field_warnings: Vec<String>,
     #[serde(default)]
     pub id: String,
     #[serde(default)]
@@ -44,10 +94,23 @@ pub struct Quest {
     pub user_status: Option<QuestUserStatus>,
     #[serde(default)]
     pub preview: bool,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct QuestConfig {
+    #[serde(default)]
+    pub features: Option<Value>,
+    #[serde(default)]
+    pub assets: Option<Value>,
+    #[serde(default)]
+    pub colors: Option<Value>,
+    #[serde(default)]
+    pub video_metadata: Option<Value>,
+    #[serde(default, rename = "cosponsor_metadata")]
+    pub cosponsor_metadata: Option<Value>,
     #[serde(default)]
     pub id: String,
     #[serde(default)]
@@ -66,33 +129,45 @@ pub struct QuestConfig {
     pub task_config: Option<TaskConfig>,
     #[serde(default)]
     pub rewards_config: RewardsConfig,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct QuestMessages {
     #[serde(default)]
     pub quest_name: String,
     #[serde(default)]
     pub game_title: String,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct QuestApplication {
     #[serde(default)]
     pub id: String,
     #[serde(default)]
     pub name: String,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct TaskConfig {
     #[serde(default)]
     pub join_operator: Option<String>,
     #[serde(default)]
     pub tasks: BTreeMap<String, TaskEntry>,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct TaskEntry {
     /// The Go source carries its own task type in addition to the task-map key.
     #[serde(default, rename = "type")]
@@ -103,9 +178,12 @@ pub struct TaskEntry {
     pub event_name: Option<String>,
     #[serde(default)]
     pub applications: Vec<QuestApplication>,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct RewardsConfig {
     #[serde(default)]
     pub assignment_method: Option<i64>,
@@ -115,9 +193,12 @@ pub struct RewardsConfig {
     pub rewards_expire_at: Option<String>,
     #[serde(default)]
     pub platforms: Vec<i64>,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct Reward {
     #[serde(default)]
     pub r#type: Option<i64>,
@@ -134,17 +215,23 @@ pub struct Reward {
     pub orb_quantity: Option<i64>,
     #[serde(default)]
     pub premium_orb_quantity: Option<i64>,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct RewardMessages {
     #[serde(default)]
     pub name: String,
     #[serde(default)]
     pub name_with_article: String,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct QuestUserStatus {
     /// Optional Quest ID on source status; must agree with the parent Quest.
     #[serde(default)]
@@ -157,9 +244,12 @@ pub struct QuestUserStatus {
     pub claimed_at: Option<String>,
     #[serde(default)]
     pub progress: BTreeMap<String, TaskProgress>,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct TaskProgress {
     #[serde(default)]
     pub event_name: Option<String>,
@@ -171,14 +261,20 @@ pub struct TaskProgress {
     pub completed_at: Option<String>,
     #[serde(default)]
     pub heartbeat: Option<TaskHeartbeat>,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct TaskHeartbeat {
     #[serde(default)]
     pub last_beat_at: Option<String>,
     #[serde(default)]
     pub expires_at: Option<String>,
+    /// Retained for library users; never included in CLI summaries.
+    #[serde(flatten)]
+    pub extra: BTreeMap<String, Value>,
 }
 
 /// True only for a syntactically valid RFC3339 timestamp supplied in the
@@ -281,3 +377,4 @@ impl Quest {
         PRIORITY.into_iter().find(|task| tasks.contains_key(*task))
     }
 }
+

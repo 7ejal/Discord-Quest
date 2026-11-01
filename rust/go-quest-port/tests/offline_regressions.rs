@@ -148,3 +148,4 @@ fn unknown_task_in_or_group_never_proves_group_support() {
     q["config"]["task_config_v2"]["join_operator"] = json!("or");
     assert_eq!(verdict(q), Verdict::Unsupported);
 }
+
