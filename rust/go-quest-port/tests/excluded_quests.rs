@@ -15,8 +15,14 @@ fn wrapped_excluded_records_are_preserved_separately() {
     assert_eq!(excluded.id, "partial-demo");
     assert!(excluded.preview);
     assert_eq!(excluded.config.as_ref().unwrap().id, "partial-demo");
-    assert_eq!(excluded.traffic_metadata_raw.as_deref(), Some("HIDDEN_TRAFFIC_SECRET"));
-    assert_eq!(excluded.targeted_content.as_ref().unwrap()["restricted"], "HIDDEN_TARGETING_SECRET");
+    assert_eq!(
+        excluded.traffic_metadata_raw.as_deref(),
+        Some("HIDDEN_TRAFFIC_SECRET")
+    );
+    assert_eq!(
+        excluded.targeted_content.as_ref().unwrap()["restricted"],
+        "HIDDEN_TARGETING_SECRET"
+    );
 }
 
 #[test]
@@ -41,8 +47,8 @@ fn identical_excluded_ids_deduplicate() {
 
 #[test]
 fn cli_exposes_only_safe_excluded_metadata() {
-    let input_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("tests/fixtures/excluded_demo.json");
+    let input_path =
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/excluded_demo.json");
     let binary = env!("CARGO_BIN_EXE_go-quest-port");
     let output = Command::new(binary)
         .arg("inspect")
@@ -57,8 +63,15 @@ fn cli_exposes_only_safe_excluded_metadata() {
     assert_eq!(report["excluded_count"], 1);
     assert_eq!(report["excluded_quests"][0]["id"], "partial-demo");
     assert_eq!(report["excluded_quests"][0]["preview"], true);
-    for secret in ["HIDDEN_TARGETING_SECRET", "HIDDEN_TRAFFIC_SECRET", "HIDDEN_SEALED_SECRET"] {
-        assert!(!text.contains(secret), "Sensitive targeting metadata leaked");
+    for secret in [
+        "HIDDEN_TARGETING_SECRET",
+        "HIDDEN_TRAFFIC_SECRET",
+        "HIDDEN_SEALED_SECRET",
+    ] {
+        assert!(
+            !text.contains(secret),
+            "Sensitive targeting metadata leaked"
+        );
     }
 
     let text_output = Command::new(binary)
@@ -70,7 +83,14 @@ fn cli_exposes_only_safe_excluded_metadata() {
     assert!(text_output.status.success());
     let displayed = String::from_utf8(text_output.stdout).unwrap();
     assert!(displayed.contains("partial-demo"));
-    for secret in ["HIDDEN_TARGETING_SECRET", "HIDDEN_TRAFFIC_SECRET", "HIDDEN_SEALED_SECRET"] {
-        assert!(!displayed.contains(secret), "Sensitive targeting metadata leaked");
+    for secret in [
+        "HIDDEN_TARGETING_SECRET",
+        "HIDDEN_TRAFFIC_SECRET",
+        "HIDDEN_SEALED_SECRET",
+    ] {
+        assert!(
+            !displayed.contains(secret),
+            "Sensitive targeting metadata leaked"
+        );
     }
 }
