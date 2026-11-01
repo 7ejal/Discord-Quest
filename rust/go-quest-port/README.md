@@ -8,7 +8,7 @@ This is a Rust port of the **reusable Go Quest data model, campaign filtering, c
 
 ## Final pre-code compatibility audit
 
-Before modifying Rust, read the [November 1 source-level re-audit](migration/PRE-CODE-REVIEW-2026-11-01.md), especially Go TaskConfigV2's missing `join_operator`, 26-to-12 struct inventory comparison, reward-model mismatches, local JSON provenance limits, and new input/terminal-safety tasks. Then select work from the **canonical 126-task** [tracker](migration/progress.json); do not rely on historical conversation claims.
+Before modifying Rust, read the [November 1 source-level re-audit](migration/PRE-CODE-REVIEW-2026-11-01.md), especially Go TaskConfigV2's missing `join_operator`, 26-to-12 struct inventory comparison, reward-model mismatches, local JSON provenance limits, and new input/terminal-safety tasks. Then select work from the **canonical 127-task** [tracker](migration/progress.json); do not rely on historical conversation claims.
 
 ## Active Rust project — start here
 
