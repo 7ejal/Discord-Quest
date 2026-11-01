@@ -28,7 +28,7 @@ impl QuestManager {
     pub fn filter_valid(&self, now: DateTime<Utc>) -> Vec<&Quest> {
         self.quests
             .iter()
-            .filter(|quest| !quest.is_completed() && !quest.is_expired(now.clone()))
+            .filter(|quest| !quest.is_completed() && !quest.is_expired(now))
             .collect()
     }
 
@@ -267,7 +267,7 @@ pub fn analyze_parallel(
     thread::scope(|scope| {
         for worker_id in 0..n {
             let tx = sender.clone();
-            let now = now.clone();
+            let now = now;
             scope.spawn(move || {
                 for index in (worker_id..quests.len()).step_by(n) {
                     let assessment = assess_quest(&quests[index], &now);
