@@ -67,6 +67,11 @@ pub struct TaskAssessment {
     pub numeric_goal_reached: Option<bool>,
     pub server_task_completed: bool,
     pub application_id: Option<String>,
+    /// Values below are reported by the supplied local file, not authenticated.
+    pub reported_event_name: Option<String>,
+    pub progress_updated_at: Option<String>,
+    pub heartbeat_last_beat_at: Option<String>,
+    pub heartbeat_expires_at: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -123,10 +128,34 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
     let rewards_claimed = quest.has_claimed_rewards();
     let mut warnings = Vec::new();
     let mut tasks = Vec::new();
+    let mut task_type_mismatch = false;
+    let mut event_mismatch = false;
 
     if let Some(group) = group {
         for (name, def) in &group.tasks {
+            if let Some(declared_type) = def.task_type.as_deref() {
+                if !declared_type.is_empty() && declared_type != name {
+                    warnings.push(format!("Task {name} declares a conflicting type."));
+                    task_type_mismatch = true;
+                }
+                if !declared_type.is_empty() && task_family(declared_type) == "unknown" {
+                    warnings.push(format!("Task {name} has an unrecognized declared type."));
+                    task_type_mismatch = true;
+                }
+            }
             let progress = status.and_then(|s| s.progress.get(name));
+            if let (Some(config_event), Some(progress_event)) = (
+                def.event_name.as_deref(),
+                progress.and_then(|p| p.event_name.as_deref()),
+            ) {
+                if !config_event.is_empty()
+                    && !progress_event.is_empty()
+                    && config_event != progress_event
+                {
+                    warnings.push(format!("Task {name} has mismatched event_name values."));
+                    event_mismatch = true;
+                }
+            }
             let reported = progress.and_then(|p| p.value);
             let numeric_goal_reached = match (reported, def.target) {
                 (Some(value), Some(target))
@@ -164,6 +193,14 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
                 numeric_goal_reached,
                 server_task_completed,
                 application_id,
+                reported_event_name: progress.and_then(|p| p.event_name.clone()),
+                progress_updated_at: progress.and_then(|p| p.updated_at.clone()),
+                heartbeat_last_beat_at: progress
+                    .and_then(|p| p.heartbeat.as_ref())
+                    .and_then(|h| h.last_beat_at.clone()),
+                heartbeat_expires_at: progress
+                    .and_then(|p| p.heartbeat.as_ref())
+                    .and_then(|h| h.expires_at.clone()),
             });
         }
     }
@@ -179,8 +216,31 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
             }
         }
         for (name, progress) in &record.progress {
-            if invalid_timestamp(&progress.completed_at) {
-                warnings.push(format!("Input has invalid timestamp for task {name}."));
+            for (field, timestamp) in [
+                ("completed_at", &progress.completed_at),
+                ("updated_at", &progress.updated_at),
+            ] {
+                if invalid_timestamp(timestamp) {
+                    warnings.push(format!("Task {name} has invalid {field} timestamp."));
+                }
+            }
+            if let Some(heartbeat) = &progress.heartbeat {
+                for (field, timestamp) in [
+                    ("heartbeat.last_beat_at", &heartbeat.last_beat_at),
+                    ("heartbeat.expires_at", &heartbeat.expires_at),
+                ] {
+                    if invalid_timestamp(timestamp) {
+                        warnings.push(format!("Task {name} has invalid {field} timestamp."));
+                    }
+                }
+                if let Some(expiry) = parse_time(&heartbeat.expires_at) {
+                    if expiry <= *now {
+                        warnings.push(format!("Task {name} has an expired reported heartbeat."));
+                    }
+                    if parse_time(&heartbeat.last_beat_at).is_some_and(|beat| beat > expiry) {
+                        warnings.push(format!("Task {name} reports heartbeat expiry before its last beat."));
+                    }
+                }
             }
         }
     }
@@ -259,7 +319,12 @@ pub fn assess_quest(quest: &Quest, now: &DateTime<Utc>) -> QuestAssessment {
         warnings.push("Input contains contradictory timestamp ordering.".to_owned());
     }
 
-    let verdict = if inconsistent_id || invalid_order || (rewards_claimed && !quest_completed) {
+    let verdict = if inconsistent_id
+        || invalid_order
+        || task_type_mismatch
+        || event_mismatch
+        || (rewards_claimed && !quest_completed)
+    {
         Verdict::Inconsistent
     } else if quest_completed {
         if rewards_claimed {
