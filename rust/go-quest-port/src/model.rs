@@ -124,9 +124,18 @@ pub struct TaskProgress {
     pub completed_at: Option<String>,
 }
 
-/// A nonempty server-provided timestamp is present; we do not invent timestamps.
+/// True only for a syntactically valid RFC3339 timestamp supplied in the
+/// input record. This does NOT authenticate the JSON's source.
 pub fn has_timestamp(timestamp: &Option<String>) -> bool {
-    timestamp.as_deref().is_some_and(|s| !s.trim().is_empty())
+    timestamp.as_deref().is_some_and(|raw| {
+        DateTime::parse_from_rfc3339(raw).is_ok()
+    })
+}
+
+/// Warn about non-empty but malformed date strings rather than treating them
+/// as server-confirmed milestone evidence.
+pub fn invalid_timestamp(timestamp: &Option<String>) -> bool {
+    timestamp.as_ref().is_some_and(|_| !has_timestamp(timestamp))
 }
 
 impl Quest {
