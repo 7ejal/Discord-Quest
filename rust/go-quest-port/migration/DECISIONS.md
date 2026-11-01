@@ -42,7 +42,11 @@
 
 ## ADR-010 — Native release goals
 
-**State:** Planned. Windows x86_64 and Linux x86_64 executables; no Go/Node/Python/Discord installation to run CLI. Reproducible locked Cargo builds, license, checksum and durable release notes are required before a general release.
+**State:** Accepted Linux-only override, 2026-11-01. Linux x86_64 native CLI only, tested and packaged on the isolated main-server checkout; Windows and GitHub-hosted workflows retired. No Go/Node/Python/Discord installation needed to *run* the compiled binary. Reproducible locked Cargo builds, license, checksum and durable release notes are required before a general release.
+
+## ADR-011 — Linux-only/main-server-only testing
+
+**State:** Accepted 2026-11-01. [LINUX-ONLY.md](LINUX-ONLY.md) supersedes earlier cross-platform scope. No GitHub-hosted actions and no persistent GitHub runner on production. Linux release candidates must include LICENSE/NOTICE, locked dependency inventory, hashes and exact source commit. Published GitHub release assets are a separate decision; a file on main-server is not public.
 
 ## Unresolved decisions requiring validation
 
