@@ -1,6 +1,6 @@
 //! Standalone offline CLI for the safe, portable parts of the Go project.
 use chrono::Utc;
-use go_quest_port::{manager::QuestManager, parse_quests};
+use go_quest_port::{manager::QuestManager, output::escape_terminal, parse_quests};
 use serde::Serialize;
 use std::{env, error::Error, fs, io::Read, process};
 
@@ -49,7 +49,7 @@ fn run() -> Result<(), Box<dyn Error>> {
         }
         _ => {
             usage();
-            return Err(format!("Unsupported command: {command}").into());
+            return Err("Unsupported command (run --help for usage)".into());
         }
     };
 
@@ -65,7 +65,7 @@ fn run() -> Result<(), Box<dyn Error>> {
                     return Err("--workers must be an integer between 1 and 32".into());
                 }
             }
-            _ => return Err(format!("Unknown argument: {flag}").into()),
+            _ => return Err("Unknown argument (run --help for usage)".into()),
         }
     }
 
@@ -92,10 +92,10 @@ fn run() -> Result<(), Box<dyn Error>> {
         report.analyzed, report.go_filter_valid, report.go_filter_redeemable
     );
     if let Some(blocked) = report.enrollment_blocked_until {
-        println!("Enrollment blocked until (source data): {blocked}");
+        println!("Enrollment blocked until (source data): {}", escape_terminal(&blocked));
     }
     for quest in report.assessments {
-        println!("\n{} ({})", quest.name, quest.quest_id);
+        println!("\n{} ({})", escape_terminal(&quest.name), escape_terminal(&quest.quest_id));
         println!(
             "  status: {:?}; operator: {}",
             quest.verdict, quest.join_operator
@@ -107,11 +107,11 @@ fn run() -> Result<(), Box<dyn Error>> {
             let goal = task.goal.map_or_else(|| "?".to_owned(), |v| v.to_string());
             println!(
                 "  {:26} {:>6}/{:<6} confirmed={} family={}",
-                task.task_type, value, goal, task.server_task_completed, task.family
+                escape_terminal(&task.task_type), value, goal, task.server_task_completed, task.family
             );
         }
         for warning in quest.warnings {
-            println!("  note: {warning}");
+            println!("  note: {}", escape_terminal(&warning));
         }
     }
     Ok(())
@@ -119,7 +119,7 @@ fn run() -> Result<(), Box<dyn Error>> {
 
 fn main() {
     if let Err(error) = run() {
-        eprintln!("Error: {error}");
+        eprintln!("Error: {}", escape_terminal(&error.to_string()));
         process::exit(1);
     }
 }
