@@ -22,6 +22,12 @@ See [Linux-only contract](migration/LINUX-ONLY.md), [main-server procedure](migr
 
 **Verified Linux release candidate:** [main-server test, archive SHA256 and measured CPU/RAM](migration/MAIN-SERVER-LINUX-RELEASE-2026-11-01.md). For extraction, system libraries and CLI errors, see [Linux troubleshooting](docs/TROUBLESHOOTING.md). The archive is server-resident; no permanent public GitHub release has been claimed.
 
+## Latest verified Linux-only build
+
+The [main-server network-isolated release verification](migration/MAIN-SERVER-NETWORK-ISOLATION-2026-11-01.md) passed **66 Rust tests**, **17 tracker tests**, formatting, strict Clippy and Linux release packaging at source commit `44dfcf924ec8`. It also verified the CLI with Linux networking disabled and checked that fake credential/targeting canaries did not appear in output. The [task catalog contract test](tests/task_catalog.rs) checks all 10 known task identifiers and deprecated status against the repository data catalog.
+
+Source-pinned archive SHA256: `21e53ea165b11f7c70e27f5bcb13020ee617506c134c1a358883d1b1d173d85e`. This is a local release candidate, **not** a permanent public GitHub release. No Windows or GUI support is planned.
+
 ## Run the native CLI on Linux
 
 ```bash
