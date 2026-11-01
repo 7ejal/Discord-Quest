@@ -10,6 +10,7 @@ No network, credentials, application access or external packages are used.
 from __future__ import annotations
 
 import argparse
+import difflib
 import json
 import re
 import sys
@@ -253,6 +254,15 @@ def main() -> int:
         return 1
     if actual != expected:
         print("PROGRESS.md out of sync; run --write and commit both files.", file=sys.stderr)
+        differences = difflib.unified_diff(
+            actual.splitlines(), expected.splitlines(),
+            fromfile="PROGRESS.md", tofile="generated expected", lineterm=""
+        )
+        for index, line in enumerate(differences):
+            if index >= 65:
+                print("...diff truncated...", file=sys.stderr)
+                break
+            print(line, file=sys.stderr)
         return 1
     counts = Counter(t["status"] for t in data["tasks"])
     print(
