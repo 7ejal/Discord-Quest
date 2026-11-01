@@ -2,6 +2,10 @@
 
 **This repository is a source-backed research and Rust engineering project, not a verified universal Discord Quest completer.** Do not use real personal Discord account tokens or develop inauthentic reward-earning features.
 
+## Current Linux-only override
+
+Run Rust tests and package artifacts **only on `main-server`**, following [the Linux-only contract](rust/go-quest-port/migration/LINUX-ONLY.md). Do not run Windows tests or GitHub-hosted Actions. Keep the CLI offline; no GUI.
+
 ## Required starting point for a fresh AI
 
 **[rust/go-quest-port/migration/START-HERE.md](rust/go-quest-port/migration/START-HERE.md)** and [the final pre-code audit](rust/go-quest-port/migration/PRE-CODE-REVIEW-2026-11-01.md) gives exact source, working directory, priority order, commands, evidence requirements and the out-of-scope boundary. The source-backed [gap audit](rust/go-quest-port/migration/GAP-AUDIT.md), [decision record](rust/go-quest-port/migration/DECISIONS.md), [38-case test plan](rust/go-quest-port/migration/TEST-MATRIX.md), and [release gates](rust/go-quest-port/migration/RELEASE-GATES.md) are also mandatory reading. **Only rust/go-quest-port is active; rust/quest-audit-cli is historical.**
