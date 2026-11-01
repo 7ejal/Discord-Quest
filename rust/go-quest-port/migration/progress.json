@@ -174,7 +174,7 @@
       "id": "ENV-005",
       "phase": "build",
       "title": "Commit Cargo.lock for reproducible builds",
-      "status": "todo",
+      "status": "done",
       "go_source": [
         "go.sum"
       ],
@@ -182,11 +182,14 @@
         "Cargo.lock"
       ],
       "acceptance": "Cargo.lock committed and CI uses --locked; updates deliberately reviewed.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+      ],
       "depends_on": [
         "ENV-001"
       ],
-      "notes": "",
+      "notes": "Verified with 23 passing Rust tests and the locked Linux/Windows CI workflow on commit 36e386b7.",
       "priority": "P2",
       "required_for_release": true
     },
@@ -1418,7 +1421,7 @@
       "id": "PARSE-001",
       "phase": "parser",
       "title": "Reject empty or invalid Quest objects instead of silently accepting {}",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1429,11 +1432,14 @@
         "src/model.rs"
       ],
       "acceptance": "Synthetic {} and missing/blank quest ID or missing config produce a typed invalid/unknown result; never classify as normal not-enrolled without warning.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+      ],
       "depends_on": [
         "MODEL-001"
       ],
-      "notes": ""
+      "notes": "Verified with 23 passing Rust tests and the locked Linux/Windows CI workflow on commit 36e386b7."
     },
     {
       "id": "PARSE-002",
@@ -1631,7 +1637,7 @@
       "id": "STATUS-010",
       "phase": "state",
       "title": "Validate completion/enrollment/claim timestamps instead of nonempty-string truthiness",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "required_for_release": true,
       "go_source": [
@@ -1642,11 +1648,14 @@
         "src/manager.rs"
       ],
       "acceptance": "Validate RFC3339 completion/enrollment/claim timestamps AND per-task progress.completed_at (including timezone offsets); whitespace or malformed strings cannot yield confirmed status.",
-      "evidence": [],
+      "evidence": [
+        "migration/MAIN-SERVER-CI-2026-11-01.md",
+        "https://github.com/7ejal/Discord-Quest/actions/runs/41270140534"
+      ],
       "depends_on": [
         "STATE-001"
       ],
-      "notes": "Existing has_timestamp tests only nonempty, including TaskProgress.completed_at; both top-level and per-task validation need fixing."
+      "notes": "Verified with 23 passing Rust tests and the locked Linux/Windows CI workflow on commit 36e386b7."
     },
     {
       "id": "STATUS-011",
