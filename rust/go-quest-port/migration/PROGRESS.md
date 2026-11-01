@@ -6,9 +6,9 @@
 
 | Status | Count | Meaning |
 |---|---:|---|
-| ✅ Done | 27 | Existing source/doc evidence meets stated criterion |
+| ✅ Done | 28 | Existing source/doc evidence meets stated criterion |
 | 🟡 Partial | 7 | Some implementation exists; acceptance incomplete |
-| ⬜ Todo | 19 | No verified implementation meeting criterion |
+| ⬜ Todo | 18 | No verified implementation meeting criterion |
 | ⛔ Excluded | 4 | Intentionally outside supported scope; not backlog |
 | **Total** | **57** | Source and plan snapshot, not percent-complete |
 
@@ -136,7 +136,7 @@
 | `DOC-001` | DONE | Project README documents offline scope and Windows EXE | README explains commands, no live completion, passing prior CI and artifact link. | `README.md`, [link](https://github.com/7ejal/Discord-Quest/actions/runs/41256646888) |
 | `DOC-002` | DONE | Publish master 1:1 migration spec, file map, tracker | Docs contain exact scoped goals and all Go source files; machine tracker has statuses, acceptance and evidence. | `migration/SPEC.md`, `migration/progress.json` |
 | `DOC-003` | DONE | AI agent updating protocol | Agent guidance requires rechecking CI, modifying tracker with code changes, and no false completion claims. | `AGENTS.md`, `migration/AI-WORKFLOW.md` |
-| `DOC-004` | TODO | Keep progress manifest and Markdown view synchronized | A local checker or generator validates IDs/statuses/dependencies and summary counts; CI runs it. | — |
+| `DOC-004` | DONE | Keep progress manifest and Markdown view synchronized | A local checker or generator validates IDs/statuses/dependencies and summary counts; CI runs it. | — |
 
 ### Excluded
 
