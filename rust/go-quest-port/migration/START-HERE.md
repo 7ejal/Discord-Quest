@@ -40,6 +40,10 @@ and [continuation verification](MAIN-SERVER-COMPLETION-2026-11-01.md). Do not
 repeat historical completed phases; consult the generated queue. Modern schema
 evidence and public publication remain open. Windows/GUI work is outside scope.
 
+## New requested live HTTP milestone — not implemented
+
+The user requested Go-style raw `Authorization` header login plus real account/Quest tests. The [requested feature backlog](GO-LIVE-HTTP-REQUEST.md) and the **nine TODO tasks** in `progress.json` record this separately from the supported offline Linux CLI. First review `AUD-009`, `SEC-005` and `NET-005`; do not build against unverifiable private APIs, collect personal tokens in chat, or mark a live HTTP feature done until actual permission/schema and mock-test evidence exists. The former incomplete `src/account.rs` was removed, and `main.rs` still provides only `demo` / `inspect`.
+
 ## Immediate engineering order (avoid chasing optional features)
 
 **Phase 1 — Parser and truthfulness:** `PARSE-001` reject blank objects, `PARSE-002` duplicate-ID policy, `STATUS-010` validate timestamps, `STATUS-012` missing/invalid expiry, `PARSE-005` bound input memory, `AUD-001` verify schema variants.
