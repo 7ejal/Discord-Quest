@@ -1,5 +1,5 @@
 //! Standalone offline CLI for the safe, portable parts of the Go project.
-use chrono::Utc;
+use chrono::{DateTime, Utc};
 use go_quest_port::{manager::QuestManager, output::escape_terminal, parse_quests};
 use serde::Serialize;
 use std::{env, error::Error, fs, io::Read, process};
@@ -8,6 +8,7 @@ use std::{env, error::Error, fs, io::Read, process};
 struct Report {
     schema_version: u32,
     input_trust: &'static str,
+    evaluated_at: String,
     analyzed: usize,
     go_filter_valid: usize,
     go_filter_redeemable: usize,
@@ -19,8 +20,8 @@ fn usage() {
     eprintln!(
         "Go Quest -> Rust (offline port)\n\
          Usage:\n\
-         go-quest-port demo [--json] [--workers N]\n\
-         go-quest-port inspect <local-quests.json> [--json] [--workers N]\n\
+         go-quest-port demo [--json] [--workers N] [--at RFC3339]\n\
+         go-quest-port inspect <local-quests.json> [--json] [--workers N] [--at RFC3339]\n\
          \n\
          No account token, network connection, game spoofing, or reward claims."
     );
@@ -31,6 +32,10 @@ fn run() -> Result<(), Box<dyn Error>> {
     let command = args.next().unwrap_or_else(|| "--help".to_owned());
     if command == "--help" || command == "-h" {
         usage();
+        return Ok(());
+    }
+    if command == "--version" || command == "-V" {
+        println!("go-quest-port {}", env!("CARGO_PKG_VERSION"));
         return Ok(());
     }
 
@@ -55,9 +60,16 @@ fn run() -> Result<(), Box<dyn Error>> {
 
     let mut workers: usize = 4;
     let mut output_json = false;
+    let mut evaluated_at: Option<DateTime<Utc>> = None;
     while let Some(flag) = args.next() {
         match flag.as_str() {
             "--json" => output_json = true,
+            "--at" => {
+                let text = args.next().ok_or("Missing RFC3339 value for --at")?;
+                let parsed = DateTime::parse_from_rfc3339(&text)
+                    .map_err(|_| "Invalid --at timestamp; expected RFC3339 with timezone")?;
+                evaluated_at = Some(parsed.with_timezone(&Utc));
+            }
             "--workers" => {
                 let amount = args.next().ok_or("Missing value for --workers")?;
                 workers = amount.parse()?;
@@ -71,10 +83,11 @@ fn run() -> Result<(), Box<dyn Error>> {
 
     let (quests, enrollment_blocked_until) = parse_quests(&input)?;
     let manager = QuestManager::new(quests, enrollment_blocked_until.clone());
-    let now = Utc::now();
+    let now = evaluated_at.unwrap_or_else(Utc::now);
     let report = Report {
         schema_version: 1,
         input_trust: "unverified_local_json",
+        evaluated_at: now.to_rfc3339(),
         analyzed: manager.quests().len(),
         go_filter_valid: manager.filter_valid(now).len(),
         go_filter_redeemable: manager.filter_redeemable().len(),
@@ -87,6 +100,7 @@ fn run() -> Result<(), Box<dyn Error>> {
     }
 
     println!("Input data: unverified local JSON (not authenticated server status).");
+    println!("Evaluated at (UTC): {}", report.evaluated_at);
     println!(
         "Analyzed {} Quest record(s); Go-style eligible: {}; claimable: {}.",
         report.analyzed, report.go_filter_valid, report.go_filter_redeemable
