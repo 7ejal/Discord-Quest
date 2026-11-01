@@ -7,6 +7,10 @@ pub mod model;
 use model::Quest;
 use serde_json::Value;
 
+/// Upper bound for each local JSON document, including programmatic callers.
+pub const MAX_JSON_BYTES: usize = 8 * 1024 * 1024;
+pub const MAX_QUESTS: usize = 10_000;
+
 /// Require an identifiable full Quest before deserializing it. The Go wire
 /// structs accept zero values, but silently treating an empty object as a real
 /// campaign would produce a misleading status report.
@@ -28,6 +32,9 @@ fn parse_full_quest(value: Value, index: usize) -> Result<Quest, String> {
 }
 
 fn parse_quest_list(values: Vec<Value>) -> Result<Vec<Quest>, String> {
+    if values.len() > MAX_QUESTS {
+        return Err(format!("Too many Quests: maximum is {MAX_QUESTS}"));
+    }
     values
         .into_iter()
         .enumerate()
@@ -38,6 +45,9 @@ fn parse_quest_list(values: Vec<Value>) -> Result<Vec<Quest>, String> {
 /// Parse a Go-like response with quests, an array of Quests, or one Quest.
 /// Never loads accounts or performs network requests.
 pub fn parse_quests(input: &str) -> Result<(Vec<Quest>, Option<String>), String> {
+    if input.len() > MAX_JSON_BYTES {
+        return Err(format!("JSON exceeds {}-byte input limit", MAX_JSON_BYTES));
+    }
     let document: Value =
         serde_json::from_str(input).map_err(|error| format!("Invalid JSON: {error}"))?;
     match document {
@@ -185,6 +195,31 @@ mod tests {
             assess_quest(&decode(q), &now()).verdict,
             Verdict::QuestConfirmedUnclaimed
         );
+    }
+
+    #[test]
+    fn excessive_local_json_is_rejected_before_parsing() {
+        let too_large = " ".repeat(super::MAX_JSON_BYTES + 1);
+        assert!(parse_quests(&too_large).unwrap_err().contains("input limit"));
+    }
+
+    #[test]
+    fn excessive_quest_count_is_rejected() {
+        let sample = json!({"id":"valid","config":{}});
+        let values = vec![sample; super::MAX_QUESTS + 1];
+        let input = serde_json::to_string(&values).unwrap();
+        assert!(parse_quests(&input).unwrap_err().contains("Too many Quests"));
+    }
+
+    #[test]
+    fn bad_enrollment_date_cannot_establish_enrollment() {
+        let mut q = fixture();
+        q["user_status"]["enrolled_at"] = json!("nonsense");
+        let quest = decode(q);
+        assert!(!quest.is_enrolled());
+        let report = assess_quest(&quest, &now());
+        assert_eq!(report.verdict, Verdict::NotEnrolled);
+        assert!(report.warnings.iter().any(|s| s.contains("invalid enrolled_at")));
     }
 
     #[test]
